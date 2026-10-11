@@ -77,10 +77,21 @@
                 bottom: 0 !important;
                 left: 0 !important;
                 height: 100vh !important;
+                transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), margin-left 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
             }
             .admin-main-wrapper {
                 margin-left: var(--sidebar-width);
                 width: calc(100% - var(--sidebar-width));
+                transition: margin-left 0.3s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            }
+
+            /* Mode Full Canvas (Ketika Sidebar Ditutup / Collapsed di Desktop) */
+            .admin-layout.sidebar-collapsed .admin-sidebar {
+                transform: translateX(-100%) !important;
+            }
+            .admin-layout.sidebar-collapsed .admin-main-wrapper {
+                margin-left: 0 !important;
+                width: 100% !important;
             }
         }
 
@@ -92,6 +103,15 @@
                 margin-left: 0;
                 width: 100%;
             }
+        }
+
+        /* Pastikan Seluruh Konten Halaman Admin Mengisi Canvas 100% Full-Width */
+        .admin-main-wrapper .container,
+        .admin-main-wrapper .container-fluid {
+            max-width: 100% !important;
+            width: 100% !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
         }
 
         .sidebar-brand-box {
@@ -562,9 +582,9 @@
             <!-- TOPBAR HEADER ERP -->
             <header class="admin-topbar sticky-top d-flex align-items-center justify-content-between px-3 px-lg-4">
                 <div class="d-flex align-items-center gap-3">
-                    <!-- Tombol Hamburger Mobile -->
-                    <button class="btn btn-light border d-lg-none p-2 shadow-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas" aria-label="Buka Menu">
-                        <i class="bi bi-list fs-5"></i>
+                    <!-- Tombol Toggle Sidebar & Mode Full Canvas (Desktop & Mobile) -->
+                    <button class="btn btn-light border p-2 shadow-sm d-flex align-items-center justify-content-center" id="sidebarToggleBtn" type="button" title="Buka/Tutup Menu Sidebar (Mode Full Canvas)">
+                        <i class="bi bi-layout-sidebar-inset fs-5 text-dark" id="sidebarToggleIcon"></i>
                     </button>
 
                     <!-- Breadcrumbs / Judul Halaman -->
@@ -828,6 +848,47 @@
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('sidebarToggleBtn');
+            const adminLayout = document.querySelector('.admin-layout');
+            const toggleIcon = document.getElementById('sidebarToggleIcon');
+            const offcanvasEl = document.getElementById('sidebarOffcanvas');
+
+            if (toggleBtn && adminLayout) {
+                // Pulihkan preferensi pengguna sebelumnya di layar desktop
+                if (window.innerWidth >= 992 && localStorage.getItem('erp_sidebar_collapsed') === 'true') {
+                    adminLayout.classList.add('sidebar-collapsed');
+                    if (toggleIcon) {
+                        toggleIcon.classList.replace('bi-layout-sidebar-inset', 'bi-layout-sidebar');
+                    }
+                    toggleBtn.setAttribute('title', 'Tampilkan Menu Sidebar');
+                }
+
+                toggleBtn.addEventListener('click', function() {
+                    if (window.innerWidth >= 992) {
+                        // Layar Desktop / Laptop: Beralih ke Mode Full Canvas
+                        adminLayout.classList.toggle('sidebar-collapsed');
+                        const isCollapsed = adminLayout.classList.contains('sidebar-collapsed');
+                        localStorage.setItem('erp_sidebar_collapsed', isCollapsed ? 'true' : 'false');
+                        if (toggleIcon) {
+                            if (isCollapsed) {
+                                toggleIcon.classList.replace('bi-layout-sidebar-inset', 'bi-layout-sidebar');
+                                toggleBtn.setAttribute('title', 'Tampilkan Menu Sidebar');
+                            } else {
+                                toggleIcon.classList.replace('bi-layout-sidebar', 'bi-layout-sidebar-inset');
+                                toggleBtn.setAttribute('title', 'Sembunyikan Menu Sidebar (Mode Full Canvas)');
+                            }
+                        }
+                    } else if (offcanvasEl && typeof bootstrap !== 'undefined') {
+                        // Layar Tablet / Ponsel: Toggle Offcanvas Drawer
+                        const bsOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl);
+                        bsOffcanvas.toggle();
+                    }
+                });
+            }
+        });
+    </script>
     @stack('scripts')
 </body>
 </html>
