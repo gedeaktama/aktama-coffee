@@ -165,7 +165,7 @@
                         </h5>
                         <small class="text-muted">Progres implementasi modular sesuai Master Prompt</small>
                     </div>
-                    <span class="badge bg-success px-3 py-2">Tahap 1 & 2 Selesai</span>
+                    <span class="badge bg-success px-3 py-2">Tahap 1, 2 & 3 Selesai</span>
                 </div>
 
                 <div class="list-group list-group-flush">
@@ -195,13 +195,13 @@
 
                     <!-- Tahap 3 -->
                     <div class="list-group-item px-0 py-3 d-flex align-items-start gap-3">
-                        <span class="badge bg-light text-muted border rounded-pill p-2"><i class="bi bi-hourglass-split fs-6"></i></span>
+                        <span class="badge bg-success rounded-pill p-2"><i class="bi bi-check-lg fs-6"></i></span>
                         <div class="flex-grow-1">
                             <div class="d-flex align-items-center justify-content-between">
-                                <h6 class="fw-semibold mb-1 text-secondary">Tahap 3 — Persediaan & Pembelian Supplier</h6>
-                                <span class="badge bg-light text-secondary border">TERJADWAL</span>
+                                <h6 class="fw-bold mb-1">Tahap 3 — Persediaan & Pembelian Supplier</h6>
+                                <span class="badge bg-success">AKTIF & TERUJI</span>
                             </div>
-                            <p class="text-muted small mb-0">Order pembelian dari pemasok, konfirmasi penerimaan fisik, kartu mutasi stok, stok minimum, dan audit persediaan.</p>
+                            <p class="text-muted small mb-0">Order pembelian ke supplier (PO), konfirmasi penerimaan fisik menambah saldo stok, kartu mutasi stok real-time, monitoring stok minimum & alert, serta stock opname audit.</p>
                         </div>
                     </div>
 

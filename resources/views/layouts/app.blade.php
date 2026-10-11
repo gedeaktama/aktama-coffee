@@ -172,6 +172,25 @@
                                     @endif
                                 </ul>
                             </li>
+
+                            @if(auth()->user()->hasRole(['owner', 'admin', 'warehouse', 'sales', 'finance']))
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle {{ request()->is('inventory*') ? 'active' : '' }}" href="#" id="inventoryDropdown" role="button" data-bs-toggle="dropdown">
+                                        <i class="bi bi-boxes me-1"></i> Persediaan & Pembelian
+                                    </a>
+                                    <ul class="dropdown-menu shadow border-0" aria-labelledby="inventoryDropdown">
+                                        <li><a class="dropdown-item py-2" href="{{ route('inventory.index') }}"><i class="bi bi-box-seam me-2 text-primary"></i> Monitoring Stok & Alert</a></li>
+                                        <li><a class="dropdown-item py-2" href="{{ route('inventory.movements') }}"><i class="bi bi-journal-text me-2 text-secondary"></i> Kartu & Mutasi Stok</a></li>
+                                        @if(auth()->user()->hasRole(['owner', 'admin', 'warehouse', 'finance']))
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item py-2" href="{{ route('purchases.index') }}"><i class="bi bi-cart-check me-2 text-success"></i> Pembelian Supplier (PO)</a></li>
+                                            @if(auth()->user()->hasRole(['owner', 'admin', 'warehouse']))
+                                                <li><a class="dropdown-item py-2" href="{{ route('purchases.create') }}"><i class="bi bi-plus-circle me-2 text-info"></i> Buat PO Baru</a></li>
+                                            @endif
+                                        @endif
+                                    </ul>
+                                </li>
+                            @endif
                         @endif
                     @endauth
                 </ul>

@@ -20,8 +20,8 @@ Dokumen ini melacak status terkini pembangunan sistem, file yang telah dibuat, h
 |---|---|---|---|
 | **Tahap 1** | Fondasi, Database, Autentikasi 6 Role, Middleware & Testing | **SELESAI & TERUJI (100%)** | 13/13 test lulus (37 assertions). |
 | **Tahap 2** | Master Data (Kategori, Produk & Varian/SKU, Supplier, Pelanggan Bisnis) | **SELESAI & TERUJI (100%)** | 20/20 test lulus (59 assertions). |
-| **Tahap 3** | Persediaan & Pembelian Supplier (Stok Masuk, Mutasi, Stok Minimum) | **SIAP DIMULAI** | Menunggu persetujuan pengguna. |
-| **Tahap 4** | Penjualan Grosir B2B & Retail Online (Order Sales, Keranjang, Checkout) | Terjadwal | Akan dikerjakan setelah Tahap 3. |
+| **Tahap 3** | Persediaan & Pembelian Supplier (Stok Masuk, Mutasi, Stok Minimum, Audit) | **SELESAI & TERUJI (100%)** | 27/27 test lulus (83 assertions). |
+| **Tahap 4** | Penjualan Grosir B2B & Retail Online (Order Sales, Keranjang, Checkout) | **SIAP DIMULAI** | Menunggu persetujuan pengguna. |
 | **Tahap 5** | Pembayaran & Manajemen Piutang Tempo (Faktur, Plafon Kredit, TOP) | Terjadwal | Akan dikerjakan setelah Tahap 4. |
 | **Tahap 6** | Pengiriman (Surat Jalan), Dashboard Owner & Laporan HPP / Laba Kotor | Terjadwal | Akan dikerjakan setelah Tahap 5. |
 | **Tahap 7** | Pengujian Menyeluruh, Hardening Keamanan & Panduan Shared Hosting | Terjadwal | Tahap akhir. |
@@ -105,6 +105,15 @@ PASS  Tests\Feature\MasterDataTest
 ✓ sales cannot self grant unauthorized credit limit
 ✓ customer role is strictly forbidden from master data
 
+PASS  Tests\Feature\InventoryPurchaseTest
+✓ authorized roles can view purchase and inventory index
+✓ user can create purchase order without increasing stock immediately
+✓ receiving purchase order physically strictly increases stock and logs audit movement
+✓ cannot receive already received or cancelled purchase order
+✓ user can adjust stock with mandatory audit reason
+✓ stock adjustment requires mandatory reason
+✓ inventory service strictly prevents negative stock
+
 PASS  Tests\Feature\RoleMiddlewareTest
 ✓ unauthenticated user cannot access dashboard
 ✓ customer role is forbidden from dashboard
@@ -112,23 +121,57 @@ PASS  Tests\Feature\RoleMiddlewareTest
 ✓ only owner can access owner zone
 ✓ only finance can access finance zone
 
-Tests:    20 passed (59 assertions)
-Duration: 1.68s
+Tests:    27 passed (83 assertions)
+Duration: 1.48s
 ```
 
 ---
 
-## Langkah Selanjutnya (Tahap 3 — Persediaan dan Pembelian)
-Setelah mendapat persetujuan:
-1. Migrasi dan Model:
-   - Pembelian dari Supplier (`purchases`)
-   - Item Pembelian (`purchase_items`)
-   - Mutasi & Riwayat Stok Persediaan (`stock_movements`)
-2. Alur Transaksi Pembelian:
-   - Pembuatan PO Pembelian kepada supplier
-   - Konfirmasi penerimaan fisik barang (Stok hanya bertambah setelah konfirmasi penerimaan fisik sesuai aturan Section 8)
-   - Kartu mutasi stok per SKU yang dapat diaudit
-   - Penyesuaian stok (*Stock Adjustment*) dengan alasan dan otorisasi
-   - Peringatan stok minimum
-3. Antarmuka Dashboard Gudang & Admin
-4. Pengujian Otomatis Transaksi Pembelian & Mutasi Stok.
+## Log Perubahan: Tahap 3 — Persediaan & Pembelian Supplier
+
+### 1. Migrasi & Skema Basis Data
+- `database/migrations/2026_10_11_000006_create_purchases_table.php`: Tabel `purchases` (purchase_number unik, supplier_id FK, user_id FK, purchase_date, status [draft, ordered, received, cancelled], subtotal, discount, shipping_cost, total_amount, received_at, received_by_user_id FK, notes).
+- `database/migrations/2026_10_11_000007_create_purchase_items_table.php`: Tabel `purchase_items` (purchase_id FK, product_variant_id FK, quantity, cost_price, subtotal).
+- `database/migrations/2026_10_11_000008_create_stock_movements_table.php`: Tabel `stock_movements` (product_variant_id FK, user_id FK, type [in, out, adjustment], reference_type [purchase, sales_order, manual_adjustment, initial_stock], reference_id, quantity, stock_before, stock_after, notes).
+
+### 2. Service Mutasi Stok Terpusat (`InventoryService.php`)
+- Menggunakan `DB::transaction()` dan `lockForUpdate()` pesimistis untuk mencegah *race condition* dan menjaga integritas data.
+- Metode `addStock`: Menambah stok saat penerimaan fisik PO atau retur barang.
+- Metode `reduceStock`: Mengurangi stok untuk pemenuhan pesanan penjualan dengan validasi ketat anti stok minus.
+- Metode `adjustStock`: Penyesuaian stok opname manual fisik dengan verifikasi alasan audit wajib.
+
+### 3. Controller & Rute Otorisasi
+- `app/Http/Controllers/PurchaseController.php`:
+  - `index`: Daftar PO dengan filter status, supplier, dan pencarian nomor PO.
+  - `create`: Formulir pemesanan PO dengan auto-generated nomor urut PO bulanan.
+  - `store`: Penerbitan PO baru ke status `ordered`.
+  - `show`: Detail PO lengkap beserta kalkulasi diskon & biaya logistik.
+  - `receive`: Konfirmasi penerimaan fisik barang oleh staf gudang yang secara otomatis menambah saldo stok ke sistem.
+  - `cancel`: Pembatalan PO oleh Owner / Admin.
+- `app/Http/Controllers/InventoryController.php`:
+  - `index`: Monitoring stok fisik, kartu alert stok menipis (`current_stock <= minimum_stock`) dan stok habis.
+  - `movements`: Kartu stok dan jejak audit mutasi per SKU kopi.
+  - `adjust`: Otorisasi penyesuaian stok opname fisik dengan alasan wajib audit.
+
+### 4. Tampilan Antarmuka (Blade + Bootstrap 5)
+- `resources/views/inventory/purchases/index.blade.php`: Tabel PO dengan badge status warna-warni, ringkasan biaya, dan filter.
+- `resources/views/inventory/purchases/create.blade.php`: Form interaktif pembuatan PO dengan JavaScript dinamis untuk penambahan baris SKU, kalkulasi subtotal, diskon, dan biaya kirim secara *real-time*.
+- `resources/views/inventory/purchases/show.blade.php`: Halaman rincian PO, profil pemasok, tombol cetak, serta tombol konfirmasi penerimaan fisik barang gudang.
+- `resources/views/inventory/stocks/index.blade.php`: Dashboard monitoring stok dengan metrik total pack, alert stok menipis, dan modal penyesuaian stock opname langsung.
+- `resources/views/inventory/stocks/movements.blade.php`: Kartu mutasi stok persediaan kronologis (*audit trail*).
+
+### 5. Seeder Data (`InventorySeeder.php`)
+- `PO-202610-0001`: Pembelian dari Supplier Aceh Gayo berstatus `received` (stok fisik telah masuk ke gudang).
+- `PO-202610-0002`: Pembelian dari Supplier PT Java Coffee Estate berstatus `ordered` (siap digunakan untuk uji coba konfirmasi penerimaan langsung di browser).
+- Riwayat mutasi stok masuk dan contoh penyesuaian stock opname.
+
+---
+
+## Langkah Selanjutnya (Tahap 4 — Penjualan Grosir B2B & Retail Online)
+Setelah disetujui:
+1. Migrasi & Model Pesanan Penjualan (`orders`, `order_items`).
+2. Order Sales Grosir B2B (Pengecekan plafon kredit pelanggan, batas tempo pembayaran TOP, pemilihan varian kopi, snapshot harga standar jual).
+3. Keranjang belanja & Checkout Retail Online untuk pelanggan retail.
+4. Pengurangan stok otomatis saat pesanan diproses dengan perlindungan pesimistis *anti-negative stock*.
+5. Pengujian otomatis alur pesanan penjualan (B2B & Retail).
+

@@ -5,7 +5,9 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SupplierController;
 use Illuminate\Support\Facades\Route;
 
@@ -88,6 +90,38 @@ Route::middleware('auth')->group(function () {
         Route::middleware('role:owner,admin,sales,finance')->group(function () {
             Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
             Route::get('/customers/{customer}', [CustomerController::class, 'show'])->name('customers.show');
+        });
+    });
+
+    // PERSEDIAAN & PEMBELIAN SUPPLIER (TAHAP 3)
+    Route::prefix('inventory')->group(function () {
+        // Monitoring Stok & Kartu Mutasi (Semua Staf Internal)
+        Route::middleware('role:owner,admin,warehouse,sales,finance')->group(function () {
+            Route::get('/stocks', [InventoryController::class, 'index'])->name('inventory.index');
+            Route::get('/movements', [InventoryController::class, 'movements'])->name('inventory.movements');
+        });
+
+        // Penyesuaian Fisik Stok Opname (Owner, Admin, Warehouse)
+        Route::middleware('role:owner,admin,warehouse')->group(function () {
+            Route::post('/adjust', [InventoryController::class, 'adjust'])->name('inventory.adjust');
+        });
+
+        // Pembelian ke Supplier / PO (Owner, Admin, Warehouse)
+        Route::middleware('role:owner,admin,warehouse')->group(function () {
+            Route::get('/purchases', [PurchaseController::class, 'index'])->name('purchases.index');
+            Route::get('/purchases/create', [PurchaseController::class, 'create'])->name('purchases.create');
+            Route::post('/purchases', [PurchaseController::class, 'store'])->name('purchases.store');
+            Route::post('/purchases/{purchase}/receive', [PurchaseController::class, 'receive'])->name('purchases.receive');
+        });
+
+        // Batalkan PO (Owner & Admin)
+        Route::middleware('role:owner,admin')->group(function () {
+            Route::post('/purchases/{purchase}/cancel', [PurchaseController::class, 'cancel'])->name('purchases.cancel');
+        });
+
+        // Detail PO (Owner, Admin, Warehouse, Finance)
+        Route::middleware('role:owner,admin,warehouse,finance')->group(function () {
+            Route::get('/purchases/{purchase}', [PurchaseController::class, 'show'])->name('purchases.show');
         });
     });
 
