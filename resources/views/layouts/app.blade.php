@@ -97,11 +97,31 @@
 
         @media (max-width: 991.98px) {
             .admin-sidebar {
+                position: fixed !important;
+                top: 0 !important;
+                bottom: 0 !important;
+                left: 0 !important;
                 width: 280px !important;
+                max-width: 85vw !important;
+                height: 100vh !important;
+                transform: translateX(-100%) !important;
+                visibility: hidden !important;
+                transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s ease !important;
+                z-index: 1055 !important;
+            }
+            .admin-sidebar.show {
+                transform: translateX(0) !important;
+                visibility: visible !important;
             }
             .admin-main-wrapper {
-                margin-left: 0;
-                width: 100%;
+                margin-left: 0 !important;
+                width: 100% !important;
+                min-width: 100% !important;
+            }
+            .admin-topbar {
+                height: 56px !important;
+                padding-left: 0.75rem !important;
+                padding-right: 0.75rem !important;
             }
         }
 
@@ -706,9 +726,19 @@
                     </div>
                 </a>
 
-                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#storeNavbarContent">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                <div class="d-flex align-items-center gap-2 d-lg-none">
+                    <a class="nav-link position-relative p-2 text-white" href="{{ route('store.cart') }}" title="Keranjang Belanja">
+                        <i class="bi bi-cart3 fs-5"></i>
+                        @if(session('cart') && count(session('cart')) > 0)
+                            <span class="position-absolute top-1 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem;">
+                                {{ count(session('cart')) }}
+                            </span>
+                        @endif
+                    </a>
+                    <button class="navbar-toggler border-0 p-2" type="button" data-bs-toggle="collapse" data-bs-target="#storeNavbarContent" aria-label="Buka Menu">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
 
                 <div class="collapse navbar-collapse" id="storeNavbarContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 gap-1">

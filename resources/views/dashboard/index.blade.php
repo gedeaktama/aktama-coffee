@@ -52,6 +52,25 @@
     .action-quick-btn i {
         font-size: 1.25rem;
     }
+
+    @media (max-width: 768px) {
+        .kpi-card {
+            padding: 1rem !important;
+        }
+        .kpi-icon-wrap {
+            width: 42px !important;
+            height: 42px !important;
+            font-size: 1.15rem !important;
+        }
+        .action-quick-btn {
+            padding: 0.65rem 0.75rem !important;
+            font-size: 0.8rem !important;
+            gap: 0.45rem !important;
+        }
+        .action-quick-btn i {
+            font-size: 1.05rem !important;
+        }
+    }
 </style>
 @endpush
 
@@ -251,7 +270,7 @@
 
                 @if($recentOrders->count() > 0)
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
+                        <table class="table table-hover align-middle mb-0 text-nowrap">
                             <thead class="table-light small">
                                 <tr>
                                     <th>No. Pesanan</th>

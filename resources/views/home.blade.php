@@ -38,8 +38,39 @@
     }
 
     @media (max-width: 768px) {
+        .hero-luxury {
+            padding: 3.5rem 0 2.5rem 0 !important;
+        }
         .hero-title {
-            font-size: 2.2rem;
+            font-size: 1.85rem !important;
+            line-height: 1.25 !important;
+        }
+        .hero-description {
+            font-size: 0.95rem !important;
+            line-height: 1.55 !important;
+        }
+        .hero-stat-card {
+            padding: 0.85rem 0.65rem !important;
+        }
+        .hero-stat-card .fs-4 {
+            font-size: 1.25rem !important;
+        }
+        .hero-stat-card small {
+            font-size: 0.72rem !important;
+        }
+        .coffee-img-wrap {
+            height: 220px !important;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .hero-action-group {
+            flex-direction: column !important;
+            width: 100% !important;
+        }
+        .hero-action-group .btn {
+            width: 100% !important;
+            justify-content: center !important;
         }
     }
 
@@ -162,7 +193,7 @@
                 </p>
 
                 <!-- Tombol Aksi Utama -->
-                <div class="d-flex flex-wrap gap-3 mb-5">
+                <div class="d-flex flex-wrap gap-3 mb-5 hero-action-group">
                     <a href="{{ route('store.catalog') }}" class="btn btn-gold btn-lg d-flex align-items-center gap-2">
                         <i class="bi bi-shop fs-5"></i>
                         <span>Jelajahi Katalog Kopi</span>
