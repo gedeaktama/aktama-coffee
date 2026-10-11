@@ -38,6 +38,27 @@ class Product extends Model
         return $this->hasMany(ProductVariant::class);
     }
 
+    public function getImageUrlAttribute(): string
+    {
+        if (!empty($this->image) && file_exists(public_path($this->image))) {
+            return asset($this->image);
+        }
+
+        $slug = $this->slug ?? Str::slug($this->name);
+
+        if (str_contains($slug, 'gayo')) {
+            return asset('images/gayo.jpg');
+        }
+        if (str_contains($slug, 'toraja')) {
+            return asset('images/toraja.jpg');
+        }
+        if (str_contains($slug, 'robusta') || str_contains($slug, 'lampung') || str_contains($slug, 'temanggung')) {
+            return asset('images/temanggung.jpg');
+        }
+
+        return asset('images/flores.jpg');
+    }
+
     public static function boot()
     {
         parent::boot();

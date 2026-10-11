@@ -24,7 +24,8 @@ use Illuminate\Support\Facades\Route;
 
 // Public storefront route
 Route::get('/', function () {
-    return view('home');
+    $featuredProducts = \App\Models\Product::with(['category', 'variants'])->where('is_active', true)->take(4)->get();
+    return view('home', compact('featuredProducts'));
 })->name('home');
 
 // Retail Storefront & Keranjang Belanja Online (B2C)

@@ -52,6 +52,22 @@ class DashboardController extends Controller
                 ->count(),
         ];
 
-        return view('dashboard.index', compact('user', 'userCounts', 'masterCounts'));
+        // Data operasional terbaru untuk widget eksekutif
+        $recentOrders = Order::with('customer')->latest()->take(6)->get();
+        $lowStockVariants = ProductVariant::with('product')->whereColumn('current_stock', '<=', 'minimum_stock')->take(5)->get();
+        $overdueInvoicesList = \App\Models\Invoice::with('order.customer')
+            ->whereIn('status', [\App\Models\Invoice::STATUS_UNPAID, \App\Models\Invoice::STATUS_PARTIAL])
+            ->where('due_date', '<', now()->toDateString())
+            ->take(5)
+            ->get();
+
+        return view('dashboard.index', compact(
+            'user', 
+            'userCounts', 
+            'masterCounts', 
+            'recentOrders', 
+            'lowStockVariants', 
+            'overdueInvoicesList'
+        ));
     }
 }

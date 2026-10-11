@@ -159,6 +159,43 @@ class MasterDataSeeder extends Seeder
             );
         }
 
+        // Produk D: Arabika Flores Bajawa Honey
+        $prodFlores = Product::updateOrCreate(
+            ['slug' => 'kopi-arabika-flores-bajawa-honey'],
+            [
+                'category_id' => $catArabika->id,
+                'name' => 'Kopi Arabika Flores Bajawa Honey',
+                'brand' => 'Kopi Distro Specialty',
+                'coffee_type' => 'Arabika',
+                'form' => 'both',
+                'description' => 'Kopi Arabika proses honey dari dataran tinggi Bajawa Flores dengan aroma floral semerbak dan rasa manis madu alami yang lembut.',
+                'is_active' => true,
+            ]
+        );
+
+        $floresVariants = [
+            ['sku' => 'SKU-FB-250G', 'name' => 'Arabika Flores Bajawa Honey 250g', 'weight' => 250, 'cost' => 68000, 'price' => 92000, 'stock' => 70, 'min' => 15],
+            ['sku' => 'SKU-FB-500G', 'name' => 'Arabika Flores Bajawa Honey 500g', 'weight' => 500, 'cost' => 125000, 'price' => 175000, 'stock' => 40, 'min' => 10],
+            ['sku' => 'SKU-FB-1KG',  'name' => 'Arabika Flores Bajawa Honey 1kg',  'weight' => 1000, 'cost' => 235000, 'price' => 320000, 'stock' => 20, 'min' => 5],
+        ];
+
+        foreach ($floresVariants as $v) {
+            ProductVariant::updateOrCreate(
+                ['sku' => $v['sku']],
+                [
+                    'product_id' => $prodFlores->id,
+                    'variant_name' => $v['name'],
+                    'package_weight_grams' => $v['weight'],
+                    'grind_form' => 'Biji Kopi',
+                    'cost_price' => $v['cost'],
+                    'selling_price' => $v['price'],
+                    'current_stock' => $v['stock'],
+                    'minimum_stock' => $v['min'],
+                    'is_active' => true,
+                ]
+            );
+        }
+
         // 3. Supplier Pemasok
         Supplier::updateOrCreate(
             ['code' => 'SUP-001'],

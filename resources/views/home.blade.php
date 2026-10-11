@@ -1,119 +1,444 @@
 @extends('layouts.app')
 
-@section('title', 'Kopi Distro - Distribusi & Penjualan Kopi Kemasan')
+@section('title', 'Kopi Distro - Roastery & Distribusi Kopi Nusantara')
+
+@push('styles')
+<style>
+    /* Hero Section Luxury Styling */
+    .hero-luxury {
+        position: relative;
+        background: linear-gradient(135deg, rgba(14, 8, 5, 0.95) 0%, rgba(26, 15, 9, 0.88) 55%, rgba(45, 25, 15, 0.75) 100%),
+                    url('{{ asset('images/hero-roastery.jpg') }}') center/cover no-repeat;
+        color: #ffffff;
+        padding: 5.5rem 0 4.5rem 0;
+        overflow: hidden;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(245, 158, 11, 0.15);
+        color: #f59e0b;
+        border: 1px solid rgba(245, 158, 11, 0.35);
+        padding: 0.45rem 1rem;
+        border-radius: 50px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+    }
+
+    .hero-title {
+        font-size: 3.25rem;
+        font-weight: 800;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        color: #ffffff;
+    }
+
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.2rem;
+        }
+    }
+
+    .hero-description {
+        font-size: 1.125rem;
+        line-height: 1.65;
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .btn-gold {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: #1a0f07;
+        font-weight: 700;
+        border: none;
+        padding: 0.75rem 1.8rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(245, 158, 11, 0.35);
+        transition: all 0.25s ease;
+    }
+    .btn-gold:hover {
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        color: #1a0f07;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.45);
+    }
+
+    .hero-stat-card {
+        background: rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 14px;
+        padding: 1.25rem;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .hero-stat-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(245, 158, 11, 0.5);
+    }
+
+    /* Product Card Styling */
+    .coffee-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    .coffee-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 32px rgba(30, 19, 12, 0.1);
+        border-color: #cbd5e1;
+    }
+
+    .coffee-img-wrap {
+        position: relative;
+        width: 100%;
+        height: 260px;
+        overflow: hidden;
+        background-color: #f1f5f9;
+    }
+    .coffee-img-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    .coffee-card:hover .coffee-img-wrap img {
+        transform: scale(1.06);
+    }
+
+    .coffee-badge-type {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: rgba(18, 11, 7, 0.85);
+        color: #f59e0b;
+        backdrop-filter: blur(8px);
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 0.35rem 0.75rem;
+        border-radius: 30px;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .feature-icon-box {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+</style>
+@endpush
 
 @section('content')
-<!-- Hero Section -->
-<section class="py-5 text-white" style="background: linear-gradient(135deg, var(--coffee-dark) 0%, #2f1b13 100%);">
-    <div class="container py-4">
-        <div class="row align-items-center gy-4">
+
+<!-- ============================================== -->
+<!-- 1. HERO SECTION LUXURY (ROASTERY & DISTRIBUSI) -->
+<!-- ============================================== -->
+<section class="hero-luxury">
+    <div class="container position-relative">
+        <div class="row align-items-center gy-5">
             <div class="col-lg-7">
-                <span class="badge bg-warning text-dark px-3 py-2 fw-bold text-uppercase mb-3" style="letter-spacing: 0.5px;">
-                    <i class="bi bi-star-fill me-1"></i> Kopi Kemasan Premium
-                </span>
-                <h1 class="display-5 fw-bold mb-3 text-white">
-                    Distribusi & Penjualan Kopi Pilihan Untuk Kafe, Toko & Retail
+                <div class="mb-3">
+                    <span class="hero-badge">
+                        <i class="bi bi-award-fill"></i> Roastery &amp; Distribusi Kopi Pilihan
+                    </span>
+                </div>
+                <h1 class="hero-title mb-3">
+                    Cita Rasa Kopi Nusantara Terbaik, dari Petani ke Cangkir Anda.
                 </h1>
-                <p class="lead text-white-50 mb-4">
-                    Menyediakan varian Kopi Arabika dan Robusta kemasan berkualitas (100g, 250g, 500g, 1kg). Melayani pemesanan langsung untuk konsumen retail serta sistem grosir terpadu untuk kafe, toko kelontong, dan reseller kopi.
+                <p class="hero-description mb-4">
+                    Menyediakan varietas kopi Arabika Single Origin &amp; Fine Robusta kemasan premium (100g, 250g, 500g, 1kg). Terintegrasi untuk konsumsi retail online serta sistem distribusi grosir kafe, resto, dan reseller dengan plafon kredit tempo terukur.
                 </p>
-                <div class="d-flex flex-wrap gap-2">
-                    <a href="{{ route('store.catalog') }}" class="btn btn-warning btn-lg px-4 fw-bold shadow text-dark">
-                        <i class="bi bi-shop me-2"></i> Belanja Kopi Online
+
+                <!-- Tombol Aksi Utama -->
+                <div class="d-flex flex-wrap gap-3 mb-5">
+                    <a href="{{ route('store.catalog') }}" class="btn btn-gold btn-lg d-flex align-items-center gap-2">
+                        <i class="bi bi-shop fs-5"></i>
+                        <span>Jelajahi Katalog Kopi</span>
                     </a>
+                    
                     @auth
                         @if(auth()->user()->canAccessDashboard())
-                            <a href="{{ route('dashboard') }}" class="btn btn-coffee btn-lg px-4">
-                                <i class="bi bi-speedometer2 me-2"></i> Buka Dashboard Internal
+                            <a href="{{ route('dashboard') }}" class="btn btn-outline-light btn-lg px-4 d-flex align-items-center gap-2">
+                                <i class="bi bi-speedometer2 text-warning fs-5"></i>
+                                <span>Panel Dashboard ERP</span>
+                            </a>
+                        @else
+                            <a href="{{ route('store.my_orders') }}" class="btn btn-outline-light btn-lg px-4 d-flex align-items-center gap-2">
+                                <i class="bi bi-bag-check text-warning fs-5"></i>
+                                <span>Pesanan Saya</span>
                             </a>
                         @endif
                     @else
-                        <a href="{{ route('login') }}" class="btn btn-coffee btn-lg px-4">
-                            <i class="bi bi-box-arrow-in-right me-2"></i> Masuk ke Sistem
-                        </a>
-                        <a href="{{ route('register') }}" class="btn btn-outline-coffee btn-lg px-4">
-                            <i class="bi bi-person-plus me-2"></i> Daftar Akun Retail
+                        <a href="{{ route('login') }}" class="btn btn-outline-light btn-lg px-4 d-flex align-items-center gap-2">
+                            <i class="bi bi-box-arrow-in-right text-warning fs-5"></i>
+                            <span>Masuk / Akses Bisnis</span>
                         </a>
                     @endauth
                 </div>
+
+                <!-- 4 Nilai Keunggulan Utama -->
+                <div class="row g-3">
+                    <div class="col-6 col-md-3">
+                        <div class="hero-stat-card">
+                            <div class="fw-bold fs-4 text-warning">100%</div>
+                            <small class="text-white-50 d-block lh-sm">Kopi Asli Murni Nusantara</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="hero-stat-card">
+                            <div class="fw-bold fs-4 text-warning">4+</div>
+                            <small class="text-white-50 d-block lh-sm">Varietas Grade 1 Specialty</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="hero-stat-card">
+                            <div class="fw-bold fs-4 text-warning">TOP 45</div>
+                            <small class="text-white-50 d-block lh-sm">Termin Tempo Grosir B2B</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="hero-stat-card">
+                            <div class="fw-bold fs-4 text-warning">Realtime</div>
+                            <small class="text-white-50 d-block lh-sm">Audit Stok Anti-Minus</small>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <!-- Visual Showcase Kartu Unggulan -->
             <div class="col-lg-5 text-center">
-                <div class="p-4 p-md-5 rounded-4 border border-white border-opacity-25" style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px);">
-                    <i class="bi bi-cup-hot display-1 text-warning d-block mb-3"></i>
-                    <h4 class="text-white fw-bold mb-2">100% Kopi Kemasan Asli</h4>
-                    <p class="text-white-50 small mb-0">Diperoleh dari pemasok terpercaya & didistribusikan dengan manajemen mutu terjamin.</p>
+                <div class="p-4 rounded-4 position-relative" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(16px);">
+                    <div class="d-inline-flex align-items-center justify-content-center p-3 rounded-circle bg-warning bg-opacity-20 text-warning mb-3">
+                        <i class="bi bi-cup-hot-fill fs-1"></i>
+                    </div>
+                    <h3 class="text-white fw-bold mb-2">Segar dari Pemanggangan</h3>
+                    <p class="text-white-50 small mb-4">
+                        Setiap kemasan dilengkapi katup udara satu arah (*one-way degassing valve*) dan aluminium foil kedap udara untuk menjaga aroma serta krema kopi tetap maksimal.
+                    </p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <span class="badge bg-white bg-opacity-10 text-white px-3 py-2 border border-white border-opacity-25">100g</span>
+                        <span class="badge bg-white bg-opacity-10 text-white px-3 py-2 border border-white border-opacity-25">250g</span>
+                        <span class="badge bg-white bg-opacity-10 text-white px-3 py-2 border border-white border-opacity-25">500g</span>
+                        <span class="badge bg-white bg-opacity-10 text-white px-3 py-2 border border-white border-opacity-25">1 Kilogram</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Business Pillars Section -->
-<section class="py-5">
-    <div class="container py-3">
-        <div class="text-center mb-5">
-            <span class="text-uppercase fw-bold text-warning small tracking-wide">Model Penjualan Terintegrasi</span>
-            <h2 class="fw-bold text-dark mt-1">Dua Jalur Penjualan, Satu Sistem Persediaan</h2>
-            <p class="text-muted">Seluruh transaksi terhubung ke satu database stok terpusat untuk menghindari persediaan minus.</p>
+<!-- ============================================== -->
+<!-- 2. KOLEKSI KOPI KEMASAN UNGGULAN (REAL IMAGES) -->
+<!-- ============================================== -->
+<section class="py-5" style="background-color: #ffffff;">
+    <div class="container py-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4">
+            <div>
+                <span class="text-uppercase fw-bold text-warning small tracking-wide">Pilihan Terbaik Nusantara</span>
+                <h2 class="fw-bold text-dark mb-1">Koleksi Kopi Kemasan Unggulan</h2>
+                <p class="text-muted mb-0">Dipetik dari kebun dataran tinggi Indonesia dan dipanggang dengan profil rasa optimal.</p>
+            </div>
+            <div class="mt-3 mt-md-0">
+                <a href="{{ route('store.catalog') }}" class="btn btn-outline-dark fw-semibold px-4">
+                    Lihat Semua Katalog &rarr;
+                </a>
+            </div>
         </div>
 
         <div class="row g-4">
-            <div class="col-md-6">
-                <div class="card card-custom p-4 h-100">
-                    <div class="d-flex align-items-center gap-3 mb-3">
-                        <div class="p-3 rounded-3 bg-primary bg-opacity-10 text-primary">
-                            <i class="bi bi-shop fs-3"></i>
+            @foreach($featuredProducts as $prod)
+                <div class="col-sm-6 col-lg-3">
+                    <div class="coffee-card">
+                        <!-- Foto Kemasan Asli HD -->
+                        <div class="coffee-img-wrap">
+                            <img src="{{ $prod->image_url }}" alt="{{ $prod->name }}" loading="lazy">
+                            <span class="coffee-badge-type">
+                                <i class="bi bi-tag-fill me-1"></i> {{ $prod->coffee_type }}
+                            </span>
                         </div>
-                        <div>
-                            <h4 class="fw-bold mb-0">1. Penjualan Retail (B2C)</h4>
-                            <small class="text-muted">Untuk Konsumsi Pribadi & Pecinta Kopi</small>
+
+                        <!-- Info Produk -->
+                        <div class="p-3 d-flex flex-column flex-grow-1">
+                            <div class="small text-muted mb-1">{{ $prod->category->name ?? 'Kopi Kemasan' }}</div>
+                            <h5 class="fw-bold text-dark mb-2 fs-6">{{ $prod->name }}</h5>
+                            <p class="text-muted small mb-3 flex-grow-1" style="line-height: 1.45;">
+                                {{ Str::limit($prod->description, 85) }}
+                            </p>
+
+                            <!-- Harga & Varian -->
+                            <div class="pt-2 border-top mt-auto">
+                                <div class="d-flex justify-content-between align-items-baseline mb-2">
+                                    <small class="text-muted">Mulai dari</small>
+                                    <span class="fw-bold text-dark fs-6">
+                                        Rp {{ number_format($prod->variants->min('selling_price') ?? 0, 0, ',', '.') }}
+                                    </span>
+                                </div>
+                                <a href="{{ route('store.catalog', ['search' => $prod->name]) }}" class="btn btn-warning btn-sm w-100 fw-bold text-dark shadow-sm">
+                                    <i class="bi bi-cart-plus me-1"></i> Pilih Varian &amp; Beli
+                                </a>
+                            </div>
                         </div>
                     </div>
-                    <p class="text-muted">
-                        Katalog terbuka untuk masyarakat umum tanpa wajib login. Pengunjung dapat memilih varian kemasan, melihat harga standar per SKU, memasukkan ke keranjang belanja, melakukan checkout transfer bank, atau memesan via WhatsApp.
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+<!-- ============================================== -->
+<!-- 3. DUA JALUR PENJUALAN, SATU SISTEM PERSEDIAAN -->
+<!-- ============================================== -->
+<section class="py-5" style="background-color: var(--coffee-cream);">
+    <div class="container py-4">
+        <div class="text-center max-w-700 mx-auto mb-5">
+            <span class="text-uppercase fw-bold text-warning small tracking-wide">Model Bisnis Terpadu</span>
+            <h2 class="fw-bold text-dark mb-2">Dua Jalur Penjualan, Satu Sistem Persediaan</h2>
+            <p class="text-muted">Satu database stok terpusat yang melayani pembeli retail perorangan sekaligus ratusan mitra kafe dan reseller tanpa risiko *overselling*.</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Jalur 1: Retail Online B2C -->
+            <div class="col-lg-6">
+                <div class="card card-custom p-4 p-md-5 h-100 border-0 shadow-sm" style="background: #ffffff;">
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div class="feature-icon-box bg-warning bg-opacity-15 text-warning">
+                            <i class="bi bi-shop"></i>
+                        </div>
+                        <div>
+                            <span class="badge bg-warning text-dark px-3 py-1 fw-bold mb-1">JALUR 1 (B2C)</span>
+                            <h3 class="fw-bold text-dark mb-0 fs-4">Penjualan Retail Online</h3>
+                        </div>
+                    </div>
+                    <p class="text-muted mb-4">
+                        Bagi pecinta kopi rumahan, penikmat seduhan manual brew, dan kebutuhan kantor harian. Pelanggan dapat berbelanja langsung secara online tanpa syarat minimum kuantitas pesanan.
                     </p>
-                    <ul class="list-unstyled small text-muted mb-0">
-                        <li class="mb-1"><i class="bi bi-check2 text-success me-2"></i>Katalog kopi tanpa wajib registrasi awal</li>
-                        <li class="mb-1"><i class="bi bi-check2 text-success me-2"></i>Pilihan kemasan 100g, 250g, 500g, 1kg</li>
-                        <li class="mb-1"><i class="bi bi-check2 text-success me-2"></i>Checkout transfer bank & integrasi WhatsApp</li>
+                    <ul class="list-unstyled d-flex flex-column gap-2 mb-4">
+                        <li class="d-flex align-items-center gap-2 text-dark">
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                            <span>Tersedia kemasan praktis <strong>100 gram &amp; 250 gram</strong> siap seduh.</span>
+                        </li>
+                        <li class="d-flex align-items-center gap-2 text-dark">
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                            <span>Pilihan bentuk seduhan: <strong>Biji Utuh</strong> atau <strong>Bubuk Halus/Sedang</strong>.</span>
+                        </li>
+                        <li class="d-flex align-items-center gap-2 text-dark">
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                            <span>Checkout transparan dengan kalkulasi estimasi ongkos kirim.</span>
+                        </li>
                     </ul>
+                    <div class="mt-auto pt-3 border-top">
+                        <a href="{{ route('store.catalog') }}" class="btn btn-outline-dark fw-bold px-4">
+                            Mulai Belanja Online &rarr;
+                        </a>
+                    </div>
                 </div>
             </div>
 
-            <div class="col-md-6">
-                <div class="card card-custom p-4 h-100">
-                    <div class="d-flex align-items-center gap-3 mb-3">
-                        <div class="p-3 rounded-3 bg-success bg-opacity-10 text-success">
-                            <i class="bi bi-buildings fs-3"></i>
+            <!-- Jalur 2: Grosir & Kemitraan B2B -->
+            <div class="col-lg-6">
+                <div class="card card-custom p-4 p-md-5 h-100 border-0 shadow-sm" style="background: #ffffff;">
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div class="feature-icon-box bg-primary bg-opacity-10 text-primary">
+                            <i class="bi bi-buildings"></i>
                         </div>
                         <div>
-                            <h4 class="fw-bold mb-0">2. Penjualan Grosir (B2B)</h4>
-                            <small class="text-muted">Kafe, Kedai Kopi, Toko Kelontong & Reseller</small>
+                            <span class="badge bg-primary text-white px-3 py-1 fw-bold mb-1">JALUR 2 (B2B)</span>
+                            <h3 class="fw-bold text-dark mb-0 fs-4">Penjualan Grosir Mitra</h3>
                         </div>
                     </div>
-                    <p class="text-muted">
-                        Pesanan grosir dimasukkan langsung oleh Admin atau Sales via dashboard. Dilengkapi dengan pengelolaan plafon batas kredit (*credit limit*), termin pembayaran tempo (*terms of payment*), serta histori piutang pelanggan bisnis.
+                    <p class="text-muted mb-4">
+                        Dirancang khusus untuk mitra bisnis: kafe, *coffee shop*, resto, toko kelontong, dan *reseller* dengan fasilitas harga standar per SKU dan pembayaran tempo terkelola.
                     </p>
-                    <ul class="list-unstyled small text-muted mb-0">
-                        <li class="mb-1"><i class="bi bi-check2 text-success me-2"></i>Input PO B2B oleh Sales/Admin</li>
-                        <li class="mb-1"><i class="bi bi-check2 text-success me-2"></i>Satu harga jual standar per SKU transparan</li>
-                        <li class="mb-1"><i class="bi bi-check2 text-success me-2"></i>Pembayaran langsung atau tempo kredit teregulasi</li>
+                    <ul class="list-unstyled d-flex flex-column gap-2 mb-4">
+                        <li class="d-flex align-items-center gap-2 text-dark">
+                            <i class="bi bi-check-circle-fill text-primary"></i>
+                            <span>Kemasan ekonomis volume besar: <strong>500 gram &amp; 1 Kilogram</strong>.</span>
+                        </li>
+                        <li class="d-flex align-items-center gap-2 text-dark">
+                            <i class="bi bi-check-circle-fill text-primary"></i>
+                            <span>Plafon kredit otomatis (*Credit Limit*) &amp; termin pembayaran tempo (TOP 14 - 45 hari).</span>
+                        </li>
+                        <li class="d-flex align-items-center gap-2 text-dark">
+                            <i class="bi bi-check-circle-fill text-primary"></i>
+                            <span>Surat Jalan resmi 3 pihak, faktur penjualan, dan kartu piutang pelanggan (*Ledger*).</span>
+                        </li>
                     </ul>
+                    <div class="mt-auto pt-3 border-top">
+                        <a href="{{ route('login') }}" class="btn btn-primary fw-bold px-4">
+                            Masuk Portal Grosir &rarr;
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- System Status Alert -->
-<section class="py-4 bg-light border-top">
-    <div class="container text-center">
-        <div class="d-inline-flex align-items-center gap-2 p-2 px-3 rounded-pill bg-white border shadow-sm">
-            <span class="badge bg-success rounded-pill px-2 py-1"><i class="bi bi-check-circle-fill"></i></span>
-            <small class="fw-semibold text-secondary">
-                Fondasi Sistem & Otorisasi 6 Role (Owner, Admin, Sales, Warehouse, Finance, Customer) Aktif
-            </small>
+<!-- ============================================== -->
+<!-- 4. ALUR OPERASIONAL BISNIS LENGKAP & AMAN      -->
+<!-- ============================================== -->
+<section class="py-5 bg-white">
+    <div class="container py-4">
+        <div class="text-center max-w-700 mx-auto mb-5">
+            <span class="text-uppercase fw-bold text-warning small tracking-wide">Tata Kelola Terstruktur</span>
+            <h2 class="fw-bold text-dark mb-2">Alur Bisnis End-to-End Tanpa Celah</h2>
+            <p class="text-muted">Dari penerimaan bahan baku biji kopi di gudang hingga pelunasan piutang dan laporan laba kotor HPP.</p>
+        </div>
+
+        <div class="row g-4 text-center">
+            <div class="col-sm-6 col-lg-3">
+                <div class="p-4 rounded-4 bg-light h-100 border">
+                    <div class="d-inline-flex align-items-center justify-content-center p-3 rounded-circle bg-primary bg-opacity-10 text-primary mb-3" style="width: 60px; height: 60px;">
+                        <i class="bi bi-truck fs-4"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-2">1. Pasokan &amp; Gudang</h5>
+                    <p class="text-muted small mb-0">Penerimaan fisik PO dari supplier menambah stok otomatis dengan kartu mutasi real-time dan alasan opname audit.</p>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-lg-3">
+                <div class="p-4 rounded-4 bg-light h-100 border">
+                    <div class="d-inline-flex align-items-center justify-content-center p-3 rounded-circle bg-success bg-opacity-10 text-success mb-3" style="width: 60px; height: 60px;">
+                        <i class="bi bi-shield-check fs-4"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-2">2. Validasi Kredit</h5>
+                    <p class="text-muted small mb-0">Pesanan grosir otomatis memvalidasi sisa plafon kredit mitra kafe sebelum pesanan dapat disetujui gudang.</p>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-lg-3">
+                <div class="p-4 rounded-4 bg-light h-100 border">
+                    <div class="d-inline-flex align-items-center justify-content-center p-3 rounded-circle bg-warning bg-opacity-10 text-warning mb-3" style="width: 60px; height: 60px;">
+                        <i class="bi bi-box-seam fs-4"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-2">3. Surat Jalan Resmi</h5>
+                    <p class="text-muted small mb-0">Gudang menerbitkan Surat Jalan (SJ) berformat resmi dengan kolom serah terima Pengirim, Sopir, dan Penerima Toko.</p>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-lg-3">
+                <div class="p-4 rounded-4 bg-light h-100 border">
+                    <div class="d-inline-flex align-items-center justify-content-center p-3 rounded-circle bg-info bg-opacity-10 text-info mb-3" style="width: 60px; height: 60px;">
+                        <i class="bi bi-graph-up-arrow fs-4"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-2">4. Keuangan &amp; Laba</h5>
+                    <p class="text-muted small mb-0">Faktur penagihan, kuitansi resmi, pemulihan plafon instan pasca-pelunasan, dan laporan laba kotor berbasis HPP aktual.</p>
+                </div>
+            </div>
         </div>
     </div>
 </section>
+
 @endsection
