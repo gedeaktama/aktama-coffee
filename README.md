@@ -1,0 +1,118 @@
+# Kopi Distro — Sistem Distribusi & Penjualan Kopi Kemasan
+
+Aplikasi web berbasis **Laravel** yang mengintegrasikan penjualan retail online (B2C) dan sistem penjualan grosir (B2B) untuk kafe, toko kelontong, dan reseller dengan satu database dan sistem persediaan terpusat.
+
+---
+
+## 1. Persyaratan Sistem
+- **PHP**: Versi 8.2 atau lebih tinggi (diuji pada PHP 8.2.12 Windows XAMPP).
+- **Web Server**: Apache pada XAMPP lokal atau Shared Hosting (cPanel).
+- **Database**: MySQL / MariaDB (Port 3306).
+- **Composer**: Versi 2.x.
+- **Node.js**: Versi 18+ (opsional untuk bundling asset).
+
+---
+
+## 2. Panduan Instalasi Lokal (Windows + XAMPP)
+
+### Langkah 1: Kloning / Tempatkan Proyek
+Letakkan folder proyek di dalam direktori htdocs XAMPP:
+```bash
+d:\Xampp2\htdocs\kopi
+```
+
+### Langkah 2: Konfigurasi File Lingkungan (`.env`)
+Salin file `.env.example` menjadi `.env` jika belum ada:
+```bash
+cp .env.example .env
+```
+Pastikan pengaturan database di file `.env` sudah sesuai dengan XAMPP Anda:
+```dotenv
+APP_NAME="Distribusi Kopi"
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://localhost/kopi/public
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=kopi
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+### Langkah 3: Instalasi Dependensi
+Jalankan composer install:
+```bash
+composer install
+```
+> **Catatan Windows**: Jika Anda memiliki Git for Windows yang menyertakan `usr/bin/unzip` yang bermasalah, gunakan file `run_composer.bat` yang sudah disediakan untuk instalasi tanpa gangguan.
+
+### Langkah 4: Generate Application Key
+```bash
+php artisan key:generate
+```
+
+### Langkah 5: Migrasi Database & Seeding Akun Awal
+Buat database bernama `kopi` di phpMyAdmin / MySQL XAMPP, kemudian jalankan:
+```bash
+php artisan migrate --seed
+```
+
+---
+
+## 3. Akun Pengguna Bawaan (Hasil Seeder)
+
+Semua akun default menggunakan password: **`password123`**
+
+| Role | Email | Wewenang Utama |
+|---|---|---|
+| **Owner** | `owner@kopi.com` | Akses penuh seluruh bisnis, persetujuan batas kredit, laporan laba rugi/HPP. |
+| **Admin** | `admin@kopi.com` | Pengelolaan master data produk, varian, supplier, pelanggan, dan pesanan. |
+| **Sales** | `sales@kopi.com` | Mengelola pelanggan bisnis dan membuat pesanan grosir (B2B). |
+| **Warehouse** | `warehouse@kopi.com` | Konfirmasi penerimaan barang supplier, stok fisik, surat jalan pengiriman. |
+| **Finance** | `finance@kopi.com` | Verifikasi transfer, pencatatan faktur, buku piutang tempo, dan pelunasan. |
+| **Customer** | `pelanggan@gmail.com` | Akun retail publik untuk belanja kopi kemasan pribadi. |
+
+---
+
+## 4. Cara Menjalankan Aplikasi & Pengujian
+
+### A. Akses Melalui Browser
+Buka browser dan arahkan ke alamat:
+- **Halaman Depan Toko (Publik)**: [http://localhost:8080/kopi/public](http://localhost:8080/kopi/public)
+- **Halaman Masuk (Login)**: [http://localhost:8080/kopi/public/login](http://localhost:8080/kopi/public/login)
+- **Halaman Registrasi Retail**: [http://localhost:8080/kopi/public/register](http://localhost:8080/kopi/public/register)
+- **Dashboard Internal Staf**: [http://localhost:8080/kopi/public/dashboard](http://localhost:8080/kopi/public/dashboard)
+
+> **Fitur Praktis**: Pada halaman login, telah disediakan tombol *Quick Demo Fill* untuk memilih akun role mana saja hanya dengan 1 kali klik.
+
+### B. Menjalankan Pengujian Otomatis (Testing)
+Jalankan test runner PHPUnit/Artisan Test:
+```bash
+php artisan test
+```
+Seluruh 13 skenario pengujian autentikasi dan middleware otorisasi role akan dijalankan secara otomatis.
+
+---
+
+## 5. Persiapan Deployment ke Shared Hosting
+1. Unggah seluruh isi proyek ke luar direktori `public_html` (misal: `/home/user/kopi_app`).
+2. Pindahkan seluruh isi folder `public/` ke dalam folder `public_html/`.
+3. Sesuaikan path pada `public_html/index.php`:
+   ```php
+   require __DIR__.'/../kopi_app/vendor/autoload.php';
+   $app = require_once __DIR__.'/../kopi_app/bootstrap/app.php';
+   ```
+4. Ubah file `.env` di hosting:
+   - `APP_ENV=production`
+   - `APP_DEBUG=false`
+   - `APP_URL=https://namadomainanda.com`
+   - Sesuaikan kredensial `DB_DATABASE`, `DB_USERNAME`, dan `DB_PASSWORD`.
+5. Jalankan `php artisan config:cache` dan `php artisan route:cache`.
+
+---
+
+## 6. Struktur Dokumentasi Proyek
+Status tahapan pembangunan tercatat secara transparan di:
+- [`docs/PROJECT_STATUS.md`](docs/PROJECT_STATUS.md)
