@@ -54,6 +54,16 @@
                                 <span class="badge {{ $ord->status_badge_class }} px-3 py-2 rounded-pill">
                                     {{ $ord->status_label }}
                                 </span>
+                                @if($ord->deliveryOrder)
+                                    <div class="mt-1">
+                                        <small class="badge bg-light text-dark border font-monospace" title="Nomor Surat Jalan">
+                                            <i class="bi bi-truck me-1 text-primary"></i>{{ $ord->deliveryOrder->delivery_number }}
+                                        </small>
+                                        @if($ord->deliveryOrder->tracking_number)
+                                            <small class="text-muted d-block font-monospace" style="font-size: 0.72rem;">Resi: {{ $ord->deliveryOrder->tracking_number }}</small>
+                                        @endif
+                                    </div>
+                                @endif
                             </td>
                             <td class="pe-3 text-center">
                                 <span class="badge {{ $ord->payment_status_badge_class }} px-3 py-2 rounded-pill">

@@ -5,11 +5,13 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\SupplierController;
 use Illuminate\Support\Facades\Route;
@@ -180,6 +182,52 @@ Route::middleware('auth')->group(function () {
         Route::middleware('role:owner,admin,finance')->group(function () {
             Route::post('/orders/{order}/generate-invoice', [FinanceController::class, 'generateInvoice'])->name('finance.invoices.generate');
             Route::post('/invoices/{invoice}/payments', [FinanceController::class, 'recordPayment'])->name('finance.payments.record');
+        });
+    });
+
+    // LOGISTIK, SURAT JALAN & PENGIRIMAN (TAHAP 6)
+    Route::prefix('logistics')->group(function () {
+        // Monitoring Surat Jalan & Pelacakan (Owner, Admin, Warehouse, Sales)
+        Route::middleware('role:owner,admin,warehouse,sales')->group(function () {
+            Route::get('/deliveries', [DeliveryController::class, 'index'])->name('delivery.index');
+            Route::get('/deliveries/{deliveryOrder}', [DeliveryController::class, 'show'])->name('delivery.show');
+            Route::get('/deliveries/{deliveryOrder}/print', [DeliveryController::class, 'print'])->name('delivery.print');
+            Route::post('/deliveries/{deliveryOrder}/delivered', [DeliveryController::class, 'markDelivered'])->name('delivery.mark_delivered');
+        });
+
+        // Terbitkan Surat Jalan & Update Barang Berangkat (Owner, Admin, Warehouse)
+        Route::middleware('role:owner,admin,warehouse')->group(function () {
+            Route::get('/orders/{order}/delivery/create', [DeliveryController::class, 'create'])->name('delivery.orders.create');
+            Route::post('/orders/{order}/delivery', [DeliveryController::class, 'store'])->name('delivery.orders.store');
+            Route::post('/deliveries/{deliveryOrder}/shipped', [DeliveryController::class, 'markShipped'])->name('delivery.mark_shipped');
+        });
+    });
+
+    // LAPORAN BISNIS, LABA KOTOR HPP & EKSPOR CSV (TAHAP 7)
+    Route::prefix('reports')->group(function () {
+        // Hub Utama Laporan
+        Route::middleware('role:owner,admin,warehouse,sales,finance')->group(function () {
+            Route::get('/', [ReportController::class, 'index'])->name('reports.index');
+        });
+
+        // Laporan Penjualan & Omset (Owner, Admin, Sales, Finance)
+        Route::middleware('role:owner,admin,sales,finance')->group(function () {
+            Route::get('/sales', [ReportController::class, 'sales'])->name('reports.sales');
+        });
+
+        // Laporan Laba Kotor & Analisis Margin HPP (Owner, Admin, Finance)
+        Route::middleware('role:owner,admin,finance')->group(function () {
+            Route::get('/profit', [ReportController::class, 'profit'])->name('reports.profit');
+        });
+
+        // Laporan Persediaan & Nilai Aset Stok (Owner, Admin, Warehouse, Finance)
+        Route::middleware('role:owner,admin,warehouse,finance')->group(function () {
+            Route::get('/inventory', [ReportController::class, 'inventory'])->name('reports.inventory');
+        });
+
+        // Laporan Rekapitulasi Aging Umur Piutang (Owner, Admin, Finance, Sales)
+        Route::middleware('role:owner,admin,finance,sales')->group(function () {
+            Route::get('/receivables', [ReportController::class, 'receivables'])->name('reports.receivables');
         });
     });
 

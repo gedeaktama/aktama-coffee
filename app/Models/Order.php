@@ -205,4 +205,14 @@ class Order extends Model
             default => 'bg-secondary',
         };
     }
+
+    public function deliveryOrders(): HasMany
+    {
+        return $this->hasMany(DeliveryOrder::class);
+    }
+
+    public function deliveryOrder(): HasOne
+    {
+        return $this->hasOne(DeliveryOrder::class)->latestOfMany();
+    }
 }

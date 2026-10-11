@@ -134,6 +134,43 @@
                     </div>
                 @endif
             @endif
+
+            <!-- Logistics & Delivery Note Banner -->
+            @if($order->deliveryOrder)
+                <div class="mt-3 pt-3 border-top border-success border-opacity-25 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <span class="badge bg-white text-dark border font-monospace fs-6">
+                            <i class="bi bi-truck me-1 text-info"></i> {{ $order->deliveryOrder->delivery_number }}
+                        </span>
+                        <span class="badge {{ $order->deliveryOrder->status_badge_class }} px-2 py-1">
+                            {{ $order->deliveryOrder->status_label }}
+                        </span>
+                        <small class="text-muted">
+                            Kurir: <strong>{{ $order->deliveryOrder->driver_name ?? ($order->deliveryOrder->courier_name ?? 'Internal') }}</strong>
+                            @if($order->deliveryOrder->tracking_number) &bull; Resi: <strong class="font-monospace">{{ $order->deliveryOrder->tracking_number }}</strong> @endif
+                        </small>
+                    </div>
+                    <div class="d-flex gap-1">
+                        <a href="{{ route('delivery.show', $order->deliveryOrder) }}" class="btn btn-outline-info btn-sm px-3 text-dark">
+                            <i class="bi bi-eye me-1"></i> Pelacakan SJ
+                        </a>
+                        <a href="{{ route('delivery.print', $order->deliveryOrder) }}" target="_blank" class="btn btn-outline-secondary btn-sm px-2" title="Cetak Surat Jalan">
+                            <i class="bi bi-printer"></i>
+                        </a>
+                    </div>
+                </div>
+            @else
+                @if(auth()->user()->hasRole(['owner', 'admin', 'warehouse']))
+                    <div class="mt-3 pt-3 border-top border-success border-opacity-25 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <small class="text-muted">
+                            <i class="bi bi-truck me-1 text-info"></i> Surat Jalan pengiriman belum diterbitkan dari gudang.
+                        </small>
+                        <a href="{{ route('delivery.orders.create', $order) }}" class="btn btn-coffee btn-sm px-3 shadow-sm">
+                            <i class="bi bi-box-seam me-1"></i> Terbitkan Surat Jalan (Gudang)
+                        </a>
+                    </div>
+                @endif
+            @endif
         </div>
     @elseif($order->isCancelled())
         <div class="card bg-danger bg-opacity-10 border-danger border-opacity-25 p-3 mb-4">

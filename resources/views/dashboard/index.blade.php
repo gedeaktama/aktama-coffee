@@ -229,15 +229,27 @@
                         </div>
                     </div>
 
-                    <!-- Tahap 6 & 7 -->
+                    <!-- Tahap 6 -->
                     <div class="list-group-item px-0 py-3 d-flex align-items-start gap-3">
-                        <span class="badge bg-light text-muted border rounded-pill p-2"><i class="bi bi-hourglass-split fs-6"></i></span>
+                        <span class="badge bg-success rounded-pill p-2"><i class="bi bi-check-lg fs-6"></i></span>
                         <div class="flex-grow-1">
                             <div class="d-flex align-items-center justify-content-between">
-                                <h6 class="fw-semibold mb-1 text-secondary">Tahap 6 & 7 — Pengiriman, Laporan Bisnis & Pengujian Akhir</h6>
-                                <span class="badge bg-light text-secondary border">TERJADWAL</span>
+                                <h6 class="fw-bold mb-1">Tahap 6 — Logistik, Surat Jalan & Pelacakan Pengiriman</h6>
+                                <span class="badge bg-success">AKTIF & TERUJI</span>
                             </div>
-                            <p class="text-muted small mb-0">Surat jalan, pelacakan pesanan, laporan HPP & laba kotor, ekspor CSV, pengujian otomatis penuh, dan panduan deployment.</p>
+                            <p class="text-muted small mb-0">Penerbitan surat jalan resmi (SJ-YYYYMM-XXXX), pelacakan armada kurir internal & nomor resi ekspedisi, status dispatch gudang (processing &rarr; shipped &rarr; delivered), dan dokumen cetak fisik serah terima 3 pihak.</p>
+                        </div>
+                    </div>
+
+                    <!-- Tahap 7 -->
+                    <div class="list-group-item px-0 py-3 d-flex align-items-start gap-3">
+                        <span class="badge bg-success rounded-pill p-2"><i class="bi bi-check-lg fs-6"></i></span>
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <h6 class="fw-bold mb-1">Tahap 7 — Laporan Bisnis, Laba Kotor HPP & Ekspor Spreadsheet (CSV)</h6>
+                                <span class="badge bg-success">AKTIF & TERUJI</span>
+                            </div>
+                            <p class="text-muted small mb-0">Laporan penjualan terperinci, analisis laba kotor & margin HPP berbasis snapshot modal biji kopi per SKU, valuasi aset stok gudang, matriks aging piutang (AR aging), dan unduhan dokumen akuntansi format CSV.</p>
                         </div>
                     </div>
                 </div>

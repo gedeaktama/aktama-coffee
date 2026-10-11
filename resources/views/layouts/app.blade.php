@@ -232,6 +232,34 @@
                                     </ul>
                                 </li>
                             @endif
+
+                            <!-- Pengiriman & Logistik (Tahap 6) -->
+                            @if(auth()->user()->hasRole(['owner', 'admin', 'warehouse', 'sales']))
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->is('logistics*') ? 'active' : '' }}" href="{{ route('delivery.index') }}">
+                                        <i class="bi bi-truck me-1"></i> Logistik
+                                    </a>
+                                </li>
+                            @endif
+
+                            <!-- Laporan Bisnis (Tahap 7) -->
+                            @if(auth()->user()->hasRole(['owner', 'admin', 'warehouse', 'sales', 'finance']))
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle {{ request()->is('reports*') ? 'active' : '' }}" href="#" id="reportsDropdown" role="button" data-bs-toggle="dropdown">
+                                        <i class="bi bi-graph-up me-1"></i> Laporan
+                                    </a>
+                                    <ul class="dropdown-menu shadow border-0" aria-labelledby="reportsDropdown">
+                                        <li><a class="dropdown-item py-2" href="{{ route('reports.index') }}"><i class="bi bi-grid me-2 text-primary"></i> Hub Semua Laporan</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item py-2" href="{{ route('reports.sales') }}"><i class="bi bi-receipt me-2 text-success"></i> Laporan Penjualan</a></li>
+                                        @if(auth()->user()->hasRole(['owner', 'admin', 'finance']))
+                                            <li><a class="dropdown-item py-2" href="{{ route('reports.profit') }}"><i class="bi bi-cash-coin me-2 text-warning"></i> Laba Kotor & Margin HPP</a></li>
+                                        @endif
+                                        <li><a class="dropdown-item py-2" href="{{ route('reports.inventory') }}"><i class="bi bi-box-seam me-2 text-info"></i> Valuasi Aset Persediaan</a></li>
+                                        <li><a class="dropdown-item py-2" href="{{ route('reports.receivables') }}"><i class="bi bi-hourglass-split me-2 text-danger"></i> Rekap Aging Piutang</a></li>
+                                    </ul>
+                                </li>
+                            @endif
                         @endif
                     @endauth
                 </ul>

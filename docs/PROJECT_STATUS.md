@@ -265,13 +265,61 @@ Tahap 5 telah selesai dikerjakan secara menyeluruh, mencakup seluruh alur keuang
 
 ---
 
-## Langkah Selanjutnya (Tahap 6 — Pengiriman & Surat Jalan)
-Setelah disetujui pengguna:
-1. Skema surat jalan pengiriman (*delivery notes / surat jalan*).
-2. Status pemenuhan pesanan gudang & logistik (*processing*, *shipped*, *delivered*).
-3. Cetak dokumen Surat Jalan resmi pengemudi / ekspedisi.
-4. Pelacakan pesanan ritel & B2B.
-5. Pengujian otomatis alur pengiriman logistik.
+## Tahap 6: Pengiriman dan Surat Jalan / Logistik (SELESAI & TERUJI)
+
+Tahap 6 telah selesai dikerjakan secara menyeluruh, mencakup siklus hidup logistik pesanan dari gudang ke alamat pemesan:
+1. **Skema Database & Migrasi**:
+   - `delivery_orders`: `delivery_number` (`SJ-YYYYMM-XXXX`), `order_id`, `customer_id`, `user_id`, `delivery_date`, `courier_type` (`internal` vs `expedition`), `courier_name`, `driver_name`, `driver_phone`, `vehicle_plate_number`, `tracking_number`, `shipping_address`, `recipient_name`, `recipient_phone`, `status` (`processing`, `shipped`, `delivered`, `cancelled`), `received_by`, `received_at`, `notes`.
+   - `delivery_order_items`: `delivery_order_id`, `order_item_id`, `product_variant_id`, `quantity`, `package_info`.
+2. **Model Eloquent & Layanan**:
+   - `app/Models/DeliveryOrder.php` & `app/Models/DeliveryOrderItem.php`.
+   - `app/Services/DeliveryService.php`: Penerbitan Surat Jalan, sinkronisasi status pesanan (`processing` &rarr; `shipped` &rarr; `delivered`), pencatatan serah terima fisik.
+3. **Controller & Rute**:
+   - `app/Http/Controllers/DeliveryController.php`: Monitoring pengiriman, formulir penerbitan SJ, dispatch ke kurir, konfirmasi penerimaan fisik, dan cetak dokumen fisik.
+4. **Tampilan Blade**:
+   - `resources/views/logistics/deliveries/index.blade.php`: Tabel surat jalan & KPI pengiriman.
+   - `resources/views/logistics/deliveries/create.blade.php`: Form penerbitan surat jalan dengan pemilihan armada internal vs ekspedisi.
+   - `resources/views/logistics/deliveries/show.blade.php`: Detail pengiriman & modal serah terima.
+   - `resources/views/logistics/deliveries/print.blade.php`: Dokumen fisik resmi Surat Jalan berkop Kopi Distro dengan tanda tangan 3 pihak (Gudang, Sopir, Penerima).
+5. **Seeder Data & Pengujian**:
+   - `database/seeders/DeliverySeeder.php`: Data simulasi `SJ-202610-0001` (delivered) dan `SJ-202610-0002` (shipped).
+   - `tests/Feature/DeliveryLogisticsTest.php`: 6 unit/feature tests lulus 100%.
+
+---
+
+## Tahap 7: Laporan Bisnis, Laba Kotor, HPP & Ekspor CSV (SELESAI & TERUJI)
+
+Tahap 7 merupakan puncak sistem analitik bisnis terintegrasi bagi Owner, Manajemen, dan Staf:
+1. **Layanan Analitik ([ReportService.php](file:///d:/Xampp2/htdocs/kopi/app/Services/ReportService.php))**:
+   - `getSalesReport()`: Rekapitulasi transaksi, omset kotor, diskon, ongkos kirim, omset bersih, kas masuk, piutang baru, dan performa volume per SKU kopi.
+   - `getProfitLossReport()`: Analisis profitabilitas riil menggunakan snapshot `cost_price` (HPP) modal beli biji kopi vs `unit_price` harga jual per pesanan, kalkulasi Laba Kotor (*Gross Profit*) dan Margin Kotor (%).
+   - `getInventoryValuationReport()`: Valuasi nilai modal persediaan kopi di gudang (*Inventory Valuation*), estimasi nilai jual retail, dan deteksi varian menipis (*low stock*).
+   - `getReceivablesAgingReport()`: Matriks umur piutang mitra B2B (Lancar / Belum Jatuh Tempo, Telat 1-30 Hari, Telat 31-60 Hari, Telat >60 Hari).
+   - `exportToCsv()`: Streaming download file format CSV native dengan UTF-8 BOM untuk kompatibilitas Microsoft Excel Windows.
+2. **Controller & Rute ([ReportController.php](file:///d:/Xampp2/htdocs/kopi/app/Http/Controllers/ReportController.php))**:
+   - `GET /reports`: Hub utama 4 modul laporan bisnis.
+   - `GET /reports/sales`: Laporan penjualan filter tanggal/kanal + ekspor CSV.
+   - `GET /reports/profit`: Laporan laba kotor & HPP + ekspor CSV (khusus Owner, Admin, Finance).
+   - `GET /reports/inventory`: Laporan valuasi aset stok gudang + ekspor CSV.
+   - `GET /reports/receivables`: Laporan aging umur piutang + ekspor CSV.
+3. **Tampilan Antarmuka**:
+   - `resources/views/reports/index.blade.php`: Hub navigasi eksekutif & KPI ringkas.
+   - `resources/views/reports/sales.blade.php`: Analisis penjualan & rekap volume per SKU.
+   - `resources/views/reports/profit.blade.php`: Analisis HPP & margin laba kotor per SKU.
+   - `resources/views/reports/inventory.blade.php`: Valuasi aset modal stok gudang.
+   - `resources/views/reports/receivables.blade.php`: Matriks umur piutang & kolektibilitas.
+4. **Pengujian Otomatis ([BusinessReportsTest.php](file:///d:/Xampp2/htdocs/kopi/tests/Feature/BusinessReportsTest.php))**:
+   - 6 test cases dengan 26 assertions lulus 100%.
+
+---
+
+## Ringkasan Akhir Status Proyek (Tahap 1 s/d 7 Selesai 100%)
+
+Seluruh 7 tahapan pengembangan aplikasi bisnis distribusi dan penjualan kopi kemasan berbasis Laravel 11 telah **selesai dibangun, terintegrasi penuh, dan teruji 100%**:
+- **Total Test Cases**: 52 Tests Lulus (212 Assertions).
+- **Semua Role**: Owner, Admin, Sales, Warehouse, Finance, Customer (RBAC Middleware enforced).
+- **Semua Alur Bisnis**: Master Data & SKU Gramasi &rarr; Pembelian Supplier & Mutasi Stok &rarr; Penjualan Grosir B2B & Retail Online &rarr; Invoicing & Pelunasan Piutang Tempo &rarr; Surat Jalan & Logistik Pengiriman &rarr; Laporan Bisnis Laba Kotor HPP & Ekspor Spreadsheet.
+
 
 
 
