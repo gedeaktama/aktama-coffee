@@ -318,8 +318,32 @@ Tahap 7 merupakan puncak sistem analitik bisnis terintegrasi bagi Owner, Manajem
 Seluruh 7 tahapan pengembangan aplikasi bisnis distribusi dan penjualan kopi kemasan berbasis Laravel 11 telah **selesai dibangun, terintegrasi penuh, dan teruji 100%**:
 - **Total Test Cases**: 52 Tests Lulus (212 Assertions).
 - **Semua Role**: Owner, Admin, Sales, Warehouse, Finance, Customer (RBAC Middleware enforced).
-- **Semua Alur Bisnis**: Master Data & SKU Gramasi &rarr; Pembelian Supplier & Mutasi Stok &rarr; Penjualan Grosir B2B & Retail Online &rarr; Invoicing & Pelunasan Piutang Tempo &rarr; Surat Jalan & Logistik Pengiriman &rarr; Laporan Bisnis Laba Kotor HPP & Ekspor Spreadsheet.
+---
 
+## Dokumentasi Kredensial Akun Pengguna & Password
+Dokumentasi lengkap seluruh akun telah dicatat pada file tersendiri:
+- 👉 [`docs/DAFTAR_AKUN_DAN_PASSWORD.md`](DAFTAR_AKUN_DAN_PASSWORD.md)
 
+| No | Role | Email | Password | Modul Utama |
+|:--:|:---|:---|:---:|:---|
+| 1 | **Owner** | `owner@kopi.com` | `password123` | Akses penuh: Laporan Laba Rugi/HPP, Monitoring Piutang, Otorisasi Kredit |
+| 2 | **Admin** | `admin@kopi.com` | `password123` | Manajemen Master Data, Pengguna, Transaksi, dan Laporan |
+| 3 | **Sales** | `sales@kopi.com` | `password123` | Input Order Grosir B2B, Pemantauan Plafon Kredit Pelanggan |
+| 4 | **Warehouse** | `warehouse@kopi.com` | `password123` | Penerimaan PO Supplier, Mutasi Stok, Stock Opname, Surat Jalan |
+| 5 | **Finance** | `finance@kopi.com` | `password123` | Invoicing, Pembayaran Cicilan/Lunas, Pemulihan Plafon, Kuitansi |
+| 6 | **Customer** | `pelanggan@gmail.com` | `password123` | Belanja Online Ritel B2C, Keranjang Belanja, Riwayat Pesanan |
 
+---
 
+## Pembaruan Antarmuka Pengguna (UI/UX): Left Sidebar Navigation Framework
+Tata letak navigasi telah ditingkatkan secara menyeluruh dari top-navbar menjadi **Left Sidebar Navigation Framework** berbasis Bootstrap 5 yang ergonomis, cepat, dan standar aplikasi enterprise/ERP:
+1. **Sidebar Sebelah Kiri (`app-sidebar`)**:
+   - Menu dikelompokkan rapi ke dalam kategori bisnis: **Navigasi Utama**, **Master Data**, **Gudang & Persediaan**, **Penjualan (Sales)**, **Logistik & Kirim**, **Keuangan & Piutang**, dan **Laporan & Analisis**.
+   - Dilengkapi badge peran pengguna (*Role Badge*), indikator menu aktif (*active highlight*), dan tombol cepat logout.
+   - Menggunakan komponen native Bootstrap `offcanvas-lg` sehingga otomatis beradaptasi menjadi *drawer offcanvas* di perangkat seluler / tablet dan sidebar tetap (*fixed*) di layar desktop/laptop.
+2. **Topbar Header (`app-topbar`)**:
+   - Tombol toggle hamburger untuk perangkat mobile.
+   - Indikator konteks halaman (*breadcrumbs*).
+   - Akses cepat ke etalase toko ritel, indikator counter keranjang belanja (*cart badge*), dan dropdown profil pengguna.
+3. **Kompatibilitas Dokumen Cetak (`@media print`)**:
+   - Sidebar dan topbar otomatis disembunyikan saat mencetak dokumen Surat Jalan (`SJ`) dan Kuitansi Resmi Pembayaran, sehingga hasil cetak bersih dan rapi.
