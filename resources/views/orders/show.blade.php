@@ -100,6 +100,40 @@
                     </form>
                 @endif
             </div>
+
+            <!-- Invoice Status & Action Banner -->
+            @if($order->invoice)
+                <div class="mt-3 pt-3 border-top border-success border-opacity-25 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <span class="badge bg-white text-dark border font-monospace fs-6">
+                            <i class="bi bi-receipt me-1 text-primary"></i> {{ $order->invoice->invoice_number }}
+                        </span>
+                        <span class="badge {{ $order->invoice->status_badge_class }} px-2 py-1">
+                            {{ $order->invoice->status_label }}
+                        </span>
+                        <small class="text-muted">
+                            Total: <strong>{{ $order->invoice->formatted_total }}</strong> &bull; Sisa Tagihan: <strong class="{{ $order->invoice->remaining_amount > 0 ? 'text-danger' : 'text-success' }}">{{ $order->invoice->formatted_remaining }}</strong>
+                        </small>
+                    </div>
+                    <a href="{{ route('finance.invoices.show', $order->invoice) }}" class="btn btn-primary btn-sm px-3 shadow-sm">
+                        <i class="bi bi-credit-card me-1"></i> Buka Faktur & Pembayaran
+                    </a>
+                </div>
+            @else
+                @if(auth()->user()->hasRole(['owner', 'admin', 'finance']))
+                    <div class="mt-3 pt-3 border-top border-success border-opacity-25 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle me-1 text-primary"></i> Faktur tagihan resmi belum diterbitkan untuk pesanan ini.
+                        </small>
+                        <form method="POST" action="{{ route('finance.invoices.generate', $order) }}">
+                            @csrf
+                            <button type="submit" class="btn btn-primary btn-sm px-3 shadow-sm">
+                                <i class="bi bi-file-earmark-plus me-1"></i> Terbitkan Faktur Penjualan
+                            </button>
+                        </form>
+                    </div>
+                @endif
+            @endif
         </div>
     @elseif($order->isCancelled())
         <div class="card bg-danger bg-opacity-10 border-danger border-opacity-25 p-3 mb-4">

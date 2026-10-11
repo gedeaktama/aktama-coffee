@@ -77,6 +77,16 @@ class Customer extends Model
         return $this->hasMany(Order::class);
     }
 
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
+    }
+
     /**
      * Hitung total piutang berjalan yang belum lunas
      */

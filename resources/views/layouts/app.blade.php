@@ -219,6 +219,19 @@
                                     @endif
                                 </ul>
                             </li>
+
+                            <!-- Keuangan & Piutang (Tahap 5) -->
+                            @if(auth()->user()->hasRole(['owner', 'admin', 'sales', 'finance']))
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle {{ request()->is('finance*') ? 'active' : '' }}" href="#" id="financeDropdown" role="button" data-bs-toggle="dropdown">
+                                        <i class="bi bi-wallet2 me-1"></i> Keuangan & Piutang
+                                    </a>
+                                    <ul class="dropdown-menu shadow border-0" aria-labelledby="financeDropdown">
+                                        <li><a class="dropdown-item py-2" href="{{ route('finance.invoices.index') }}"><i class="bi bi-file-earmark-text me-2 text-primary"></i> Faktur Penjualan (Invoices)</a></li>
+                                        <li><a class="dropdown-item py-2" href="{{ route('finance.receivables.index') }}"><i class="bi bi-graph-up-arrow me-2 text-danger"></i> Kontrol & Monitoring Piutang</a></li>
+                                    </ul>
+                                </li>
+                            @endif
                         @endif
                     @endauth
                 </ul>

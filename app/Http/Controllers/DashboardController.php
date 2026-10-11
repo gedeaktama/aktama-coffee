@@ -44,8 +44,12 @@ class DashboardController extends Controller
             'total_purchases' => Purchase::count(),
             'total_orders' => Order::count(),
             'pending_orders' => Order::where('status', Order::STATUS_PENDING)->count(),
-            'confirmed_orders' => Order::where('status', Order::STATUS_CONFIRMED)->count(),
             'total_sales_amount' => Order::where('status', '!=', Order::STATUS_CANCELLED)->sum('total_amount'),
+            'total_invoices' => \App\Models\Invoice::count(),
+            'active_receivables' => \App\Models\Invoice::whereIn('status', [\App\Models\Invoice::STATUS_UNPAID, \App\Models\Invoice::STATUS_PARTIAL])->sum('remaining_amount'),
+            'overdue_invoices' => \App\Models\Invoice::whereIn('status', [\App\Models\Invoice::STATUS_UNPAID, \App\Models\Invoice::STATUS_PARTIAL])
+                ->where('due_date', '<', now()->toDateString())
+                ->count(),
         ];
 
         return view('dashboard.index', compact('user', 'userCounts', 'masterCounts'));

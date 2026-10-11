@@ -219,13 +219,13 @@
 
                     <!-- Tahap 5 -->
                     <div class="list-group-item px-0 py-3 d-flex align-items-start gap-3">
-                        <span class="badge bg-light text-muted border rounded-pill p-2"><i class="bi bi-hourglass-split fs-6"></i></span>
+                        <span class="badge bg-success rounded-pill p-2"><i class="bi bi-check-lg fs-6"></i></span>
                         <div class="flex-grow-1">
                             <div class="d-flex align-items-center justify-content-between">
-                                <h6 class="fw-semibold mb-1 text-secondary">Tahap 5 — Pembayaran & Manajemen Piutang Tempo</h6>
-                                <span class="badge bg-light text-secondary border">TERJADWAL</span>
+                                <h6 class="fw-bold mb-1">Tahap 5 — Pembayaran & Manajemen Piutang Tempo</h6>
+                                <span class="badge bg-success">AKTIF & TERUJI</span>
                             </div>
-                            <p class="text-muted small mb-0">Faktur penjualan, verifikasi transfer, pembayaran tempo dengan plafon kredit, kartu piutang, dan penagihan jatuh tempo.</p>
+                            <p class="text-muted small mb-0">Faktur penjualan (invoicing otomatis), pencatatan pelunasan cicilan / tempo, rekonsiliasi pemulihan plafon kredit pelanggan B2B secara real-time, kartu piutang (customer ledger), dan alert jatuh tempo (overdue).</p>
                         </div>
                     </div>
 

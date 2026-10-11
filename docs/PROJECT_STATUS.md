@@ -212,14 +212,66 @@ Duration: 1.48s
 
 ---
 
-## Langkah Selanjutnya (Tahap 5 — Pembayaran & Manajemen Piutang Tempo)
+## Tahap 5: Pembayaran dan Manajemen Piutang Tempo (SELESAI & TERUJI)
+
+Tahap 5 telah selesai dikerjakan secara menyeluruh, mencakup seluruh alur keuangan dari penerbitan faktur penjualan resmi, penerimaan pembayaran kas/bank transfer, pelunasan bertahap (cicilan), monitoring umur piutang (*aging receivables*), pemulihan otomatis sisa plafon kredit pelanggan B2B, buku besar kartu piutang mitra (*customer ledger*), dan kuitansi pembayaran resmi.
+
+### 1. Skema Database & Migrasi
+- `database/migrations/2026_10_11_000011_create_invoices_table.php`:
+  - Kolom: `invoice_number` (`INV-YYYYMM-XXXX`), `order_id`, `customer_id`, `user_id`, `invoice_date`, `due_date`, `total_amount`, `paid_amount`, `remaining_amount`, `status` (`unpaid`, `partial`, `paid`, `cancelled`), `notes`.
+- `database/migrations/2026_10_11_000012_create_payments_table.php`:
+  - Kolom: `payment_number` (`PAY-YYYYMM-XXXX`), `invoice_id`, `order_id`, `customer_id`, `user_id`, `payment_date`, `payment_method` (`cash`, `transfer_bca`, `transfer_mandiri`, `transfer_bri`, `giro`), `amount`, `reference_number`, `notes`.
+
+### 2. Model Eloquent & Layanan Bisnis
+- `app/Models/Invoice.php`: Relasi ke Order, Customer, User, dan Payments; status badge class, formatting rupiah, deteksi jatuh tempo (`isOverdue()`), dan hitungan hari keterlambatan (`days_overdue`).
+- `app/Models/Payment.php`: Relasi ke Invoice, Order, Customer, User; formatting rupiah dan label metode bayar.
+- `app/Services/FinanceService.php`:
+  - `createInvoice()`: Menerbitkan faktur resmi dari pesanan yang telah dikonfirmasi, otomatis menghitung tanggal jatuh tempo (*due date*) sesuai *Terms of Payment* (TOP) pelanggan mitra.
+  - `recordPayment()`: Memproses pembayaran (tunai / transfer rekening), memvalidasi pembayaran tidak melebihi sisa tagihan faktur, memperbarui saldo `paid_amount` dan `remaining_amount` pada faktur dan pesanan, serta secara otomatis memulihkan plafon kredit pelanggan secara *real-time*.
+
+### 3. Controller & Rute Web
+- `app/Http/Controllers/FinanceController.php`:
+  - `invoices`: Daftar faktur tagihan, pencarian nomor faktur / nomor order / nama mitra, filter status & overdue, serta 4 kartu metrik KPI (Total Faktur, Kas Masuk, Piutang Berjalan, Overdue Count).
+  - `showInvoice`: Detail lengkap faktur, daftar item pesanan, riwayat pembayaran masuk, modal form rekam pembayaran dengan proteksi batas nominal.
+  - `generateInvoice`: Penerbitan faktur dari halaman detail pesanan confirmed.
+  - `recordPayment`: Validasi dan pencatatan pembayaran cicilan atau pelunasan penuh.
+  - `receivables`: Monitoring seluruh mitra B2B, limit plafon kredit, saldo piutang aktif, sisa plafon tersedia, persentase utilisasi fasilitas kredit, dan deteksi mitra menunggak.
+  - `customerLedger`: Buku besar kartu piutang individual pelanggan (debet faktur tagihan vs kredit riwayat setoran pembayaran).
+  - `printReceipt`: Tampilan kuitansi pembayaran resmi (*print-ready receipt paper*).
+
+### 4. Tampilan Antarmuka (Blade + Bootstrap 5)
+- `resources/views/finance/invoices/index.blade.php`: Tabel faktur penjualan, filter status lancar/overdue, pencarian, dan metrik keuangan.
+- `resources/views/finance/invoices/show.blade.php`: Detail faktur tagihan resmi, alert keterlambatan jatuh tempo, histori bayar, dan modal rekam pembayaran.
+- `resources/views/finance/receivables/index.blade.php`: Monitoring piutang B2B, utilisasi plafon kredit %, status lancar/tempo/overdue.
+- `resources/views/finance/receivables/ledger.blade.php`: Kartu piutang individual (customer ledger) debet vs kredit.
+- `resources/views/finance/payments/receipt.blade.php`: Kuitansi resmi pembayaran kopi cetak (A4 / kwitansi kasir).
+- `resources/views/orders/show.blade.php`: Integrasi tombol penerbitan faktur dan status pembayaran langsung dari halaman pesanan.
+- `resources/views/layouts/app.blade.php`: Penambahan menu navigasi "Keuangan & Piutang".
+
+### 5. Seeder Data Keuangan (`FinanceSeeder.php`)
+- `INV-202610-0001`: Faktur tempo Kafe Senja Nusantara dengan status pembayaran cicilan sebagian (`partial`), sisa tagihan aktif memotong plafon kredit.
+- `INV-202609-0002`: Faktur tempo Toko Berkah Kopi yang telah melewati jatuh tempo (`overdue`), muncul pada dashboard peringatan penagihan.
+- `INV-202610-0003`: Faktur reseller tunai lunas penuh (`paid`) dengan bukti kuitansi resmi kasir.
+
+### 6. Pengujian Otomatis (`FinancePaymentTest.php`)
+- 7 test case spesifik keuangan dengan 42 assertions lulus 100%:
+  1. Penerbitan faktur dari pesanan yang dikonfirmasi.
+  2. Pencatatan pembayaran cicilan bertahap dan pembaruan saldo.
+  3. Pelunasan penuh dan perubahan status ke `paid`.
+  4. Penolakan pembayaran yang melebihi sisa tagihan faktur.
+  5. Pemulihan otomatis sisa plafon kredit mitra B2B setelah pembayaran tercatat.
+  6. Akses layar monitoring piutang & kartu piutang (ledger).
+  7. Penolakan akses modul keuangan untuk role customer (403 Forbidden).
+
+---
+
+## Langkah Selanjutnya (Tahap 6 — Pengiriman & Surat Jalan)
 Setelah disetujui pengguna:
-1. Migrasi & Model Faktur Penjualan dan Pembayaran (`invoices`, `payments`).
-2. Pencatatan pembayaran tunai / transfer bank untuk pesanan penjualan.
-3. Manajemen pelunasan piutang tempo (TOP) B2B:
-   - Pelunasan penuh atau cicilan bertahap.
-   - Kartu piutang per pelanggan (rekonsiliasi saldo piutang & pemulihan otomatis plafon kredit).
-   - Deteksi faktur yang telah melewati tanggal jatuh tempo (*overdue alert*).
-4. Pengujian otomatis alur pembayaran dan rekonsiliasi piutang tempo.
+1. Skema surat jalan pengiriman (*delivery notes / surat jalan*).
+2. Status pemenuhan pesanan gudang & logistik (*processing*, *shipped*, *delivered*).
+3. Cetak dokumen Surat Jalan resmi pengemudi / ekspedisi.
+4. Pelacakan pesanan ritel & B2B.
+5. Pengujian otomatis alur pengiriman logistik.
+
 
 

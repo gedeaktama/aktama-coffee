@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
@@ -161,6 +162,24 @@ Route::middleware('auth')->group(function () {
         // Batalkan Pesanan & Kembalikan Stok (Owner, Admin, Sales)
         Route::middleware('role:owner,admin,sales')->group(function () {
             Route::post('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+        });
+    });
+
+    // KEUANGAN, FAKTUR & PEMBAYARAN PIUTANG (TAHAP 5)
+    Route::prefix('finance')->group(function () {
+        // Monitoring Faktur, Piutang & Kuitansi (Owner, Admin, Sales, Finance)
+        Route::middleware('role:owner,admin,sales,finance')->group(function () {
+            Route::get('/invoices', [FinanceController::class, 'invoices'])->name('finance.invoices.index');
+            Route::get('/invoices/{invoice}', [FinanceController::class, 'showInvoice'])->name('finance.invoices.show');
+            Route::get('/receivables', [FinanceController::class, 'receivables'])->name('finance.receivables.index');
+            Route::get('/receivables/{customer}/ledger', [FinanceController::class, 'customerLedger'])->name('finance.receivables.ledger');
+            Route::get('/payments/{payment}/receipt', [FinanceController::class, 'printReceipt'])->name('finance.payments.receipt');
+        });
+
+        // Terbitkan Faktur & Rekam Pembayaran (Owner, Admin, Finance)
+        Route::middleware('role:owner,admin,finance')->group(function () {
+            Route::post('/orders/{order}/generate-invoice', [FinanceController::class, 'generateInvoice'])->name('finance.invoices.generate');
+            Route::post('/invoices/{invoice}/payments', [FinanceController::class, 'recordPayment'])->name('finance.payments.record');
         });
     });
 
