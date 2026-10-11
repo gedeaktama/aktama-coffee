@@ -150,15 +150,7 @@
 
 <!-- Template for Variant Options in JSON -->
 <script>
-    const availableVariants = @json($variants->map(function($v) {
-        return [
-            'id' => $v->id,
-            'sku' => $v->sku,
-            'name' => $v->product->name . ' - ' . $v->variant_name . ' (' . $v->package_weight_grams . 'g)',
-            'cost_price' => (float)$v->cost_price,
-            'current_stock' => $v->current_stock,
-        ];
-    }));
+    const availableVariants = @json($variantsJson ?? []);
 </script>
 
 @push('scripts')

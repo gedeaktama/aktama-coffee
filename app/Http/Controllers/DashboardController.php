@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Customer;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\Purchase;
@@ -41,6 +42,10 @@ class DashboardController extends Controller
             'retail_customers' => Customer::where('customer_type', 'retail')->count(),
             'pending_purchases' => Purchase::where('status', Purchase::STATUS_ORDERED)->count(),
             'total_purchases' => Purchase::count(),
+            'total_orders' => Order::count(),
+            'pending_orders' => Order::where('status', Order::STATUS_PENDING)->count(),
+            'confirmed_orders' => Order::where('status', Order::STATUS_CONFIRMED)->count(),
+            'total_sales_amount' => Order::where('status', '!=', Order::STATUS_CANCELLED)->sum('total_amount'),
         ];
 
         return view('dashboard.index', compact('user', 'userCounts', 'masterCounts'));

@@ -21,8 +21,8 @@ Dokumen ini melacak status terkini pembangunan sistem, file yang telah dibuat, h
 | **Tahap 1** | Fondasi, Database, Autentikasi 6 Role, Middleware & Testing | **SELESAI & TERUJI (100%)** | 13/13 test lulus (37 assertions). |
 | **Tahap 2** | Master Data (Kategori, Produk & Varian/SKU, Supplier, Pelanggan Bisnis) | **SELESAI & TERUJI (100%)** | 20/20 test lulus (59 assertions). |
 | **Tahap 3** | Persediaan & Pembelian Supplier (Stok Masuk, Mutasi, Stok Minimum, Audit) | **SELESAI & TERUJI (100%)** | 27/27 test lulus (83 assertions). |
-| **Tahap 4** | Penjualan Grosir B2B & Retail Online (Order Sales, Keranjang, Checkout) | **SIAP DIMULAI** | Menunggu persetujuan pengguna. |
-| **Tahap 5** | Pembayaran & Manajemen Piutang Tempo (Faktur, Plafon Kredit, TOP) | Terjadwal | Akan dikerjakan setelah Tahap 4. |
+| **Tahap 4** | Penjualan Grosir B2B & Retail Online (Order Sales, Keranjang, Checkout) | **SELESAI & TERUJI (100%)** | 33/33 test lulus (115 assertions). |
+| **Tahap 5** | Pembayaran & Manajemen Piutang Tempo (Faktur, Plafon Kredit, TOP) | **SIAP DIMULAI** | Menunggu persetujuan pengguna. |
 | **Tahap 6** | Pengiriman (Surat Jalan), Dashboard Owner & Laporan HPP / Laba Kotor | Terjadwal | Akan dikerjakan setelah Tahap 5. |
 | **Tahap 7** | Pengujian Menyeluruh, Hardening Keamanan & Panduan Shared Hosting | Terjadwal | Tahap akhir. |
 
@@ -167,11 +167,59 @@ Duration: 1.48s
 
 ---
 
-## Langkah Selanjutnya (Tahap 4 — Penjualan Grosir B2B & Retail Online)
-Setelah disetujui:
-1. Migrasi & Model Pesanan Penjualan (`orders`, `order_items`).
-2. Order Sales Grosir B2B (Pengecekan plafon kredit pelanggan, batas tempo pembayaran TOP, pemilihan varian kopi, snapshot harga standar jual).
-3. Keranjang belanja & Checkout Retail Online untuk pelanggan retail.
-4. Pengurangan stok otomatis saat pesanan diproses dengan perlindungan pesimistis *anti-negative stock*.
-5. Pengujian otomatis alur pesanan penjualan (B2B & Retail).
+---
+
+## Log Perubahan: Tahap 4 — Penjualan Grosir B2B & Retail Online
+
+### 1. Migrasi & Skema Basis Data
+- `database/migrations/2026_10_11_000009_create_orders_table.php`: Tabel `orders` (nomor order unik `SO-YYYYMM-XXXX` atau `ORD-YYYYMM-XXXX`, order_type [b2b, retail], customer_id FK, user_id FK, sales_user_id FK, tanggal order, payment_type [cash, transfer, credit], due_date, status [pending, confirmed, processing, shipped, delivered, cancelled], payment_status [unpaid, partial, paid], subtotal, discount, shipping_cost, total_amount, paid_amount, stock_reduced, confirmed_at, confirmed_by_user_id FK, notes).
+- `database/migrations/2026_10_11_000010_create_order_items_table.php`: Tabel `order_items` (order_id FK, product_variant_id FK, quantity, unit_price [snapshot selling_price], cost_price [snapshot cost_price untuk HPP], discount_amount, subtotal).
+
+### 2. Model Eloquent & Relasi Bisnis
+- `app/Models/Order.php`: Konstanta tipe order, status, metode pembayaran, status pembayaran, relasi ke Customer, User, Sales User, OrderItems, accessor badge warna dan label Indonesia, serta helper pengecekan kondisi konfirmasi/pembatalan.
+- `app/Models/OrderItem.php`: Relasi ke Order dan ProductVariant, formatted harga dan subtotal.
+- `app/Models/Customer.php`: Penambahan relasi `orders()`, metode `getCurrentReceivables()` (menghitung sisa piutang berjalan yang belum lunas), dan `getAvailableCredit()` (menghitung sisa plafon kredit yang masih dapat digunakan).
+
+### 3. Controller & Rute
+- `app/Http/Controllers/OrderController.php`:
+  - `index`: Monitoring semua pesanan (B2B & Retail) dengan filter saluran, status, metode pembayaran, dan metrik KPI.
+  - `create`: Formulir pemesanan B2B oleh Sales dengan data plafon kredit real-time.
+  - `store`: Penerbitan pesanan B2B dengan validasi plafon kredit ketat (mencegah sales menerbitkan order melebihi plafon tanpa persetujuan Admin/Owner).
+  - `show`: Detail pesanan lengkap, informasi penerima, dan daftar item.
+  - `confirm`: Konfirmasi pesanan yang secara otomatis memotong saldo stok persediaan di gudang menggunakan transaksi pesimistis.
+  - `cancel`: Pembatalan pesanan yang secara otomatis mengembalikan stok ke gudang jika sebelumnya sudah terpotong.
+- `app/Http/Controllers/StoreController.php`:
+  - `catalog`: Tampilan etalase online kopi retail (B2C) dengan filter kategori dan jenis kopi.
+  - `cart`, `addToCart`, `updateCart`, `removeFromCart`: Pengelolaan keranjang belanja retail berbasis session.
+  - `checkout` & `processCheckout`: Penyelesaian pesanan ritel, pemotongan stok otomatis, dan penerbitan nomor pesanan `ORD-YYYYMM-XXXX`.
+  - `myOrders`: Riwayat pesanan untuk akun role `customer`.
+
+### 4. Tampilan Antarmuka (Blade + Bootstrap 5)
+- `resources/views/orders/index.blade.php`: Tabel daftar pesanan penjualan, filter lengkap, metrik total order, pending, confirmed, dan omset.
+- `resources/views/orders/create.blade.php`: Formulir input pesanan B2B interaktif dengan penghitungan subtotal dinamis dan alert batas plafon kredit.
+- `resources/views/orders/show.blade.php`: Halaman rincian pesanan penjualan, invoice cetak, tombol konfirmasi pemotongan stok, dan pembatalan.
+- `resources/views/store/catalog.blade.php`: Katalog kopi online publik modern dengan varian gramasi dan tombol beli instan.
+- `resources/views/store/cart.blade.php`: Keranjang belanja kopi online interaktif.
+- `resources/views/store/checkout.blade.php`: Formulir checkout pengiriman dan pemilihan pembayaran konsumen ritel.
+- `resources/views/store/success.blade.php`: Halaman sukses belanja dengan rincian rekening bank transfer.
+- `resources/views/store/my_orders.blade.php`: Riwayat pesanan khusus role customer.
+- `resources/views/layouts/app.blade.php`: Navigasi menu Penjualan & Order serta ikon keranjang belanja interaktif.
+
+### 5. Seeder Data (`SalesOrderSeeder.php`)
+- `SO-202610-0001`: Pesanan B2B Kafe Senja Nusantara (Kredit tempo 14 hari, status `confirmed`, stok telah dipotong).
+- `SO-202610-0002`: Pesanan B2B Toko Kelontong Berkah Makmur (Transfer bank, status `pending` — siap untuk dicoba dikonfirmasi langsung di browser!).
+- `ORD-202610-0001`: Pesanan Retail Online konsumen (status `confirmed`, stok telah dipotong).
+
+---
+
+## Langkah Selanjutnya (Tahap 5 — Pembayaran & Manajemen Piutang Tempo)
+Setelah disetujui pengguna:
+1. Migrasi & Model Faktur Penjualan dan Pembayaran (`invoices`, `payments`).
+2. Pencatatan pembayaran tunai / transfer bank untuk pesanan penjualan.
+3. Manajemen pelunasan piutang tempo (TOP) B2B:
+   - Pelunasan penuh atau cicilan bertahap.
+   - Kartu piutang per pelanggan (rekonsiliasi saldo piutang & pemulihan otomatis plafon kredit).
+   - Deteksi faktur yang telah melewati tanggal jatuh tempo (*overdue alert*).
+4. Pengujian otomatis alur pembayaran dan rekonsiliasi piutang tempo.
+
 

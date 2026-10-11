@@ -6,8 +6,10 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\StoreController;
 use App\Http\Controllers\SupplierController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +23,15 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('home');
 })->name('home');
+
+// Retail Storefront & Keranjang Belanja Online (B2C)
+Route::get('/store', [StoreController::class, 'catalog'])->name('store.catalog');
+Route::get('/cart', [StoreController::class, 'cart'])->name('store.cart');
+Route::post('/cart/add', [StoreController::class, 'addToCart'])->name('store.cart.add');
+Route::post('/cart/update', [StoreController::class, 'updateCart'])->name('store.cart.update');
+Route::post('/cart/remove/{variant}', [StoreController::class, 'removeFromCart'])->name('store.cart.remove');
+Route::get('/checkout', [StoreController::class, 'checkout'])->name('store.checkout');
+Route::post('/checkout', [StoreController::class, 'processCheckout'])->name('store.checkout.process');
 
 // Guest routes (Login & Registration)
 Route::middleware('guest')->group(function () {
@@ -122,6 +133,34 @@ Route::middleware('auth')->group(function () {
         // Detail PO (Owner, Admin, Warehouse, Finance)
         Route::middleware('role:owner,admin,warehouse,finance')->group(function () {
             Route::get('/purchases/{purchase}', [PurchaseController::class, 'show'])->name('purchases.show');
+        });
+    });
+
+    // Riwayat Pesanan Pelanggan Retail (Customer)
+    Route::get('/my-orders', [StoreController::class, 'myOrders'])->name('store.my_orders');
+
+    // PENJUALAN & PESANAN (TAHAP 4)
+    Route::prefix('sales')->group(function () {
+        // Input Pesanan Grosir B2B Baru (Owner, Admin, Sales)
+        Route::middleware('role:owner,admin,sales')->group(function () {
+            Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
+            Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+        });
+
+        // Daftar Pesanan & Detail (Owner, Admin, Sales, Warehouse, Finance)
+        Route::middleware('role:owner,admin,sales,warehouse,finance')->group(function () {
+            Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+            Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+        });
+
+        // Konfirmasi Pesanan & Potong Stok Otomatis (Owner, Admin, Sales, Warehouse)
+        Route::middleware('role:owner,admin,sales,warehouse')->group(function () {
+            Route::post('/orders/{order}/confirm', [OrderController::class, 'confirm'])->name('orders.confirm');
+        });
+
+        // Batalkan Pesanan & Kembalikan Stok (Owner, Admin, Sales)
+        Route::middleware('role:owner,admin,sales')->group(function () {
+            Route::post('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
         });
     });
 

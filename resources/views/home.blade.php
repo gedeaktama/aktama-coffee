@@ -18,6 +18,9 @@
                     Menyediakan varian Kopi Arabika dan Robusta kemasan berkualitas (100g, 250g, 500g, 1kg). Melayani pemesanan langsung untuk konsumen retail serta sistem grosir terpadu untuk kafe, toko kelontong, dan reseller kopi.
                 </p>
                 <div class="d-flex flex-wrap gap-2">
+                    <a href="{{ route('store.catalog') }}" class="btn btn-warning btn-lg px-4 fw-bold shadow text-dark">
+                        <i class="bi bi-shop me-2"></i> Belanja Kopi Online
+                    </a>
                     @auth
                         @if(auth()->user()->canAccessDashboard())
                             <a href="{{ route('dashboard') }}" class="btn btn-coffee btn-lg px-4">

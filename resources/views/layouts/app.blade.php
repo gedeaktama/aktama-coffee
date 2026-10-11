@@ -146,7 +146,20 @@
                             <i class="bi bi-house me-1"></i> Beranda
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('store.catalog') ? 'active' : '' }}" href="{{ route('store.catalog') }}">
+                            <i class="bi bi-shop me-1"></i> Katalog Kopi
+                        </a>
+                    </li>
                     @auth
+                        @if(auth()->user()->isCustomer())
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('store.my_orders') ? 'active' : '' }}" href="{{ route('store.my_orders') }}">
+                                    <i class="bi bi-bag-check me-1"></i> Pesanan Saya
+                                </a>
+                            </li>
+                        @endif
+
                         @if(auth()->user()->canAccessDashboard())
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
@@ -154,6 +167,7 @@
                                 </a>
                             </li>
 
+                            <!-- Master Data -->
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle {{ request()->is('master*') ? 'active' : '' }}" href="#" id="masterDropdown" role="button" data-bs-toggle="dropdown">
                                     <i class="bi bi-database me-1"></i> Master Data
@@ -173,6 +187,7 @@
                                 </ul>
                             </li>
 
+                            <!-- Persediaan & Pembelian -->
                             @if(auth()->user()->hasRole(['owner', 'admin', 'warehouse', 'sales', 'finance']))
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle {{ request()->is('inventory*') ? 'active' : '' }}" href="#" id="inventoryDropdown" role="button" data-bs-toggle="dropdown">
@@ -191,11 +206,34 @@
                                     </ul>
                                 </li>
                             @endif
+
+                            <!-- Penjualan & Pesanan -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle {{ request()->is('sales*') ? 'active' : '' }}" href="#" id="salesDropdown" role="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-receipt me-1"></i> Penjualan & Order
+                                </a>
+                                <ul class="dropdown-menu shadow border-0" aria-labelledby="salesDropdown">
+                                    <li><a class="dropdown-item py-2" href="{{ route('orders.index') }}"><i class="bi bi-list-check me-2 text-primary"></i> Daftar Semua Pesanan</a></li>
+                                    @if(auth()->user()->hasRole(['owner', 'admin', 'sales']))
+                                        <li><a class="dropdown-item py-2" href="{{ route('orders.create') }}"><i class="bi bi-plus-circle me-2 text-success"></i> Input Order B2B Baru</a></li>
+                                    @endif
+                                </ul>
+                            </li>
                         @endif
                     @endauth
                 </ul>
 
                 <ul class="navbar-nav ms-auto align-items-lg-center gap-2">
+                    <li class="nav-item">
+                        <a class="nav-link position-relative px-2 text-white" href="{{ route('store.cart') }}" title="Keranjang Belanja">
+                            <i class="bi bi-cart3 fs-5"></i>
+                            @if(session('cart') && count(session('cart')) > 0)
+                                <span class="position-absolute top-1 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem;">
+                                    {{ count(session('cart')) }}
+                                </span>
+                            @endif
+                        </a>
+                    </li>
                     @guest
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('login') }}">

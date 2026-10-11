@@ -64,7 +64,17 @@ class PurchaseController extends Controller
         }
         $autoPoNumber = $prefix . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
 
-        return view('inventory.purchases.create', compact('suppliers', 'variants', 'autoPoNumber'));
+        $variantsJson = $variants->map(function ($v) {
+            return [
+                'id' => $v->id,
+                'sku' => $v->sku,
+                'name' => $v->product->name . ' - ' . $v->variant_name . ' (' . $v->package_weight_grams . 'g)',
+                'cost_price' => (float)$v->cost_price,
+                'current_stock' => $v->current_stock,
+            ];
+        });
+
+        return view('inventory.purchases.create', compact('suppliers', 'variants', 'variantsJson', 'autoPoNumber'));
     }
 
     public function store(Request $request)

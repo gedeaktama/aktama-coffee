@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 
 class Customer extends Model
 {
@@ -70,8 +72,38 @@ class Customer extends Model
         return 'Rp ' . number_format($this->credit_limit, 0, ',', '.');
     }
 
-    public function getTypeLabelAttribute(): string
+    public function orders(): HasMany
     {
-        return self::TYPES[$this->customer_type] ?? ucfirst($this->customer_type);
+        return $this->hasMany(Order::class);
+    }
+
+    /**
+     * Hitung total piutang berjalan yang belum lunas
+     */
+    public function getCurrentReceivables(): float
+    {
+        return (float) $this->orders()
+            ->where('payment_type', Order::PAYMENT_CREDIT)
+            ->whereIn('payment_status', [Order::PAYMENT_STATUS_UNPAID, Order::PAYMENT_STATUS_PARTIAL])
+            ->where('status', '!=', Order::STATUS_CANCELLED)
+            ->sum(DB::raw('total_amount - paid_amount'));
+    }
+
+    /**
+     * Sisa plafon kredit yang masih dapat digunakan
+     */
+    public function getAvailableCredit(): float
+    {
+        return max(0, (float)$this->credit_limit - $this->getCurrentReceivables());
+    }
+
+    public function getFormattedAvailableCreditAttribute(): string
+    {
+        return 'Rp ' . number_format($this->getAvailableCredit(), 0, ',', '.');
+    }
+
+    public function getFormattedReceivablesAttribute(): string
+    {
+        return 'Rp ' . number_format($this->getCurrentReceivables(), 0, ',', '.');
     }
 }
