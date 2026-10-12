@@ -3,13 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
-use App\Models\Customer;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\Supplier;
-use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class MasterDataSeeder extends Seeder
@@ -365,109 +362,6 @@ class MasterDataSeeder extends Seeder
                 'phone' => '081398765432',
                 'email' => 'distribusi@bintangsulawesi.co.id',
                 'address' => 'Palu, Sulawesi Tengah, Indonesia',
-                'is_active' => true,
-            ]
-        );
-
-        // 4. Pelanggan Mitra Grosir B2B, Toko, Kafe & Retail
-        $salesUser = User::where('role', User::ROLE_SALES)->first();
-
-        // Akun Login Pengujian Khusus Mitra Kafe
-        $kafeUser = User::updateOrCreate(
-            ['email' => 'cafe@kopi.com'],
-            [
-                'name' => 'Mitra Kafe Celebes',
-                'phone' => '081388776655',
-                'role' => User::ROLE_CUSTOMER,
-                'is_active' => true,
-                'password' => Hash::make('password123'),
-            ]
-        );
-
-        Customer::updateOrCreate(
-            ['code' => 'CUST-KAFE-001'],
-            [
-                'customer_type' => Customer::TYPE_KAFE,
-                'business_name' => 'Warkop & Kafe Celebes Palu',
-                'pic_name' => 'Ahmad Rinaldi',
-                'phone' => '081388776655',
-                'email' => 'cafe@kopi.com',
-                'address' => 'Jl. Sam Ratulangi No. 18, Palu, Sulawesi Tengah',
-                'shipping_address' => 'Jl. Sam Ratulangi No. 18, Palu, Sulawesi Tengah',
-                'sales_user_id' => $salesUser?->id,
-                'user_id' => $kafeUser->id,
-                'credit_limit' => 5000000.00,
-                'payment_terms_days' => 14,
-                'notes' => 'Mitra warkop lokal langganan kopi campur dan robusta.',
-                'is_active' => true,
-            ]
-        );
-
-        // Akun Login Pengujian Khusus Mitra Toko
-        $tokoUser = User::updateOrCreate(
-            ['email' => 'toko@kopi.com'],
-            [
-                'name' => 'Mitra Toko Berkah',
-                'phone' => '081299887711',
-                'role' => User::ROLE_CUSTOMER,
-                'is_active' => true,
-                'password' => Hash::make('password123'),
-            ]
-        );
-
-        Customer::updateOrCreate(
-            ['code' => 'CUST-TOKO-001'],
-            [
-                'customer_type' => Customer::TYPE_TOKO,
-                'business_name' => 'Toko Kelontong Berkah Palu',
-                'pic_name' => 'H. Mansyur',
-                'phone' => '081299887711',
-                'email' => 'toko@kopi.com',
-                'address' => 'Pasar Tradisional Manonda Kios No. 12, Palu',
-                'shipping_address' => 'Pasar Tradisional Manonda Kios No. 12, Palu',
-                'sales_user_id' => $salesUser?->id,
-                'user_id' => $tokoUser->id,
-                'credit_limit' => 3000000.00,
-                'payment_terms_days' => 7,
-                'notes' => 'Distribusi kopi renceng dan kemasan sachet 10g & 35g.',
-                'is_active' => true,
-            ]
-        );
-
-        Customer::updateOrCreate(
-            ['code' => 'CUST-RSL-001'],
-            [
-                'customer_type' => Customer::TYPE_RESELLER,
-                'business_name' => 'Reseller Kopi Sulawesi (Ibu Nur)',
-                'pic_name' => 'Nurhalizah',
-                'phone' => '081344556677',
-                'email' => 'nur.reseller@gmail.com',
-                'address' => 'Jl. Towua No. 45, Palu, Sulawesi Tengah',
-                'shipping_address' => 'Jl. Towua No. 45, Palu, Sulawesi Tengah',
-                'sales_user_id' => $salesUser?->id,
-                'credit_limit' => 2500000.00,
-                'payment_terms_days' => 14,
-                'notes' => 'Reseller aktif penjualan online dan toko oleh-oleh khas.',
-                'is_active' => true,
-            ]
-        );
-
-        $retailUser = User::where('email', 'pelanggan@gmail.com')->first();
-        Customer::updateOrCreate(
-            ['code' => 'CUST-RET-001'],
-            [
-                'customer_type' => Customer::TYPE_RETAIL,
-                'business_name' => 'Pelanggan Retail Contoh',
-                'pic_name' => 'Budi Santoso',
-                'phone' => '081234567895',
-                'email' => 'pelanggan@gmail.com',
-                'address' => 'Jl. Melati No. 10, Palu, Sulawesi Tengah',
-                'shipping_address' => 'Jl. Melati No. 10, Palu, Sulawesi Tengah',
-                'sales_user_id' => null,
-                'user_id' => $retailUser?->id,
-                'credit_limit' => 0.00,
-                'payment_terms_days' => 0,
-                'notes' => 'Konsumen retail mandiri belanja online.',
                 'is_active' => true,
             ]
         );

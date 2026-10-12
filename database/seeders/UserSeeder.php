@@ -56,14 +56,6 @@ class UserSeeder extends Seeder
                 'is_active' => true,
                 'password' => $defaultPassword,
             ],
-            [
-                'name' => 'Pelanggan Retail Contoh',
-                'email' => 'pelanggan@gmail.com',
-                'phone' => '081234567895',
-                'role' => User::ROLE_CUSTOMER,
-                'is_active' => true,
-                'password' => $defaultPassword,
-            ],
         ];
 
         foreach ($users as $userData) {

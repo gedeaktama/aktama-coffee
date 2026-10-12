@@ -20,7 +20,9 @@ Dokumen ini memuat seluruh kredensial akun pengguna bawaan (seeder) yang digunak
 | 3 | **Sales** | Sales Representative | `sales@kopi.com` | `password123` | `081234567892` | **Penjualan Grosir B2B**: Input Pesanan Grosir B2B (`/sales/orders/create`), Cek Status Plafon Kredit & Batas Piutang Toko/Kafe Mitra, Riwayat Pesanan Penjualan. |
 | 4 | **Warehouse** | Staf Gudang (Warehouse) | `warehouse@kopi.com` | `password123` | `081234567893` | **Manajemen Stok & Logistik**: Input Purchase Order (PO) Supplier, Penerimaan Fisik Barang, Kartu Mutasi Stok Real-Time, Audit Stock Opname, Penerbitan & Cetak Surat Jalan Resmi (`SJ-YYYYMM-XXXX`). |
 | 5 | **Finance** | Staf Keuangan (Finance) | `finance@kopi.com` | `password123` | `081234567894` | **Keuangan & Manajemen Piutang**: Penerbitan Faktur Penjualan (Invoicing `INV-YYYYMM-XXXX`), Pencatatan Pembayaran Cicilan/Lunas, Pemulihan Otomatis Plafon Kredit B2B, Kartu Piutang Pelanggan (Customer Ledger), Cetak Kuitansi Resmi. |
-| 6 | **Customer** | Pelanggan Retail Contoh | `pelanggan@gmail.com` | `password123` | `081234567895` | **Belanja Online Ritel B2C**: Akses Etalase Publik (`/shop`), Keranjang Belanja Session, Checkout Pengiriman Ritel, Riwayat & Pelacakan Pesanan Saya (`/my-orders`). |
+
+> **Catatan Akun Pelanggan (Customer / Mitra):**
+> Pelanggan (Konsumen Retail, Mitra Toko/Warung, dan Mitra Kafe/Kedai) mendaftar secara mandiri melalui halaman pendaftaran online `/register`. Sistem akan otomatis menetapkan kategori harga diskon sesuai tier akun yang didaftarkan.
 
 ---
 
