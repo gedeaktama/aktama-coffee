@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ConsignmentController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeliveryController;
@@ -166,6 +167,25 @@ Route::middleware('auth')->group(function () {
         // Batalkan Pesanan & Kembalikan Stok (Owner, Admin, Sales)
         Route::middleware('role:owner,admin,sales')->group(function () {
             Route::post('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+        });
+    });
+
+    // SISTEM KONSINYASI (TITIP JUAL TOKO & SURVEI MINGGUAN)
+    Route::prefix('consignments')->group(function () {
+        Route::middleware('role:owner,admin,sales,warehouse,finance')->group(function () {
+            Route::get('/', [ConsignmentController::class, 'index'])->name('consignments.index');
+            Route::get('/audits', [ConsignmentController::class, 'auditsIndex'])->name('consignments.audits.index');
+            Route::get('/audits/{audit}', [ConsignmentController::class, 'showAudit'])->name('consignments.audits.show');
+            Route::get('/audits/{audit}/print', [ConsignmentController::class, 'printAudit'])->name('consignments.audits.print');
+            Route::get('/{consignment}', [ConsignmentController::class, 'show'])->name('consignments.show');
+            Route::get('/{consignment}/print', [ConsignmentController::class, 'print'])->name('consignments.print');
+        });
+
+        Route::middleware('role:owner,admin,sales,warehouse')->group(function () {
+            Route::get('/create/new', [ConsignmentController::class, 'create'])->name('consignments.create');
+            Route::post('/', [ConsignmentController::class, 'store'])->name('consignments.store');
+            Route::get('/{consignment}/audit', [ConsignmentController::class, 'createAudit'])->name('consignments.audit.create');
+            Route::post('/{consignment}/audit', [ConsignmentController::class, 'storeAudit'])->name('consignments.audit.store');
         });
     });
 

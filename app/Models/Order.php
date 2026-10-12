@@ -14,6 +14,7 @@ class Order extends Model
 
     public const TYPE_B2B = 'b2b';
     public const TYPE_RETAIL = 'retail';
+    public const TYPE_CONSIGNMENT = 'konsinyasi';
 
     public const STATUS_PENDING = 'pending';
     public const STATUS_CONFIRMED = 'confirmed';

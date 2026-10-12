@@ -514,6 +514,31 @@
                                 </li>
                             @endif
 
+                            <!-- KONSINYASI (TITIP JUAL) -->
+                            @if(auth()->user()->hasRole(['owner', 'admin', 'sales', 'warehouse', 'finance']))
+                                <li class="sidebar-group-title">Konsinyasi (Titip Jual)</li>
+                                <li class="nav-item">
+                                    <a class="sidebar-item-link {{ request()->routeIs('consignments.index') || (request()->routeIs('consignments.show') && !request()->routeIs('consignments.create')) ? 'active' : '' }}" href="{{ route('consignments.index') }}">
+                                        <i class="bi bi-shop-window"></i>
+                                        <span>Stok Titipan Toko</span>
+                                    </a>
+                                </li>
+                                @if(auth()->user()->hasRole(['owner', 'admin', 'sales', 'warehouse']))
+                                    <li class="nav-item">
+                                        <a class="sidebar-item-link {{ request()->routeIs('consignments.create') ? 'active' : '' }}" href="{{ route('consignments.create') }}">
+                                            <i class="bi bi-box-arrow-right"></i>
+                                            <span>Kirim Titipan Baru</span>
+                                        </a>
+                                    </li>
+                                @endif
+                                <li class="nav-item">
+                                    <a class="sidebar-item-link {{ request()->routeIs('consignments.audits.*') ? 'active' : '' }}" href="{{ route('consignments.audits.index') }}">
+                                        <i class="bi bi-clipboard2-check"></i>
+                                        <span>Survei &amp; Tagih Laku</span>
+                                    </a>
+                                </li>
+                            @endif
+
                             <!-- LOGISTIK & EKSPEDISI -->
                             @if(auth()->user()->hasRole(['owner', 'admin', 'warehouse', 'sales']))
                                 <li class="sidebar-group-title">Logistik &amp; Pengiriman</li>

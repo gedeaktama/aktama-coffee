@@ -50,6 +50,10 @@ class DashboardController extends Controller
             'overdue_invoices' => \App\Models\Invoice::whereIn('status', [\App\Models\Invoice::STATUS_UNPAID, \App\Models\Invoice::STATUS_PARTIAL])
                 ->where('due_date', '<', now()->toDateString())
                 ->count(),
+            'active_consignments' => \App\Models\Consignment::where('status', \App\Models\Consignment::STATUS_ACTIVE)->count(),
+            'consignment_items_count' => \App\Models\ConsignmentItem::whereHas('consignment', function ($q) {
+                $q->where('status', \App\Models\Consignment::STATUS_ACTIVE);
+            })->sum('current_quantity'),
         ];
 
         // Data operasional terbaru untuk widget eksekutif

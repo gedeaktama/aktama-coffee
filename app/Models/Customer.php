@@ -16,12 +16,14 @@ class Customer extends Model
     public const TYPE_TOKO = 'toko';
     public const TYPE_RESELLER = 'reseller';
     public const TYPE_RETAIL = 'retail';
+    public const TYPE_KONSINYASI = 'konsinyasi';
 
     public const TYPES = [
         self::TYPE_KAFE => 'Kafe / Kedai Kopi',
         self::TYPE_TOKO => 'Toko Kelontong',
         self::TYPE_RESELLER => 'Reseller Kopi',
         self::TYPE_RETAIL => 'Konsumen Retail',
+        self::TYPE_KONSINYASI => 'Mitra Titip Jual (Konsinyasi)',
     ];
 
     protected $fillable = [
@@ -85,6 +87,16 @@ class Customer extends Model
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
+    }
+
+    public function consignments(): HasMany
+    {
+        return $this->hasMany(Consignment::class);
+    }
+
+    public function consignmentAudits(): HasMany
+    {
+        return $this->hasMany(ConsignmentAudit::class);
     }
 
     /**
