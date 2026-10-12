@@ -1,0 +1,59 @@
+================================================================================
+LANGKAH SINGKAT DEPLOY & UPDATE WEBSITE AKTAMA COFFEE KE HOSTING
+================================================================================
+
+--- CARA 1: UPDATE CEPAT VIA GIT & SSH (SAMA SEPERTI PROYEK AKTAMA) ---
+
+1. Buka project lokal di komputer Anda:
+   d:\Xampp2\htdocs\kopi
+
+2. Lakukan perubahan / edit kode atau produk seperti biasa.
+
+3. Simpan dan kirim perubahan ke GitHub:
+   git add .
+   git commit -m "update website kopi"
+   git push origin main
+
+4. Buka terminal (CMD / PowerShell / Git Bash) lalu login ke server hosting via SSH:
+   ssh -p 65002 u107454400@147.93.80.47
+   (Gunakan port dan username hosting Anda)
+
+5. Masuk ke direktori aplikasi di server:
+   cd "/home/u107454400/domains/aktama.com/public_html/kopi-source"
+   (atau folder lokasi clone repositori di hosting Anda)
+
+6. Jalankan skrip otomatis deployment:
+   bash scripts/linux/deploy-hosting.sh
+
+7. Selesai! Buka dan periksa website di browser:
+   https://kopi.aktama.com (atau domain/subdomain yang Anda pasang)
+
+
+--------------------------------------------------------------------------------
+--- CARA 2: DEPLOY PERTAMA KALI / TANPA SSH (VIA CPANEL FILE MANAGER) ---
+--------------------------------------------------------------------------------
+
+1. Database di Hosting:
+   - Buka cPanel -> MySQL Database Wizard -> Buat Database & User baru.
+   - Buka phpMyAdmin -> Pilih database tersebut -> Tab "Import".
+   - Pilih file bersih: database/kopi_clean_production.sql -> Klik "Go / Kirim".
+
+2. Upload File Website:
+   - Di komputer lokal, kemas seluruh folder 'kopi' ke dalam file 'kopi-deploy.zip'
+     (TIDAK PERLU menyertakan folder: node_modules dan .git).
+   - Buka File Manager cPanel -> Upload 'kopi-deploy.zip' -> Ekstrak file.
+
+3. Konfigurasi Lingkungan (.env):
+   - Salin file .env.production.example menjadi .env
+   - Isi DB_DATABASE, DB_USERNAME, dan DB_PASSWORD sesuai database cPanel Anda.
+   - Isi APP_URL dengan domain website Anda (misal: https://kopi.aktama.com).
+
+4. Symlink Penyimpanan Gambar:
+   - Jalankan perintah: php artisan storage:link di Terminal cPanel.
+   - Atau jika hosting tanpa SSH: buka browser ke:
+     https://domain-anda.com/storage-link-runner.php
+     (lalu hapus file tersebut setelah sukses).
+
+================================================================================
+Dokumentasi lengkap dan troubleshooting tersedia di: docs/DEPLOYMENT-HOSTING.md
+================================================================================

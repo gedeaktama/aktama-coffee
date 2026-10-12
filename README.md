@@ -96,23 +96,22 @@ Seluruh 13 skenario pengujian autentikasi dan middleware otorisasi role akan dij
 
 ---
 
-## 5. Persiapan Deployment ke Shared Hosting
-1. Unggah seluruh isi proyek ke luar direktori `public_html` (misal: `/home/user/kopi_app`).
-2. Pindahkan seluruh isi folder `public/` ke dalam folder `public_html/`.
-3. Sesuaikan path pada `public_html/index.php`:
-   ```php
-   require __DIR__.'/../kopi_app/vendor/autoload.php';
-   $app = require_once __DIR__.'/../kopi_app/bootstrap/app.php';
-   ```
-4. Ubah file `.env` di hosting:
-   - `APP_ENV=production`
-   - `APP_DEBUG=false`
-   - `APP_URL=https://namadomainanda.com`
-   - Sesuaikan kredensial `DB_DATABASE`, `DB_USERNAME`, dan `DB_PASSWORD`.
-5. Jalankan `php artisan config:cache` dan `php artisan route:cache`.
+## 5. Panduan Deployment ke Shared Hosting (cPanel / Niagahoster / Hostinger)
+
+Proyek ini telah mengadopsi standar arsitektur dan skrip deployment yang sama dengan ekosistem **Aktama Digital**:
+
+- 🚀 **Panduan Singkat Update & Deploy**: [`LANGKAH-SINGKAT.txt`](LANGKAH-SINGKAT.txt)
+- 📖 **Dokumentasi Lengkap Hosting cPanel**: [`docs/DEPLOYMENT-HOSTING.md`](docs/DEPLOYMENT-HOSTING.md)
+- ⚙️ **Skrip Otomatis Linux/cPanel/SSH**: [`scripts/linux/deploy-hosting.sh`](scripts/linux/deploy-hosting.sh)
+- 📄 **Template Environment Produksi**: [`.env.production.example`](.env.production.example)
+- 🗄️ **Database Dump Bersih Siap Import**: [`database/kopi_clean_production.sql`](database/kopi_clean_production.sql)
+- 🔗 **Penyambung Symlink Web**: [`public/storage-link-runner.php`](public/storage-link-runner.php)
 
 ---
 
 ## 6. Struktur Dokumentasi Proyek
 Status tahapan pembangunan tercatat secara transparan di:
-- [`docs/PROJECT_STATUS.md`](docs/PROJECT_STATUS.md)
+- [`docs/DEPLOYMENT-HOSTING.md`](docs/DEPLOYMENT-HOSTING.md) — Panduan lengkap shared hosting & cPanel
+- [`docs/DAFTAR_AKUN_DAN_PASSWORD.md`](docs/DAFTAR_AKUN_DAN_PASSWORD.md) — Kredensial akun pengelola bisnis
+- [`docs/PROJECT_STATUS.md`](docs/PROJECT_STATUS.md) — Laporan teknis modul & fitur sistem
+

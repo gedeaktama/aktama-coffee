@@ -1,0 +1,28 @@
+# ==============================================================================
+# AKTAMA COFFEE / KOPI DISTRO - ROOT DIRECTORY SECURITY & REWRITE
+# ==============================================================================
+# Melindungi struktur aplikasi Laravel jika diunggah langsung ke root domain / public_html.
+# CATATAN: Rekomendasi terbaik tetap memisahkan source code di luar public_html.
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # 1. Lindungi file sensitif dari akses HTTP langsung
+    RewriteRule ^(\.env|\.git|composer\.(json|lock)|package(-lock)?\.(json)|phpunit\.xml|artisan|README\.md|LANGKAH-SINGKAT\.txt) - [F,L,NC]
+
+    # 2. Lindungi direktori sistem internal
+    RewriteRule ^(app|bootstrap|config|database|docs|resources|routes|scripts|storage/logs|tests|vendor)($|/) - [F,L,NC]
+
+    # 3. Teruskan traffic publik ke subdirektori /public
+    RewriteCond %{REQUEST_URI} !/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# Blokir penjelajahan direktori (Directory Indexing)
+Options -Indexes
+
+# Blokir akses ke file tersembunyi (dotfiles)
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
