@@ -65,6 +65,26 @@ else
     echo "    Bukan repository git atau .git tidak ada, melewati git pull."
 fi
 
+# 3.5 Pastikan file .env dan APP_KEY siap
+if [ ! -f "$APP_ROOT/.env" ]; then
+    if [ -f "$APP_ROOT/.env.production.example" ]; then
+        echo "==> Membuat file .env baru dari template .env.production.example..."
+        cp "$APP_ROOT/.env.production.example" "$APP_ROOT/.env"
+    fi
+fi
+
+# Pastikan folder penyimpanan tersedia
+mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache
+chmod -R 775 storage bootstrap/cache 2>/dev/null || true
+
+# Generate APP_KEY jika belum ada (penyebab utama Laravel 500 Server Error)
+if [ -f "$APP_ROOT/.env" ]; then
+    if ! grep -q "^APP_KEY=base64:" "$APP_ROOT/.env" 2>/dev/null; then
+        echo "==> Menghasilkan APP_KEY produksi (mengatasi 500 Server Error)..."
+        "$PHP_BIN" artisan key:generate --force || true
+    fi
+fi
+
 # 4. Install PHP Dependencies Produksi
 echo "==> [2/6] Memperbarui paket Composer (tanpa dev)..."
 if command -v "$COMPOSER_BIN" >/dev/null 2>&1 || [ -f "$APP_ROOT/composer.phar" ]; then
