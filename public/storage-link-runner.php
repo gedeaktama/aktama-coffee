@@ -10,8 +10,10 @@
 // 1. Tentukan target folder storage/app/public
 $target = __DIR__ . '/../storage/app/public';
 
-// Jika menggunakan arsitektur folder terpisah (kopi-source sejajar dengan public_html)
-if (!file_exists($target) && file_exists(__DIR__ . '/../kopi-source/storage/app/public')) {
+// Jika menggunakan arsitektur folder terpisah (coffee-source sejajar dengan web root)
+if (!file_exists($target) && file_exists(__DIR__ . '/../coffee-source/storage/app/public')) {
+    $target = __DIR__ . '/../coffee-source/storage/app/public';
+} elseif (!file_exists($target) && file_exists(__DIR__ . '/../kopi-source/storage/app/public')) {
     $target = __DIR__ . '/../kopi-source/storage/app/public';
 }
 

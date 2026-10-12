@@ -21,7 +21,7 @@ Metode ini adalah standar keamanan tertinggi di mana source code inti diletakkan
 
 ```text
 /home/username_cpanel/
-├── kopi-source/              <-- SEMUA file Laravel diletakkan di sini (KECUALI isi folder public)
+├── coffee-source/            <-- SEMUA file Laravel diletakkan di sini (KECUALI isi folder public)
 │   ├── app/
 │   ├── bootstrap/
 │   ├── config/
@@ -33,32 +33,33 @@ Metode ini adalah standar keamanan tertinggi di mana source code inti diletakkan
 │   ├── vendor/
 │   ├── .env
 │   └── artisan
-└── public_html/              <-- HANYA berisi file dari dalam folder 'public' Laravel
-    ├── images/               <-- Foto resmi produk & banner roastery
-    ├── storage/              <-- Symlink ke kopi-source/storage/app/public
-    ├── .htaccess             <-- File htaccess dari folder public
-    ├── favicon.ico
-    └── index.php             <-- File index.php (disesuaikan path-nya)
+└── public_html/
+    └── coffee/               <-- Folder 'coffee' berisi file publik dari folder 'public'
+        ├── images/           <-- Foto resmi produk & banner roastery
+        ├── storage/          <-- Symlink ke coffee-source/storage/app/public
+        ├── .htaccess         <-- File htaccess dari folder public
+        ├── favicon.ico
+        └── index.php         <-- File index.php (disesuaikan path-nya ke ../coffee-source)
 ```
 
-#### Modifikasi File `public_html/index.php`:
-Buka file `public_html/index.php` di File Manager cPanel, sesuaikan baris autoloader dan bootstrap menjadi:
+#### Modifikasi File `public_html/coffee/index.php`:
+Buka file `public_html/coffee/index.php` di File Manager cPanel, sesuaikan baris autoloader dan bootstrap menjadi:
 ```php
 <?php
 use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
-// 1. Arahkan maintenance driver ke direktori kopi-source
-if (file_exists($maintenance = __DIR__.'/../kopi-source/storage/framework/maintenance.php')) {
+// 1. Arahkan maintenance driver ke direktori coffee-source
+if (file_exists($maintenance = __DIR__.'/../coffee-source/storage/framework/maintenance.php')) {
     require $maintenance;
 }
 
-// 2. Arahkan vendor autoloader ke kopi-source
-require __DIR__.'/../kopi-source/vendor/autoload.php';
+// 2. Arahkan vendor autoloader ke coffee-source
+require __DIR__.'/../coffee-source/vendor/autoload.php';
 
-// 3. Jalankan aplikasi Laravel dari kopi-source
-$app = require_once __DIR__.'/../kopi-source/bootstrap/app.php';
+// 3. Jalankan aplikasi Laravel dari coffee-source
+$app = require_once __DIR__.'/../coffee-source/bootstrap/app.php';
 
 $app->handleRequest(Request::capture());
 ```
@@ -66,17 +67,17 @@ $app->handleRequest(Request::capture());
 ---
 
 ### METODE B: Domain Mengarah Langsung ke Subfolder `public` (Bila cPanel Mendukung)
-Jika Anda menggunakan **Subdomain** (misal: `kopi.aktama.com`) atau **Addon Domain**:
+Jika Anda menggunakan **Subdomain** (misal: `coffee.aktama.com`) atau **Addon Domain**:
 1. Masuk menu **Domains** di cPanel.
 2. Ubah kolom **Document Root** untuk domain/subdomain Anda menjadi:
-   `kopi-source/public`
+   `coffee-source/public` (atau `coffee/public`)
 3. Dengan demikian, Anda dapat mengunggah seluruh folder proyek apa adanya tanpa perlu mengubah baris kode `index.php`.
 
 ---
 
-### METODE C: Seluruh Proyek di Dalam `public_html` (Menggunakan Root `.htaccess`)
-Jika paket hosting Anda tidak mengizinkan akses di luar `public_html` dan tidak dapat mengubah Document Root:
-1. Unggah seluruh proyek ke `public_html`.
+### METODE C: Seluruh Proyek di Dalam `public_html/coffee` (Menggunakan Root `.htaccess`)
+Jika Anda mengunggah langsung ke subfolder `public_html/coffee`:
+1. Unggah seluruh proyek ke `public_html/coffee`.
 2. Proyek telah kami lengkapi dengan file root `.htaccess` yang otomatis memblokir akses HTTP ke `.env`, `.git`, `composer.*`, `storage/logs/`, `artisan`, dan meneruskan traffic publik ke subdirektori `/public/`.
 
 ---
@@ -86,15 +87,15 @@ Jika paket hosting Anda tidak mengizinkan akses di luar `public_html` dan tidak 
 ### Langkah 1: Siapkan Database MySQL di cPanel
 1. Login ke cPanel hosting Anda (misal: `https://domain-anda.com:2083`).
 2. Masuk ke menu **MySQL Database Wizard**.
-3. **Step 1**: Buat database baru, contoh: `u107454400_kopi`.
-4. **Step 2**: Buat user database baru, contoh: `u107454400_kopiuser` dengan kata sandi acak yang kuat.
+3. **Step 1**: Buat database baru, contoh: `u107454400_coffee`.
+4. **Step 2**: Buat user database baru, contoh: `u107454400_coffeeuser` dengan kata sandi acak yang kuat.
 5. **Step 3**: Berikan centang pada **ALL PRIVILEGES** untuk menghubungkan user ke database.
 6. Simpan nama database, username, dan password untuk konfigurasi `.env`.
 
 ### Langkah 2: Import Database Bersih (Ready-to-Use)
 Proyek telah dilengkapi file dump database resmi yang bersih dari data dummy:
 1. Buka menu **phpMyAdmin** di cPanel.
-2. Klik nama database yang baru Anda buat (`u107454400_kopi`).
+2. Klik nama database yang baru Anda buat (`u107454400_coffee`).
 3. Pilih tab **Import** pada menu atas.
 4. Klik **Choose File / Pilih File**, lalu pilih file:
    `database/kopi_clean_production.sql`
@@ -111,17 +112,18 @@ Jika hosting Anda memiliki akses SSH / Terminal:
    ```
 2. Clone repository ke folder tujuan:
    ```bash
-   git clone https://github.com/gedeaktama/aktama-coffee.git kopi-source
+   git clone https://github.com/gedeaktama/aktama-coffee.git coffee-source
    ```
+   *(atau langsung: `git clone https://github.com/gedeaktama/aktama-coffee.git coffee`)*
 3. Masuk ke direktori:
    ```bash
-   cd kopi-source
+   cd coffee-source
    ```
 
 #### Opsi 2: Menggunakan File Manager cPanel (Tanpa SSH)
-1. Di komputer lokal Anda, kompres folder `kopi` menjadi file `kopi-deploy.zip`.
+1. Di komputer lokal Anda, kompres folder proyek menjadi file `coffee-deploy.zip`.
    *(PENTING: Jangan menyertakan folder `node_modules` dan `.git` untuk menghemat kuota upload).*
-2. Buka **File Manager** cPanel, upload `kopi-deploy.zip`.
+2. Buka **File Manager** cPanel, upload `coffee-deploy.zip`.
 3. Klik kanan file zip, pilih **Extract**.
 
 ### Langkah 4: Konfigurasi File `.env` Produksi
@@ -133,13 +135,13 @@ Jika hosting Anda memiliki akses SSH / Terminal:
    APP_ENV=production
    APP_KEY=base64:6Y0TXI746m4t6ZkYF2l0KIMrUvv/WgPARk+uK+RPciA=
    APP_DEBUG=false
-   APP_URL=https://kopi.aktama.com
+   APP_URL=https://aktama.com/coffee
 
    DB_CONNECTION=mysql
    DB_HOST=127.0.0.1
    DB_PORT=3306
-   DB_DATABASE=u107454400_kopi
-   DB_USERNAME=u107454400_kopiuser
+   DB_DATABASE=u107454400_coffee
+   DB_USERNAME=u107454400_coffeeuser
    DB_PASSWORD=PasswordDatabaseAnda123!
 
    SESSION_DRIVER=file
@@ -184,7 +186,8 @@ Jika hosting Anda memiliki akses terminal atau SSH, Anda cukup menjalankan skrip
 
 ```bash
 # 1. Masuk ke folder aplikasi di hosting
-cd /home/u107454400/domains/aktama.com/public_html/kopi-source
+cd /home/u107454400/domains/aktama.com/public_html/coffee-source
+# (atau jika langsung di folder coffee: cd /home/u107454400/domains/aktama.com/public_html/coffee)
 
 # 2. Jalankan skrip deploy
 bash scripts/linux/deploy-hosting.sh
@@ -203,7 +206,7 @@ Skrip ini secara otomatis akan:
 ## 5. KREDENSIAL DEFAULT LOGIN OPERASIONAL PENGELOLA
 
 Setelah database di-import, Anda dapat langsung masuk ke dashboard administrasi melalui:
-- **URL Login**: `https://kopi.aktama.com/login`
+- **URL Login**: `https://aktama.com/coffee/login` atau `https://coffee.aktama.com/login`
 - **Password Seluruh Akun**: `password123`
 
 | Peran (Role) | Email Login | Password | Akses & Wewenang |

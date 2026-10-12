@@ -1,5 +1,5 @@
 ================================================================================
-LANGKAH SINGKAT DEPLOY & UPDATE WEBSITE AKTAMA COFFEE KE HOSTING
+LANGKAH SINGKAT DEPLOY & UPDATE WEBSITE AKTAMA COFFEE (FOLDER: "coffee")
 ================================================================================
 
 --- CARA 1: UPDATE CEPAT VIA GIT & SSH (SAMA SEPERTI PROYEK AKTAMA) ---
@@ -11,7 +11,7 @@ LANGKAH SINGKAT DEPLOY & UPDATE WEBSITE AKTAMA COFFEE KE HOSTING
 
 3. Simpan dan kirim perubahan ke GitHub:
    git add .
-   git commit -m "update website kopi"
+   git commit -m "update website coffee"
    git push origin main
 
 4. Buka terminal (CMD / PowerShell / Git Bash) lalu login ke server hosting via SSH:
@@ -19,14 +19,15 @@ LANGKAH SINGKAT DEPLOY & UPDATE WEBSITE AKTAMA COFFEE KE HOSTING
    (Gunakan port dan username hosting Anda)
 
 5. Masuk ke direktori aplikasi di server:
-   cd "/home/u107454400/domains/aktama.com/public_html/kopi-source"
-   (atau folder lokasi clone repositori di hosting Anda)
+   cd "/home/u107454400/domains/aktama.com/public_html/coffee-source"
+   (atau jika diletakkan langsung di folder coffee:
+    cd "/home/u107454400/domains/aktama.com/public_html/coffee")
 
 6. Jalankan skrip otomatis deployment:
    bash scripts/linux/deploy-hosting.sh
 
 7. Selesai! Buka dan periksa website di browser:
-   https://kopi.aktama.com (atau domain/subdomain yang Anda pasang)
+   https://aktama.com/coffee  atau  https://coffee.aktama.com
 
 
 --------------------------------------------------------------------------------
@@ -39,14 +40,14 @@ LANGKAH SINGKAT DEPLOY & UPDATE WEBSITE AKTAMA COFFEE KE HOSTING
    - Pilih file bersih: database/kopi_clean_production.sql -> Klik "Go / Kirim".
 
 2. Upload File Website:
-   - Di komputer lokal, kemas seluruh folder 'kopi' ke dalam file 'kopi-deploy.zip'
+   - Di komputer lokal, kemas seluruh folder proyek ke dalam file 'coffee-deploy.zip'
      (TIDAK PERLU menyertakan folder: node_modules dan .git).
-   - Buka File Manager cPanel -> Upload 'kopi-deploy.zip' -> Ekstrak file.
+   - Buka File Manager cPanel -> Upload 'coffee-deploy.zip' -> Ekstrak ke folder tujuan.
 
 3. Konfigurasi Lingkungan (.env):
    - Salin file .env.production.example menjadi .env
    - Isi DB_DATABASE, DB_USERNAME, dan DB_PASSWORD sesuai database cPanel Anda.
-   - Isi APP_URL dengan domain website Anda (misal: https://kopi.aktama.com).
+   - Isi APP_URL dengan domain website Anda (misal: https://aktama.com/coffee atau https://coffee.aktama.com).
 
 4. Symlink Penyimpanan Gambar:
    - Jalankan perintah: php artisan storage:link di Terminal cPanel.

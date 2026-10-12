@@ -9,16 +9,25 @@ set -e
 # dan optimasi cache produksi.
 # ==============================================================================
 
-# Direktori Proyek (Sesuaikan dengan direktori di server Anda)
-# Default rekomendasi: source code di folder 'kopi-source'
-APP_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-WEB_ROOT="${WEB_ROOT:-$APP_ROOT/public}"
+# Direktori Proyek di Server Niagahoster / cPanel (Pola Aktama Digital)
+# Default: Source code di 'coffee-source' dan web publik di 'coffee'
+DEFAULT_APP_ROOT="/home/u107454400/domains/aktama.com/public_html/coffee-source"
+DEFAULT_WEB_ROOT="/home/u107454400/domains/aktama.com/public_html/coffee"
+
+# Auto-deteksi jika skrip dijalankan dari dalam direktori source proyek
+CURRENT_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+if [ -f "$CURRENT_SCRIPT_DIR/artisan" ]; then
+    APP_ROOT="${APP_ROOT:-$CURRENT_SCRIPT_DIR}"
+else
+    APP_ROOT="${APP_ROOT:-$DEFAULT_APP_ROOT}"
+fi
+WEB_ROOT="${WEB_ROOT:-$DEFAULT_WEB_ROOT}"
 
 echo "=========================================================="
 echo "  MEMULAI DEPLOYMENT AKTAMA COFFEE KE SERVER HOSTING"
 echo "  Waktu       : $(date '+%Y-%m-%d %H:%M:%S')"
 echo "  Lokasi App  : $APP_ROOT"
-echo "  Lokasi Web  : $WEB_ROOT"
+echo "  Lokasi Web  : $WEB_ROOT (Folder: coffee)"
 echo "=========================================================="
 
 cd "$APP_ROOT"
@@ -87,13 +96,13 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
-if (file_exists(\$maintenance = __DIR__.'/../kopi-source/storage/framework/maintenance.php')) {
+if (file_exists(\$maintenance = __DIR__.'/../coffee-source/storage/framework/maintenance.php')) {
     require \$maintenance;
 }
 
-require __DIR__.'/../kopi-source/vendor/autoload.php';
+require __DIR__.'/../coffee-source/vendor/autoload.php';
 
-\$app = require_once __DIR__.'/../kopi-source/bootstrap/app.php';
+\$app = require_once __DIR__.'/../coffee-source/bootstrap/app.php';
 
 \$app->handleRequest(Request::capture());
 PHP
