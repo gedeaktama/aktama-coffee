@@ -73,6 +73,12 @@ fi
 echo "==> [3/6] Menjalankan migrasi database..."
 "$PHP_BIN" artisan migrate --force
 
+# Jika database baru dan produk masih kosong, otomatis isi data resmi & akun staf
+if ! "$PHP_BIN" artisan tinker --execute="exit(App\Models\Product::count() > 0 ? 0 : 1);" >/dev/null 2>&1; then
+    echo "    Mengisi data awal produk resmi & akun staf (db:seed)..."
+    "$PHP_BIN" artisan db:seed --force || true
+fi
+
 # 6. Pembersihan dan Pembangunan Cache Produksi (High Performance)
 echo "==> [4/6] Membangun cache performa tinggi (optimize & cache)..."
 "$PHP_BIN" artisan optimize:clear
