@@ -186,10 +186,10 @@
                     </span>
                 </div>
                 <h1 class="hero-title mb-3">
-                    Cita Rasa Kopi Nusantara Terbaik, dari Petani ke Cangkir Anda.
+                    Cita Rasa Kopi Asli Sulawesi Tengah, dari Petani ke Cangkir Anda.
                 </h1>
                 <p class="hero-description mb-4">
-                    Menyediakan varietas kopi Arabika Single Origin &amp; Fine Robusta kemasan premium (100g, 250g, 500g, 1kg). Terintegrasi untuk konsumsi retail online serta sistem distribusi grosir kafe, resto, dan reseller dengan plafon kredit tempo terukur.
+                    Menyediakan aneka produk kopi berkualitas khas Palu, Sulawesi Tengah: Kopi ATAPMERAH, Kopi Robusta Bintang Harapan, dan Kopi Gula Aren Bintang Sulawesi kemasan praktis sachet, renceng, hingga pack. Terintegrasi untuk belanja retail online dan distribusi grosir mitra warkop &amp; toko.
                 </p>
 
                 <!-- Tombol Aksi Utama -->
@@ -224,18 +224,18 @@
                     <div class="col-6 col-md-3">
                         <div class="hero-stat-card">
                             <div class="fw-bold fs-4 text-warning">100%</div>
-                            <small class="text-white-50 d-block lh-sm">Kopi Asli Murni Nusantara</small>
+                            <small class="text-white-50 d-block lh-sm">Kopi Asli Sulawesi Tengah</small>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="hero-stat-card">
-                            <div class="fw-bold fs-4 text-warning">4+</div>
-                            <small class="text-white-50 d-block lh-sm">Varietas Grade 1 Specialty</small>
+                            <div class="fw-bold fs-4 text-warning">4 Produk</div>
+                            <small class="text-white-50 d-block lh-sm">Varian Resmi Etalase</small>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="hero-stat-card">
-                            <div class="fw-bold fs-4 text-warning">TOP 45</div>
+                            <div class="fw-bold fs-4 text-warning">TOP 14</div>
                             <small class="text-white-50 d-block lh-sm">Termin Tempo Grosir B2B</small>
                         </div>
                     </div>
@@ -254,15 +254,15 @@
                     <div class="d-inline-flex align-items-center justify-content-center p-3 rounded-circle bg-warning bg-opacity-20 text-warning mb-3">
                         <i class="bi bi-cup-hot-fill fs-1"></i>
                     </div>
-                    <h3 class="text-white fw-bold mb-2">Segar dari Pemanggangan</h3>
+                    <h3 class="text-white fw-bold mb-2">Aroma Khas &amp; Gurih Mantap</h3>
                     <p class="text-white-50 small mb-4">
-                        Setiap kemasan dilengkapi katup udara satu arah (*one-way degassing valve*) dan aluminium foil kedap udara untuk menjaga aroma serta krema kopi tetap maksimal.
+                        Diproduksi dengan resep tradisi pilihan dari Palu, Sulawesi Tengah. Kemasan rapi menjaga kesegaran rasa kopi hingga ke cangkir seduhan Anda.
                     </p>
-                    <div class="d-flex justify-content-center gap-2">
-                        <span class="badge bg-white bg-opacity-10 text-white px-3 py-2 border border-white border-opacity-25">100g</span>
-                        <span class="badge bg-white bg-opacity-10 text-white px-3 py-2 border border-white border-opacity-25">250g</span>
-                        <span class="badge bg-white bg-opacity-10 text-white px-3 py-2 border border-white border-opacity-25">500g</span>
-                        <span class="badge bg-white bg-opacity-10 text-white px-3 py-2 border border-white border-opacity-25">1 Kilogram</span>
+                    <div class="d-flex justify-content-center flex-wrap gap-2">
+                        <span class="badge bg-white bg-opacity-10 text-white px-3 py-2 border border-white border-opacity-25">10g Sachet</span>
+                        <span class="badge bg-white bg-opacity-10 text-white px-3 py-2 border border-white border-opacity-25">20g Aren</span>
+                        <span class="badge bg-white bg-opacity-10 text-white px-3 py-2 border border-white border-opacity-25">35g Kemasan</span>
+                        <span class="badge bg-white bg-opacity-10 text-white px-3 py-2 border border-white border-opacity-25">135g Pack</span>
                     </div>
                 </div>
             </div>
@@ -277,9 +277,9 @@
     <div class="container py-4">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4">
             <div>
-                <span class="text-uppercase fw-bold text-warning small tracking-wide">Pilihan Terbaik Nusantara</span>
-                <h2 class="fw-bold text-dark mb-1">Koleksi Kopi Kemasan Unggulan</h2>
-                <p class="text-muted mb-0">Dipetik dari kebun dataran tinggi Indonesia dan dipanggang dengan profil rasa optimal.</p>
+                <span class="text-uppercase fw-bold text-warning small tracking-wide">Produk Resmi Kemasan</span>
+                <h2 class="fw-bold text-dark mb-1">Koleksi Kopi Etalase Resmi</h2>
+                <p class="text-muted mb-0">Diproduksi di Palu, Sulawesi Tengah dengan cita rasa khas dan mutu terjamin.</p>
             </div>
             <div class="mt-3 mt-md-0">
                 <a href="{{ route('store.catalog') }}" class="btn btn-outline-dark fw-semibold px-4">
@@ -294,16 +294,22 @@
                     <div class="coffee-card">
                         <!-- Foto Kemasan Asli HD -->
                         <div class="coffee-img-wrap">
-                            <img src="{{ $prod->image_url }}" alt="{{ $prod->name }}" loading="lazy">
+                            <a href="{{ route('store.product', $prod->slug) }}">
+                                <img src="{{ $prod->image_url }}" alt="{{ $prod->name }}" loading="lazy">
+                            </a>
                             <span class="coffee-badge-type">
-                                <i class="bi bi-tag-fill me-1"></i> {{ $prod->coffee_type }}
+                                <i class="bi bi-tag-fill me-1"></i> {{ $prod->brand }}
                             </span>
                         </div>
 
                         <!-- Info Produk -->
                         <div class="p-3 d-flex flex-column flex-grow-1">
                             <div class="small text-muted mb-1">{{ $prod->category->name ?? 'Kopi Kemasan' }}</div>
-                            <h5 class="fw-bold text-dark mb-2 fs-6">{{ $prod->name }}</h5>
+                            <h5 class="fw-bold text-dark mb-2 fs-6">
+                                <a href="{{ route('store.product', $prod->slug) }}" class="text-dark text-decoration-none">
+                                    {{ $prod->name }}
+                                </a>
+                            </h5>
                             <p class="text-muted small mb-3 flex-grow-1" style="line-height: 1.45;">
                                 {{ Str::limit($prod->description, 85) }}
                             </p>
@@ -316,9 +322,11 @@
                                         Rp {{ number_format($prod->variants->min('selling_price') ?? 0, 0, ',', '.') }}
                                     </span>
                                 </div>
-                                <a href="{{ route('store.catalog', ['search' => $prod->name]) }}" class="btn btn-warning btn-sm w-100 fw-bold text-dark shadow-sm">
-                                    <i class="bi bi-cart-plus me-1"></i> Pilih Varian &amp; Beli
-                                </a>
+                                <div class="d-flex gap-2">
+                                    <a href="{{ route('store.product', $prod->slug) }}" class="btn btn-warning btn-sm w-100 fw-bold text-dark shadow-sm">
+                                        <i class="bi bi-eye me-1"></i> Detail &amp; Beli
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>

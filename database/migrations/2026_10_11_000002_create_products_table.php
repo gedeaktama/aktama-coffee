@@ -18,9 +18,16 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->string('brand')->default('Kopi Distro');
             $table->string('coffee_type')->default('Arabika'); // Arabika, Robusta, Blend
-            $table->string('form')->default('both'); // bean, ground, both
+            $table->string('form')->default('ground'); // bean, ground, both
             $table->text('description')->nullable();
             $table->string('image')->nullable();
+            $table->json('gallery')->nullable();
+            $table->string('net_weight')->nullable();
+            $table->string('producer')->nullable();
+            $table->string('origin')->nullable();
+            $table->text('composition')->nullable();
+            $table->text('serving_suggestion')->nullable();
+            $table->text('storage_instruction')->nullable();
             $table->boolean('is_active')->default(true)->index();
             $table->timestamps();
         });

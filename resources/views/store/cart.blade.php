@@ -51,9 +51,16 @@
                                 @foreach($cart as $item)
                                     <tr>
                                         <td>
-                                            <div class="font-monospace small text-muted">{{ $item['sku'] }}</div>
-                                            <div class="fw-bold text-dark">{{ $item['name'] }}</div>
-                                            <small class="text-muted">Berat: {{ $item['weight'] }}g &middot; Bentuk: {{ ucfirst($item['grind_form']) }}</small>
+                                            <div class="d-flex align-items-center gap-3">
+                                                @if(!empty($item['image']))
+                                                    <img src="{{ $item['image'] }}" alt="{{ $item['name'] }}" class="rounded-2 border bg-light p-1" style="width: 52px; height: 52px; object-fit: contain;">
+                                                @endif
+                                                <div>
+                                                    <div class="font-monospace small text-muted">{{ $item['sku'] }}</div>
+                                                    <div class="fw-bold text-dark">{{ $item['name'] }}</div>
+                                                    <small class="text-muted">Berat: {{ $item['weight'] }}g &middot; Bentuk: {{ ucfirst($item['grind_form']) }}</small>
+                                                </div>
+                                            </div>
                                         </td>
                                         <td class="text-end text-secondary">
                                             Rp {{ number_format($item['price'], 0, ',', '.') }}

@@ -21,11 +21,19 @@ class Product extends Model
         'form',
         'description',
         'image',
+        'gallery',
+        'net_weight',
+        'producer',
+        'origin',
+        'composition',
+        'serving_suggestion',
+        'storage_instruction',
         'is_active',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'gallery' => 'array',
     ];
 
     public function category(): BelongsTo
@@ -44,19 +52,31 @@ class Product extends Model
             return asset($this->image);
         }
 
-        $slug = $this->slug ?? Str::slug($this->name);
+        return asset('images/products/01_atapmerah_135g_depan_edit.png');
+    }
 
-        if (str_contains($slug, 'gayo')) {
-            return asset('images/gayo.jpg');
+    public function getGalleryUrlsAttribute(): array
+    {
+        $urls = [];
+        if (!empty($this->gallery) && is_array($this->gallery)) {
+            foreach ($this->gallery as $img) {
+                if (file_exists(public_path($img))) {
+                    $urls[] = asset($img);
+                }
+            }
         }
-        if (str_contains($slug, 'toraja')) {
-            return asset('images/toraja.jpg');
-        }
-        if (str_contains($slug, 'robusta') || str_contains($slug, 'lampung') || str_contains($slug, 'temanggung')) {
-            return asset('images/temanggung.jpg');
-        }
+        return $urls;
+    }
 
-        return asset('images/flores.jpg');
+    public function getAllImagesAttribute(): array
+    {
+        $images = [$this->image_url];
+        foreach ($this->gallery_urls as $url) {
+            if (!in_array($url, $images)) {
+                $images[] = $url;
+            }
+        }
+        return $images;
     }
 
     public static function boot()

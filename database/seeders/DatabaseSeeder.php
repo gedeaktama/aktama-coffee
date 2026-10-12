@@ -2,13 +2,12 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
     /**
-     * Seed the application's database.
+     * Seed the application's database with clean official master data and initial stock.
      */
     public function run(): void
     {
@@ -16,9 +15,6 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             MasterDataSeeder::class,
             InventorySeeder::class,
-            SalesOrderSeeder::class,
-            FinanceSeeder::class,
-            DeliverySeeder::class,
         ]);
     }
 }

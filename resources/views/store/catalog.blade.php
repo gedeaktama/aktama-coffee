@@ -79,7 +79,7 @@
             <div class="col-md-5">
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
-                    <input type="text" name="search" class="form-control border-start-0" placeholder="Cari varian kopi favorit Anda (Gayo, Toraja, Robusta, Flores)..." value="{{ request('search') }}">
+                    <input type="text" name="search" class="form-control border-start-0" placeholder="Cari kopi favorit Anda (ATAPMERAH, Robusta, Bintang Harapan, Gula Aren)..." value="{{ request('search') }}">
                 </div>
             </div>
             <div class="col-md-3">
@@ -93,9 +93,8 @@
             <div class="col-md-2">
                 <select name="coffee_type" class="form-select">
                     <option value="">-- Jenis Kopi --</option>
-                    <option value="Arabika" {{ request('coffee_type') === 'Arabika' ? 'selected' : '' }}>Arabika</option>
                     <option value="Robusta" {{ request('coffee_type') === 'Robusta' ? 'selected' : '' }}>Robusta</option>
-                    <option value="Blend" {{ request('coffee_type') === 'Blend' ? 'selected' : '' }}>Blend</option>
+                    <option value="Blend" {{ request('coffee_type') === 'Blend' ? 'selected' : '' }}>Campur / Blend</option>
                 </select>
             </div>
             <div class="col-md-2 d-flex gap-2">
@@ -118,9 +117,11 @@
                 <div class="catalog-card">
                     <!-- Foto Kemasan Asli HD -->
                     <div class="catalog-img-wrap">
-                        <img src="{{ $product->image_url }}" alt="{{ $product->name }}" loading="lazy">
+                        <a href="{{ route('store.product', $product->slug) }}">
+                            <img src="{{ $product->image_url }}" alt="{{ $product->name }}" loading="lazy">
+                        </a>
                         <span class="badge-origin">
-                            <i class="bi bi-tag-fill me-1"></i> {{ $product->coffee_type }}
+                            <i class="bi bi-tag-fill me-1"></i> {{ $product->brand }}
                         </span>
                     </div>
 
@@ -129,16 +130,25 @@
                             <span class="badge bg-secondary bg-opacity-10 text-secondary border">
                                 {{ $product->category->name ?? 'Kopi Kemasan' }}
                             </span>
-                            <small class="text-muted fw-semibold">{{ $product->brand }}</small>
+                            <small class="text-muted fw-semibold">{{ $product->producer ?? 'Palu, Sulawesi Tengah' }}</small>
                         </div>
-                        <h4 class="fw-bold text-dark mb-2 fs-5">{{ $product->name }}</h4>
+                        <h4 class="fw-bold text-dark mb-2 fs-5">
+                            <a href="{{ route('store.product', $product->slug) }}" class="text-dark text-decoration-none">
+                                {{ $product->name }}
+                            </a>
+                        </h4>
                         <p class="text-muted small mb-3 flex-grow-1">{{ Str::limit($product->description, 95) }}</p>
 
                         <!-- Pilihan Varian Gramasi & Tambah Keranjang -->
                         <div class="border-top pt-3 mt-auto">
-                            <h6 class="small fw-bold text-secondary text-uppercase mb-2">
-                                <i class="bi bi-boxes me-1 text-warning"></i> Pilih Gramasi &amp; Kemasan:
-                            </h6>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="small fw-bold text-secondary text-uppercase mb-0">
+                                    <i class="bi bi-boxes me-1 text-warning"></i> Pilih Gramasi:
+                                </h6>
+                                <a href="{{ route('store.product', $product->slug) }}" class="small fw-semibold text-warning text-decoration-none">
+                                    Detail &amp; Foto &rarr;
+                                </a>
+                            </div>
                             @if($product->variants->count() > 0)
                                 <form method="POST" action="{{ route('store.cart.add') }}">
                                     @csrf

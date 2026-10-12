@@ -78,8 +78,13 @@
                         @endphp
                         <tr>
                             <td class="ps-4">
-                                <div class="fw-bold text-dark fs-6">{{ $product->name }}</div>
-                                <small class="text-muted"><i class="bi bi-tag-fill text-warning me-1"></i>{{ $product->brand }}</small>
+                                <div class="d-flex align-items-center gap-3">
+                                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="rounded-2 border bg-light p-1" style="width: 48px; height: 48px; object-fit: contain;">
+                                    <div>
+                                        <div class="fw-bold text-dark fs-6">{{ $product->name }}</div>
+                                        <small class="text-muted"><i class="bi bi-tag-fill text-warning me-1"></i>{{ $product->brand }}</small>
+                                    </div>
+                                </div>
                             </td>
                             <td>
                                 <span class="badge bg-light text-dark border">{{ $product->category?->name ?? 'Uncategorized' }}</span>

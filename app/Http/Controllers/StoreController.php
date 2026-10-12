@@ -56,6 +56,23 @@ class StoreController extends Controller
     }
 
     /**
+     * Halaman Detail Produk & Foto Kemasan Lengkap
+     */
+    public function productDetail(string $slug)
+    {
+        $product = Product::with(['category', 'variants' => function ($vq) {
+            $vq->where('is_active', true);
+        }])->where('slug', $slug)->where('is_active', true)->firstOrFail();
+
+        $relatedProducts = Product::where('id', '!=', $product->id)
+            ->where('is_active', true)
+            ->take(3)
+            ->get();
+
+        return view('store.product_detail', compact('product', 'relatedProducts'));
+    }
+
+    /**
      * Tampilan Keranjang Belanja
      */
     public function cart()
@@ -104,6 +121,7 @@ class StoreController extends Controller
                 'grind_form' => $variant->grind_form,
                 'price' => (float)$variant->selling_price,
                 'quantity' => $quantity,
+                'image' => $variant->product->image_url,
             ];
         }
 

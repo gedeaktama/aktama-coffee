@@ -29,11 +29,22 @@
     <!-- Product Summary Card -->
     <div class="card card-custom p-4 mb-4">
         <div class="row g-4 align-items-center">
-            <div class="col-md-8">
+            <div class="col-md-2 text-center">
+                <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="img-fluid rounded-3 border p-1 bg-white shadow-sm" style="max-height: 120px; object-fit: contain;">
+                <div class="mt-2">
+                    <a href="{{ route('store.product', $product->slug) }}" target="_blank" class="small text-warning fw-bold text-decoration-none">
+                        <i class="bi bi-box-arrow-up-right me-1"></i> Lihat Etalase
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6">
                 <div class="d-flex flex-wrap gap-2 mb-2">
                     <span class="badge bg-light text-dark border">{{ $product->category?->name ?? 'Uncategorized' }}</span>
+                    <span class="badge bg-warning bg-opacity-15 text-dark border border-warning">{{ $product->brand }}</span>
                     <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25">{{ $product->coffee_type }}</span>
-                    <span class="badge bg-secondary bg-opacity-10 text-secondary border">{{ $product->form }}</span>
+                    @if($product->net_weight)
+                        <span class="badge bg-secondary bg-opacity-10 text-secondary border">{{ $product->net_weight }}</span>
+                    @endif
                     @if($product->is_active)
                         <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">Aktif</span>
                     @else
@@ -41,7 +52,7 @@
                     @endif
                 </div>
                 <h4 class="fw-bold text-dark mb-1">{{ $product->name }}</h4>
-                <p class="text-muted small mb-2"><i class="bi bi-tag me-1"></i> Merek: <strong>{{ $product->brand }}</strong></p>
+                <p class="text-muted small mb-1"><i class="bi bi-building me-1"></i> Produsen: <strong>{{ $product->producer ?: 'Palu, Sulawesi Tengah' }}</strong></p>
                 <p class="text-secondary small mb-0">{{ $product->description ?: 'Belum ada deskripsi profil rasa.' }}</p>
             </div>
             <div class="col-md-4 text-md-end">

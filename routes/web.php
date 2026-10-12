@@ -30,6 +30,7 @@ Route::get('/', function () {
 
 // Retail Storefront & Keranjang Belanja Online (B2C)
 Route::get('/store', [StoreController::class, 'catalog'])->name('store.catalog');
+Route::get('/store/product/{slug}', [StoreController::class, 'productDetail'])->name('store.product');
 Route::get('/cart', [StoreController::class, 'cart'])->name('store.cart');
 Route::post('/cart/add', [StoreController::class, 'addToCart'])->name('store.cart.add');
 Route::post('/cart/update', [StoreController::class, 'updateCart'])->name('store.cart.update');

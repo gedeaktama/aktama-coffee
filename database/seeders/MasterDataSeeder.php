@@ -14,68 +14,98 @@ use Illuminate\Support\Str;
 class MasterDataSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Run the database seeds for official coffee catalog.
      */
     public function run(): void
     {
-        // 1. Kategori Kopi
-        $catArabika = Category::updateOrCreate(
-            ['slug' => 'kopi-arabika-single-origin'],
+        // 1. Kategori Produk Resmi
+        $catCampur = Category::updateOrCreate(
+            ['slug' => 'kopi-bubuk-campur'],
             [
-                'name' => 'Kopi Arabika Single Origin',
-                'description' => 'Kopi Arabika pilihan dengan profil rasa unik dari berbagai perkebunan Nusantara.',
+                'name' => 'Kopi Bubuk Campur',
+                'description' => 'Kopi campur tradisional perpaduan biji kopi pilihan dan serelia dengan aroma khas dan gurih mantap.',
                 'is_active' => true,
             ]
         );
 
         $catRobusta = Category::updateOrCreate(
-            ['slug' => 'kopi-robusta-premium'],
+            ['slug' => 'kopi-bubuk-robusta'],
             [
-                'name' => 'Kopi Robusta Premium',
-                'description' => 'Kopi Robusta berkualitas dengan rasa tebal (bold) dan crema melimpah.',
+                'name' => 'Kopi Bubuk Robusta',
+                'description' => '100% Kopi bubuk Robusta murni dari dataran tinggi Sulawesi Tengah dengan cita rasa nikmat dan aroma harum.',
                 'is_active' => true,
             ]
         );
 
-        $catBlend = Category::updateOrCreate(
-            ['slug' => 'kopi-house-blend'],
+        $catGulaAren = Category::updateOrCreate(
+            ['slug' => 'kopi-gula-aren'],
             [
-                'name' => 'Kopi House Blend & Espresso',
-                'description' => 'Campuran seimbang Arabika & Robusta untuk kebutuhan kafe dan mesin espresso.',
+                'name' => 'Kopi Gula Aren',
+                'description' => 'Paduan kopi Robusta dan manis legit alami gula aren asli Sulawesi dalam kemasan sachet praktis.',
                 'is_active' => true,
             ]
         );
 
-        // 2. Produk & Varian (Satu harga jual standar per SKU)
-        // Produk A: Arabika Gayo
-        $prodGayo = Product::updateOrCreate(
-            ['slug' => 'kopi-arabika-aceh-gayo'],
+        // 2. Produk Resmi & Varian Berdasarkan Katalog
+        // ----------------------------------------------------
+        // Produk 1: Kopi ATAPMERAH 135g
+        // ----------------------------------------------------
+        $prodAtapmerah135 = Product::updateOrCreate(
+            ['slug' => 'kopi-atapmerah-135g'],
             [
-                'category_id' => $catArabika->id,
-                'name' => 'Kopi Arabika Aceh Gayo',
-                'brand' => 'Kopi Distro Premium',
-                'coffee_type' => 'Arabika',
-                'form' => 'both',
-                'description' => 'Kopi Arabika dataran tinggi Gayo Aceh dengan keasaman segar berpadu aroma rempah dan cokelat.',
+                'category_id' => $catCampur->id,
+                'name' => 'Kopi ATAPMERAH 135g — Kopi Bubuk Campur',
+                'brand' => 'ATAPMERAH',
+                'coffee_type' => 'Blend',
+                'form' => 'ground',
+                'net_weight' => '135 gram',
+                'producer' => 'PT Kopi Bintang Harapan',
+                'origin' => 'Palu, Sulawesi Tengah, Indonesia',
+                'composition' => '60% kopi bubuk dan serelia',
+                'serving_suggestion' => 'Masukkan kopi ke dalam cangkir, tambahkan gula atau krimer sesuai selera, tuangkan 200 ml air mendidih, lalu aduk hingga rata.',
+                'storage_instruction' => 'Simpan di tempat yang kering dan sejuk.',
+                'description' => 'Nikmati kopi ATAPMERAH, kopi campur produksi PT Kopi Bintang Harapan, Palu, Sulawesi Tengah. Dikemas dalam kemasan 135 gram untuk menemani waktu santai maupun aktivitas sehari-hari.',
+                'image' => 'images/products/01_atapmerah_135g_depan_edit.png',
+                'gallery' => [
+                    'images/products/02_atapmerah_135g_belakang_edit.png',
+                    'images/products/03_atapmerah_135g_belakang_detail_edit.png',
+                    'images/products/08_atapmerah_135g_belakang_instruksi_edit.png',
+                ],
                 'is_active' => true,
             ]
         );
 
-        $gayoVariants = [
-            ['sku' => 'SKU-AG-100G', 'name' => 'Arabika Aceh Gayo 100g (Biji/Bubuk)', 'weight' => 100, 'cost' => 28000, 'price' => 40000, 'stock' => 60, 'min' => 10],
-            ['sku' => 'SKU-AG-250G', 'name' => 'Arabika Aceh Gayo 250g (Biji/Bubuk)', 'weight' => 250, 'cost' => 65000, 'price' => 90000, 'stock' => 85, 'min' => 15],
-            ['sku' => 'SKU-AG-500G', 'name' => 'Arabika Aceh Gayo 500g (Biji/Bubuk)', 'weight' => 500, 'cost' => 120000, 'price' => 170000, 'stock' => 45, 'min' => 10],
-            ['sku' => 'SKU-AG-1KG',  'name' => 'Arabika Aceh Gayo 1kg (Biji/Bubuk)',  'weight' => 1000, 'cost' => 220000, 'price' => 310000, 'stock' => 30, 'min' => 5],
+        $atapmerah135Variants = [
+            [
+                'sku' => 'SKU-AM-135G',
+                'name' => 'Kopi ATAPMERAH 135g (Bungkus)',
+                'weight' => 135,
+                'grind' => 'Bubuk Halus',
+                'cost' => 12000,
+                'price' => 18000,
+                'stock' => 150,
+                'min' => 20,
+            ],
+            [
+                'sku' => 'SKU-AM-135G-PAK5',
+                'name' => 'Kopi ATAPMERAH 135g (Pak Isi 5 Bungkus)',
+                'weight' => 675,
+                'grind' => 'Bubuk Halus',
+                'cost' => 58000,
+                'price' => 85000,
+                'stock' => 60,
+                'min' => 10,
+            ],
         ];
 
-        foreach ($gayoVariants as $v) {
+        foreach ($atapmerah135Variants as $v) {
             ProductVariant::updateOrCreate(
                 ['sku' => $v['sku']],
                 [
-                    'product_id' => $prodGayo->id,
+                    'product_id' => $prodAtapmerah135->id,
                     'variant_name' => $v['name'],
                     'package_weight_grams' => $v['weight'],
-                    'grind_form' => 'Biji Kopi',
+                    'grind_form' => $v['grind'],
                     'cost_price' => $v['cost'],
                     'selling_price' => $v['price'],
                     'current_stock' => $v['stock'],
@@ -85,71 +115,63 @@ class MasterDataSeeder extends Seeder
             );
         }
 
-        // Produk B: Arabika Toraja
-        $prodToraja = Product::updateOrCreate(
-            ['slug' => 'kopi-arabika-toraja-sapan'],
-            [
-                'category_id' => $catArabika->id,
-                'name' => 'Kopi Arabika Toraja Sapan',
-                'brand' => 'Kopi Distro Premium',
-                'coffee_type' => 'Arabika',
-                'form' => 'both',
-                'description' => 'Kopi Arabika khas Sulawesi dengan body seimbang dan hint rasa herbal manis.',
-                'is_active' => true,
-            ]
-        );
-
-        $torajaVariants = [
-            ['sku' => 'SKU-AT-250G', 'name' => 'Arabika Toraja Sapan 250g', 'weight' => 250, 'cost' => 70000, 'price' => 95000, 'stock' => 50, 'min' => 10],
-            ['sku' => 'SKU-AT-500G', 'name' => 'Arabika Toraja Sapan 500g', 'weight' => 500, 'cost' => 130000, 'price' => 180000, 'stock' => 35, 'min' => 10],
-            ['sku' => 'SKU-AT-1KG',  'name' => 'Arabika Toraja Sapan 1kg',  'weight' => 1000, 'cost' => 240000, 'price' => 330000, 'stock' => 25, 'min' => 5],
-        ];
-
-        foreach ($torajaVariants as $v) {
-            ProductVariant::updateOrCreate(
-                ['sku' => $v['sku']],
-                [
-                    'product_id' => $prodToraja->id,
-                    'variant_name' => $v['name'],
-                    'package_weight_grams' => $v['weight'],
-                    'grind_form' => 'Biji Kopi',
-                    'cost_price' => $v['cost'],
-                    'selling_price' => $v['price'],
-                    'current_stock' => $v['stock'],
-                    'minimum_stock' => $v['min'],
-                    'is_active' => true,
-                ]
-            );
-        }
-
-        // Produk C: Robusta Lampung
-        $prodLampung = Product::updateOrCreate(
-            ['slug' => 'kopi-robusta-lampung-gold'],
+        // ----------------------------------------------------
+        // Produk 2: Kopi Bubuk Robusta Bintang Harapan 10g
+        // ----------------------------------------------------
+        $prodRobusta10 = Product::updateOrCreate(
+            ['slug' => 'kopi-bubuk-robusta-bintang-harapan-10g'],
             [
                 'category_id' => $catRobusta->id,
-                'name' => 'Kopi Robusta Lampung Gold',
-                'brand' => 'Kopi Distro Heritage',
+                'name' => 'Kopi Bubuk Robusta Bintang Harapan 10g',
+                'brand' => 'Bintang Harapan',
                 'coffee_type' => 'Robusta',
-                'form' => 'both',
-                'description' => 'Robusta pilihan petani Lampung dengan kepahitan nikmat, body tebal, dan aroma cokelat gelap.',
+                'form' => 'ground',
+                'net_weight' => '10 gram',
+                'producer' => 'Bintang Harapan, Palu, Indonesia',
+                'origin' => 'Palu, Sulawesi Tengah, Indonesia',
+                'composition' => '100% kopi bubuk Robusta',
+                'serving_suggestion' => 'Masukkan satu sachet ke dalam cangkir, tuangkan air panas sesuai petunjuk pada kemasan, tambahkan gula sesuai selera bila diinginkan, lalu aduk.',
+                'storage_instruction' => 'Simpan di tempat yang kering dan sejuk.',
+                'description' => 'Kopi Bubuk Robusta Bintang Harapan hadir dalam sachet praktis 10 gram. Pada kemasan, produk ini diperkenalkan sebagai kopi dari dataran tinggi Sulawesi Tengah dengan aroma khas dan cita rasa gurih serta nikmat.',
+                'image' => 'images/products/04_bintang_harapan_robusta_10g_depan_edit.png',
+                'gallery' => [
+                    'images/products/05_bintang_harapan_robusta_belakang_edit.png',
+                ],
                 'is_active' => true,
             ]
         );
 
-        $lampungVariants = [
-            ['sku' => 'SKU-RL-250G', 'name' => 'Robusta Lampung Gold 250g', 'weight' => 250, 'cost' => 32000, 'price' => 48000, 'stock' => 120, 'min' => 20],
-            ['sku' => 'SKU-RL-500G', 'name' => 'Robusta Lampung Gold 500g', 'weight' => 500, 'cost' => 60000, 'price' => 88000, 'stock' => 90, 'min' => 20],
-            ['sku' => 'SKU-RL-1KG',  'name' => 'Robusta Lampung Gold 1kg',  'weight' => 1000, 'cost' => 110000, 'price' => 160000, 'stock' => 60, 'min' => 10],
+        $robusta10Variants = [
+            [
+                'sku' => 'SKU-BH-10G-SCT',
+                'name' => 'Robusta Bintang Harapan 10g (Sachet)',
+                'weight' => 10,
+                'grind' => 'Bubuk Halus',
+                'cost' => 1800,
+                'price' => 3000,
+                'stock' => 300,
+                'min' => 50,
+            ],
+            [
+                'sku' => 'SKU-BH-10G-RCG',
+                'name' => 'Robusta Bintang Harapan 10g (Renceng 10 Sachet)',
+                'weight' => 100,
+                'grind' => 'Bubuk Halus',
+                'cost' => 17000,
+                'price' => 28000,
+                'stock' => 120,
+                'min' => 20,
+            ],
         ];
 
-        foreach ($lampungVariants as $v) {
+        foreach ($robusta10Variants as $v) {
             ProductVariant::updateOrCreate(
                 ['sku' => $v['sku']],
                 [
-                    'product_id' => $prodLampung->id,
+                    'product_id' => $prodRobusta10->id,
                     'variant_name' => $v['name'],
                     'package_weight_grams' => $v['weight'],
-                    'grind_form' => 'Bubuk Halus',
+                    'grind_form' => $v['grind'],
                     'cost_price' => $v['cost'],
                     'selling_price' => $v['price'],
                     'current_stock' => $v['stock'],
@@ -159,34 +181,63 @@ class MasterDataSeeder extends Seeder
             );
         }
 
-        // Produk D: Arabika Flores Bajawa Honey
-        $prodFlores = Product::updateOrCreate(
-            ['slug' => 'kopi-arabika-flores-bajawa-honey'],
+        // ----------------------------------------------------
+        // Produk 3: Kopi Gula Aren Bintang Sulawesi 20g
+        // ----------------------------------------------------
+        $prodGulaAren20 = Product::updateOrCreate(
+            ['slug' => 'kopi-gula-aren-bintang-sulawesi-20g'],
             [
-                'category_id' => $catArabika->id,
-                'name' => 'Kopi Arabika Flores Bajawa Honey',
-                'brand' => 'Kopi Distro Specialty',
-                'coffee_type' => 'Arabika',
-                'form' => 'both',
-                'description' => 'Kopi Arabika proses honey dari dataran tinggi Bajawa Flores dengan aroma floral semerbak dan rasa manis madu alami yang lembut.',
+                'category_id' => $catGulaAren->id,
+                'name' => 'Kopi Gula Aren Bintang Sulawesi 20g',
+                'brand' => 'Bintang Sulawesi',
+                'coffee_type' => 'Blend',
+                'form' => 'ground',
+                'net_weight' => '20 gram',
+                'producer' => 'Bintang Sulawesi, Palu, Sulawesi Tengah, Indonesia',
+                'origin' => 'Palu, Sulawesi Tengah, Indonesia',
+                'composition' => 'Gula aren dan kopi bubuk murni',
+                'serving_suggestion' => 'Tuangkan satu sachet ke dalam cangkir, tambahkan 140 ml air mendidih, lalu aduk hingga larut dan tercampur rata.',
+                'storage_instruction' => 'Simpan di tempat yang kering dan sejuk.',
+                'description' => 'Kopi Gula Aren Bintang Sulawesi memadukan kopi Robusta dan gula aren dalam satu sachet praktis. Pilihan untuk menikmati sajian kopi dengan sentuhan manis gula aren di rumah, kantor, atau saat bepergian.',
+                'image' => 'images/products/09_bintang_sulawesi_gula_aren_20g_depan_foto_asli.jpg',
+                'gallery' => [
+                    'images/products/06_bintang_sulawesi_gula_aren_20g_belakang_edit.png',
+                ],
                 'is_active' => true,
             ]
         );
 
-        $floresVariants = [
-            ['sku' => 'SKU-FB-250G', 'name' => 'Arabika Flores Bajawa Honey 250g', 'weight' => 250, 'cost' => 68000, 'price' => 92000, 'stock' => 70, 'min' => 15],
-            ['sku' => 'SKU-FB-500G', 'name' => 'Arabika Flores Bajawa Honey 500g', 'weight' => 500, 'cost' => 125000, 'price' => 175000, 'stock' => 40, 'min' => 10],
-            ['sku' => 'SKU-FB-1KG',  'name' => 'Arabika Flores Bajawa Honey 1kg',  'weight' => 1000, 'cost' => 235000, 'price' => 320000, 'stock' => 20, 'min' => 5],
+        $gulaAren20Variants = [
+            [
+                'sku' => 'SKU-BS-20G-SCT',
+                'name' => 'Kopi Gula Aren 20g (Sachet)',
+                'weight' => 20,
+                'grind' => 'Bubuk Kopi Aren',
+                'cost' => 2500,
+                'price' => 4500,
+                'stock' => 250,
+                'min' => 40,
+            ],
+            [
+                'sku' => 'SKU-BS-20G-RCG',
+                'name' => 'Kopi Gula Aren 20g (Renceng 10 Sachet)',
+                'weight' => 200,
+                'grind' => 'Bubuk Kopi Aren',
+                'cost' => 23000,
+                'price' => 42000,
+                'stock' => 90,
+                'min' => 15,
+            ],
         ];
 
-        foreach ($floresVariants as $v) {
+        foreach ($gulaAren20Variants as $v) {
             ProductVariant::updateOrCreate(
                 ['sku' => $v['sku']],
                 [
-                    'product_id' => $prodFlores->id,
+                    'product_id' => $prodGulaAren20->id,
                     'variant_name' => $v['name'],
                     'package_weight_grams' => $v['weight'],
-                    'grind_form' => 'Biji Kopi',
+                    'grind_form' => $v['grind'],
                     'cost_price' => $v['cost'],
                     'selling_price' => $v['price'],
                     'current_stock' => $v['stock'],
@@ -196,48 +247,112 @@ class MasterDataSeeder extends Seeder
             );
         }
 
-        // 3. Supplier Pemasok
-        Supplier::updateOrCreate(
-            ['code' => 'SUP-001'],
+        // ----------------------------------------------------
+        // Produk 4: Kopi ATAPMERAH 35g
+        // ----------------------------------------------------
+        $prodAtapmerah35 = Product::updateOrCreate(
+            ['slug' => 'kopi-bubuk-atapmerah-35g'],
             [
-                'name' => 'PT Sumatra Mandiri Kopi',
-                'pic_name' => 'Hendra Wijaya',
-                'phone' => '081188223344',
-                'email' => 'supplier.sumatra@kopimandiri.co.id',
-                'address' => 'Jl. Pelabuhan Kopi No. 12, Medan, Sumatera Utara',
+                'category_id' => $catCampur->id,
+                'name' => 'Kopi Bubuk ATAPMERAH 35g — Kopi Campur',
+                'brand' => 'ATAPMERAH',
+                'coffee_type' => 'Blend',
+                'form' => 'ground',
+                'net_weight' => '35 gram',
+                'producer' => 'PT Kopi Bintang Harapan, Palu, Sulawesi Tengah, Indonesia',
+                'origin' => 'Palu, Sulawesi Tengah, Indonesia',
+                'composition' => '60% kopi bubuk dan serelia pilihan',
+                'serving_suggestion' => 'Masukkan kopi ke dalam cangkir, tambahkan gula atau krimer sesuai selera, tuangkan 200 ml air mendidih, lalu aduk hingga rata.',
+                'storage_instruction' => 'Simpan di tempat yang kering dan sejuk.',
+                'description' => 'Kopi ATAPMERAH hadir dalam kemasan 35 gram yang praktis dan ekonomis untuk dinikmati sehari-hari. Produk kopi campur ini diproduksi oleh PT Kopi Bintang Harapan di Palu, Sulawesi Tengah, Indonesia.',
+                'image' => 'images/products/07_atapmerah_35g_depan_edit.png',
+                'gallery' => [],
+                'is_active' => true,
+            ]
+        );
+
+        $atapmerah35Variants = [
+            [
+                'sku' => 'SKU-AM-35G-BKS',
+                'name' => 'Kopi ATAPMERAH 35g (Bungkus)',
+                'weight' => 35,
+                'grind' => 'Bubuk Halus',
+                'cost' => 3500,
+                'price' => 6000,
+                'stock' => 200,
+                'min' => 30,
+            ],
+            [
+                'sku' => 'SKU-AM-35G-PAK10',
+                'name' => 'Kopi ATAPMERAH 35g (Pak Isi 10 Bungkus)',
+                'weight' => 350,
+                'grind' => 'Bubuk Halus',
+                'cost' => 32000,
+                'price' => 55000,
+                'stock' => 80,
+                'min' => 15,
+            ],
+        ];
+
+        foreach ($atapmerah35Variants as $v) {
+            ProductVariant::updateOrCreate(
+                ['sku' => $v['sku']],
+                [
+                    'product_id' => $prodAtapmerah35->id,
+                    'variant_name' => $v['name'],
+                    'package_weight_grams' => $v['weight'],
+                    'grind_form' => $v['grind'],
+                    'cost_price' => $v['cost'],
+                    'selling_price' => $v['price'],
+                    'current_stock' => $v['stock'],
+                    'minimum_stock' => $v['min'],
+                    'is_active' => true,
+                ]
+            );
+        }
+
+        // 3. Supplier Pemasok Resmi
+        Supplier::updateOrCreate(
+            ['code' => 'SUP-KBH-01'],
+            [
+                'name' => 'PT Kopi Bintang Harapan',
+                'pic_name' => 'Bintang Harapan Palu',
+                'phone' => '081245678901',
+                'email' => 'produksi@bintangharapan.co.id',
+                'address' => 'Palu, Sulawesi Tengah, Indonesia',
                 'is_active' => true,
             ]
         );
 
         Supplier::updateOrCreate(
-            ['code' => 'SUP-002'],
+            ['code' => 'SUP-BS-02'],
             [
-                'name' => 'CV Java Prima Rostery',
-                'pic_name' => 'Slamet Riyadi',
-                'phone' => '081299334455',
-                'email' => 'javaprima@rostery.id',
-                'address' => 'Kawasan Agro Kopi No. 8, Temanggung, Jawa Tengah',
+                'name' => 'Bintang Sulawesi',
+                'pic_name' => 'Sentra Kopi Sulawesi',
+                'phone' => '081398765432',
+                'email' => 'distribusi@bintangsulawesi.co.id',
+                'address' => 'Palu, Sulawesi Tengah, Indonesia',
                 'is_active' => true,
             ]
         );
 
-        // 4. Pelanggan Grosir B2B (Kafe, Toko Kelontong, Reseller)
+        // 4. Pelanggan Mitra Grosir B2B & Retail
         $salesUser = User::where('role', User::ROLE_SALES)->first();
 
         Customer::updateOrCreate(
             ['code' => 'CUST-KAFE-001'],
             [
                 'customer_type' => Customer::TYPE_KAFE,
-                'business_name' => 'Kafe Senja Nusantara',
-                'pic_name' => 'Rian Hidayat',
+                'business_name' => 'Warkop & Kafe Celebes Palu',
+                'pic_name' => 'Ahmad Rinaldi',
                 'phone' => '081388776655',
-                'email' => 'senja.kafe@gmail.com',
-                'address' => 'Jl. Merdeka No. 45, Jakarta Selatan',
-                'shipping_address' => 'Jl. Merdeka No. 45, Jakarta Selatan (Gudang Belakang)',
+                'email' => 'celebes.kafe@gmail.com',
+                'address' => 'Jl. Sam Ratulangi No. 18, Palu, Sulawesi Tengah',
+                'shipping_address' => 'Jl. Sam Ratulangi No. 18, Palu, Sulawesi Tengah',
                 'sales_user_id' => $salesUser?->id,
-                'credit_limit' => 5000000.00, // Plafon kredit Rp 5.000.000
-                'payment_terms_days' => 14, // Tempo 14 hari
-                'notes' => 'Langganan kopi espresso blend rutin 2 minggu sekali.',
+                'credit_limit' => 5000000.00,
+                'payment_terms_days' => 14,
+                'notes' => 'Mitra warkop lokal langganan kopi campur dan robusta.',
                 'is_active' => true,
             ]
         );
@@ -246,16 +361,16 @@ class MasterDataSeeder extends Seeder
             ['code' => 'CUST-TOKO-001'],
             [
                 'customer_type' => Customer::TYPE_TOKO,
-                'business_name' => 'Toko Kelontong Berkah Makmur',
-                'pic_name' => 'H. Syamsul Arifin',
+                'business_name' => 'Toko Kelontong Berkah Palu',
+                'pic_name' => 'H. Mansyur',
                 'phone' => '081299887711',
-                'email' => 'tokoberkah@yahoo.com',
-                'address' => 'Pasar Induk Kios No. B-12, Bekasi',
-                'shipping_address' => 'Pasar Induk Kios No. B-12, Bekasi',
+                'email' => 'toko.berkah.palu@gmail.com',
+                'address' => 'Pasar Tradisional Manonda Kios No. 12, Palu',
+                'shipping_address' => 'Pasar Tradisional Manonda Kios No. 12, Palu',
                 'sales_user_id' => $salesUser?->id,
-                'credit_limit' => 3000000.00, // Plafon kredit Rp 3.000.000
-                'payment_terms_days' => 7, // Tempo 7 hari
-                'notes' => 'Fokus penjualan kemasan ekonomis 100g dan 250g.',
+                'credit_limit' => 3000000.00,
+                'payment_terms_days' => 7,
+                'notes' => 'Distribusi kopi renceng dan kemasan sachet 10g & 35g.',
                 'is_active' => true,
             ]
         );
@@ -264,16 +379,16 @@ class MasterDataSeeder extends Seeder
             ['code' => 'CUST-RSL-001'],
             [
                 'customer_type' => Customer::TYPE_RESELLER,
-                'business_name' => 'Reseller Kopi Mantap (Dewi)',
-                'pic_name' => 'Dewi Anggraeni',
+                'business_name' => 'Reseller Kopi Sulawesi (Ibu Nur)',
+                'pic_name' => 'Nurhalizah',
                 'phone' => '081344556677',
-                'email' => 'dewi.kopi@reseller.com',
-                'address' => 'Komplek Griya Indah Blok C-5, Tangerang',
-                'shipping_address' => 'Komplek Griya Indah Blok C-5, Tangerang',
+                'email' => 'nur.reseller@gmail.com',
+                'address' => 'Jl. Towua No. 45, Palu, Sulawesi Tengah',
+                'shipping_address' => 'Jl. Towua No. 45, Palu, Sulawesi Tengah',
                 'sales_user_id' => $salesUser?->id,
-                'credit_limit' => 2500000.00, // Plafon kredit Rp 2.500.000
-                'payment_terms_days' => 14, // Tempo 14 hari
-                'notes' => 'Reseller aktif penjualan online & komunitas kopi.',
+                'credit_limit' => 2500000.00,
+                'payment_terms_days' => 14,
+                'notes' => 'Reseller aktif penjualan online dan toko oleh-oleh khas.',
                 'is_active' => true,
             ]
         );
@@ -287,13 +402,13 @@ class MasterDataSeeder extends Seeder
                 'pic_name' => 'Budi Santoso',
                 'phone' => '081234567895',
                 'email' => 'pelanggan@gmail.com',
-                'address' => 'Jl. Melati No. 10, Jakarta Barat',
-                'shipping_address' => 'Jl. Melati No. 10, Jakarta Barat',
+                'address' => 'Jl. Melati No. 10, Palu, Sulawesi Tengah',
+                'shipping_address' => 'Jl. Melati No. 10, Palu, Sulawesi Tengah',
                 'sales_user_id' => null,
                 'user_id' => $retailUser?->id,
-                'credit_limit' => 0.00, // Retail: Tanpa tempo (Tunai/Transfer)
+                'credit_limit' => 0.00,
                 'payment_terms_days' => 0,
-                'notes' => 'Konsumen retail mandiri.',
+                'notes' => 'Konsumen retail mandiri belanja online.',
                 'is_active' => true,
             ]
         );
