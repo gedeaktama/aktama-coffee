@@ -77,20 +77,20 @@ fi
 mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache
 chmod -R 775 storage bootstrap/cache 2>/dev/null || true
 
-# Generate APP_KEY jika belum ada (penyebab utama Laravel 500 Server Error)
-if [ -f "$APP_ROOT/.env" ]; then
-    if ! grep -q "^APP_KEY=base64:" "$APP_ROOT/.env" 2>/dev/null; then
-        echo "==> Menghasilkan APP_KEY produksi (mengatasi 500 Server Error)..."
-        "$PHP_BIN" artisan key:generate --force || true
-    fi
-fi
-
-# 4. Install PHP Dependencies Produksi
+# 4. Install PHP Dependencies Produksi (Vendor Laravel)
 echo "==> [2/6] Memperbarui paket Composer (tanpa dev)..."
 if command -v "$COMPOSER_BIN" >/dev/null 2>&1 || [ -f "$APP_ROOT/composer.phar" ]; then
     "$PHP_BIN" $COMPOSER_BIN install --no-dev --prefer-dist --optimize-autoloader --no-interaction
 else
     echo "    Composer tidak ditemukan, melewati composer install."
+fi
+
+# Generate APP_KEY jika belum ada (mengatasi 500 Server Error)
+if [ -f "$APP_ROOT/.env" ]; then
+    if ! grep -q "^APP_KEY=base64:" "$APP_ROOT/.env" 2>/dev/null; then
+        echo "==> Menghasilkan APP_KEY produksi..."
+        "$PHP_BIN" artisan key:generate --force || true
+    fi
 fi
 
 # 5. Jalankan Migrasi Database
