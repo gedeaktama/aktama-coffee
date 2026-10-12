@@ -79,6 +79,22 @@ class Product extends Model
         return $images;
     }
 
+    public function getMinPriceFor(?string $customerType = null): float
+    {
+        if ($this->variants->isEmpty()) {
+            return 0.0;
+        }
+
+        return (float) $this->variants->min(function ($variant) use ($customerType) {
+            return $variant->getPriceFor($customerType);
+        });
+    }
+
+    public function getFormattedMinPriceFor(?string $customerType = null): string
+    {
+        return 'Rp ' . number_format($this->getMinPriceFor($customerType), 0, ',', '.');
+    }
+
     public static function boot()
     {
         parent::boot();

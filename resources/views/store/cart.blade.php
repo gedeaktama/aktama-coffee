@@ -32,16 +32,47 @@
             <!-- Cart Items Table -->
             <div class="col-lg-8">
                 <div class="card card-custom p-4">
-                    <h5 class="fw-bold text-dark mb-3 pb-2 border-bottom">
-                        <i class="bi bi-bag-check me-2 text-primary"></i> Daftar Item Pesanan ({{ count($cart) }})
-                    </h5>
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                        <h5 class="fw-bold text-dark mb-0">
+                            <i class="bi bi-bag-check me-2 text-primary"></i> Daftar Item Pesanan ({{ count($cart) }})
+                        </h5>
+                        @if($currentCustomerType === 'toko')
+                            <span class="badge bg-success bg-opacity-10 text-success border border-success-subtle px-3 py-1 rounded-pill fw-bold">
+                                <i class="bi bi-shop me-1"></i> Tier: Mitra Toko
+                            </span>
+                        @elseif($currentCustomerType === 'kafe')
+                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle px-3 py-1 rounded-pill fw-bold">
+                                <i class="bi bi-cup-hot-fill me-1"></i> Tier: Mitra Kafe
+                            </span>
+                        @else
+                            <span class="badge bg-secondary bg-opacity-10 text-secondary border px-3 py-1 rounded-pill">
+                                Pelanggan Retail
+                            </span>
+                        @endif
+                    </div>
+
+                    @if($currentCustomerType === 'toko')
+                        <div class="alert alert-success d-flex align-items-center mb-3 py-2 px-3 rounded-3 border-0" style="background-color: #ecfdf5; border-left: 4px solid #10b981 !important;">
+                            <i class="bi bi-check-circle-fill fs-5 text-success me-2 flex-shrink-0"></i>
+                            <div class="small text-success">
+                                <strong>Harga Mitra Toko Diterapkan:</strong> Anda memperoleh potongan harga khusus toko &amp; reseller resmi.
+                            </div>
+                        </div>
+                    @elseif($currentCustomerType === 'kafe')
+                        <div class="alert alert-info d-flex align-items-center mb-3 py-2 px-3 rounded-3 border-0" style="background-color: #eff6ff; border-left: 4px solid #3b82f6 !important;">
+                            <i class="bi bi-check-circle-fill fs-5 text-primary me-2 flex-shrink-0"></i>
+                            <div class="small text-primary">
+                                <strong>Harga Mitra Kafe Diterapkan:</strong> Anda memperoleh harga supply khusus kafe &amp; kedai horeca resmi.
+                            </div>
+                        </div>
+                    @endif
 
                     <div class="table-responsive">
                         <table class="table align-middle">
                             <thead class="table-light">
                                 <tr>
                                     <th>Produk & Varian Kopi</th>
-                                    <th style="width: 140px;" class="text-end">Harga Satuan</th>
+                                    <th style="width: 160px;" class="text-end">Harga Satuan</th>
                                     <th style="width: 140px;" class="text-center">Jumlah (Pack)</th>
                                     <th style="width: 140px;" class="text-end">Subtotal</th>
                                     <th style="width: 50px;" class="text-center">#</th>
@@ -49,6 +80,9 @@
                             </thead>
                             <tbody>
                                 @foreach($cart as $item)
+                                    @php
+                                        $hasDiscount = isset($item['regular_price']) && $item['regular_price'] > $item['price'];
+                                    @endphp
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center gap-3">
@@ -62,8 +96,22 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="text-end text-secondary">
-                                            Rp {{ number_format($item['price'], 0, ',', '.') }}
+                                        <td class="text-end">
+                                            @if($hasDiscount)
+                                                <div class="small text-muted text-decoration-line-through" style="font-size: 0.75rem;">
+                                                    Rp {{ number_format($item['regular_price'], 0, ',', '.') }}
+                                                </div>
+                                                <div class="fw-bold text-success">
+                                                    Rp {{ number_format($item['price'], 0, ',', '.') }}
+                                                </div>
+                                                <span class="badge bg-success bg-opacity-10 text-success border border-success-subtle rounded-pill" style="font-size: 0.65rem;">
+                                                    Hemat Rp {{ number_format($item['regular_price'] - $item['price'], 0, ',', '.') }}
+                                                </span>
+                                            @else
+                                                <span class="text-secondary fw-semibold">
+                                                    Rp {{ number_format($item['price'], 0, ',', '.') }}
+                                                </span>
+                                            @endif
                                         </td>
                                         <td>
                                             <form method="POST" action="{{ route('store.cart.update') }}" class="d-flex align-items-center justify-content-center gap-1">
@@ -107,10 +155,27 @@
                         <i class="bi bi-receipt me-2 text-warning"></i> Ringkasan Belanja
                     </h5>
 
+                    @php
+                        $totalSavings = 0;
+                        foreach($cart as $c) {
+                            if (isset($c['regular_price']) && $c['regular_price'] > $c['price']) {
+                                $totalSavings += ($c['regular_price'] - $c['price']) * $c['quantity'];
+                            }
+                        }
+                    @endphp
+
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-muted">Subtotal Produk:</span>
                         <span class="fw-bold text-dark">Rp {{ number_format($total, 0, ',', '.') }}</span>
                     </div>
+
+                    @if($totalSavings > 0)
+                        <div class="d-flex justify-content-between mb-2 text-success fw-semibold">
+                            <span><i class="bi bi-tag-fill me-1"></i> Hemat Harga Mitra:</span>
+                            <span>- Rp {{ number_format($totalSavings, 0, ',', '.') }}</span>
+                        </div>
+                    @endif
+
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-muted">Estimasi Biaya Kirim:</span>
                         <span class="text-secondary">Rp 15.000 <small class="text-muted">(Flat)</small></span>

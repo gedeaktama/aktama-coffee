@@ -114,6 +114,9 @@ class OrderController extends Controller
                 'sku' => $v->sku,
                 'name' => $v->product->name . ' - ' . $v->variant_name . ' (' . $v->package_weight_grams . 'g)',
                 'price' => (float)$v->selling_price,
+                'price_toko' => (float)($v->price_toko ?? $v->selling_price),
+                'price_kafe' => (float)($v->price_kafe ?? $v->price_toko ?? $v->selling_price),
+                'tier_pricing' => $v->tier_pricing,
                 'current_stock' => $v->current_stock,
             ];
         });
@@ -153,7 +156,7 @@ class OrderController extends Controller
         foreach ($validated['items'] as $item) {
             $variant = ProductVariant::findOrFail($item['product_variant_id']);
             $qty = (int)$item['quantity'];
-            $unitPrice = (float)$variant->selling_price;
+            $unitPrice = (float)$variant->getPriceFor($customer->customer_type, $qty);
             $lineSubtotal = $qty * $unitPrice;
             $subtotal += $lineSubtotal;
 

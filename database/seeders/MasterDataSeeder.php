@@ -9,6 +9,7 @@ use App\Models\ProductVariant;
 use App\Models\Supplier;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class MasterDataSeeder extends Seeder
@@ -81,8 +82,11 @@ class MasterDataSeeder extends Seeder
                 'name' => 'Kopi ATAPMERAH 135g (Bungkus)',
                 'weight' => 135,
                 'grind' => 'Bubuk Halus',
-                'cost' => 12000,
-                'price' => 18000,
+                'cost' => 5000,
+                'price' => 7500,
+                'price_toko' => 7300,
+                'price_kafe' => 7000,
+                'tier' => ['tier_10_59' => 7300, 'tier_60_99' => 7250, 'tier_100_up' => 7000],
                 'stock' => 150,
                 'min' => 20,
             ],
@@ -91,8 +95,11 @@ class MasterDataSeeder extends Seeder
                 'name' => 'Kopi ATAPMERAH 135g (Pak Isi 5 Bungkus)',
                 'weight' => 675,
                 'grind' => 'Bubuk Halus',
-                'cost' => 58000,
-                'price' => 85000,
+                'cost' => 24000,
+                'price' => 37500,
+                'price_toko' => 36500,
+                'price_kafe' => 35000,
+                'tier' => ['tier_10_59' => 36500, 'tier_60_99' => 36250, 'tier_100_up' => 35000],
                 'stock' => 60,
                 'min' => 10,
             ],
@@ -108,6 +115,9 @@ class MasterDataSeeder extends Seeder
                     'grind_form' => $v['grind'],
                     'cost_price' => $v['cost'],
                     'selling_price' => $v['price'],
+                    'price_toko' => $v['price_toko'],
+                    'price_kafe' => $v['price_kafe'],
+                    'tier_pricing' => $v['tier'] ?? null,
                     'current_stock' => $v['stock'],
                     'minimum_stock' => $v['min'],
                     'is_active' => true,
@@ -147,8 +157,10 @@ class MasterDataSeeder extends Seeder
                 'name' => 'Robusta Bintang Harapan 10g (Sachet)',
                 'weight' => 10,
                 'grind' => 'Bubuk Halus',
-                'cost' => 1800,
-                'price' => 3000,
+                'cost' => 600,
+                'price' => 1200,
+                'price_toko' => 900,
+                'price_kafe' => 850,
                 'stock' => 300,
                 'min' => 50,
             ],
@@ -157,8 +169,10 @@ class MasterDataSeeder extends Seeder
                 'name' => 'Robusta Bintang Harapan 10g (Renceng 10 Sachet)',
                 'weight' => 100,
                 'grind' => 'Bubuk Halus',
-                'cost' => 17000,
-                'price' => 28000,
+                'cost' => 6000,
+                'price' => 12000,
+                'price_toko' => 9000,
+                'price_kafe' => 8500,
                 'stock' => 120,
                 'min' => 20,
             ],
@@ -174,6 +188,9 @@ class MasterDataSeeder extends Seeder
                     'grind_form' => $v['grind'],
                     'cost_price' => $v['cost'],
                     'selling_price' => $v['price'],
+                    'price_toko' => $v['price_toko'],
+                    'price_kafe' => $v['price_kafe'],
+                    'tier_pricing' => null,
                     'current_stock' => $v['stock'],
                     'minimum_stock' => $v['min'],
                     'is_active' => true,
@@ -213,18 +230,23 @@ class MasterDataSeeder extends Seeder
                 'name' => 'Kopi Gula Aren 20g (Sachet)',
                 'weight' => 20,
                 'grind' => 'Bubuk Kopi Aren',
-                'cost' => 2500,
-                'price' => 4500,
+                'cost' => 700,
+                'price' => 1500,
+                'price_toko' => 1100,
+                'price_kafe' => 1000,
                 'stock' => 250,
                 'min' => 40,
             ],
             [
                 'sku' => 'SKU-BS-20G-RCG',
-                'name' => 'Kopi Gula Aren 20g (Renceng 10 Sachet)',
-                'weight' => 200,
+                'name' => 'Kopi Gula Aren 20g (Pak Isi 15 Sachet)',
+                'weight' => 300,
                 'grind' => 'Bubuk Kopi Aren',
-                'cost' => 23000,
-                'price' => 42000,
+                'cost' => 10000,
+                'price' => 15000,
+                'price_toko' => 14625,
+                'price_kafe' => 13500,
+                'tier' => ['tier_10_59' => 14625, 'tier_60_99' => 14250, 'tier_100_up' => 13500],
                 'stock' => 90,
                 'min' => 15,
             ],
@@ -240,6 +262,9 @@ class MasterDataSeeder extends Seeder
                     'grind_form' => $v['grind'],
                     'cost_price' => $v['cost'],
                     'selling_price' => $v['price'],
+                    'price_toko' => $v['price_toko'],
+                    'price_kafe' => $v['price_kafe'],
+                    'tier_pricing' => $v['tier'] ?? null,
                     'current_stock' => $v['stock'],
                     'minimum_stock' => $v['min'],
                     'is_active' => true,
@@ -277,8 +302,10 @@ class MasterDataSeeder extends Seeder
                 'name' => 'Kopi ATAPMERAH 35g (Bungkus)',
                 'weight' => 35,
                 'grind' => 'Bubuk Halus',
-                'cost' => 3500,
-                'price' => 6000,
+                'cost' => 1200,
+                'price' => 2500,
+                'price_toko' => 2000,
+                'price_kafe' => 1900,
                 'stock' => 200,
                 'min' => 30,
             ],
@@ -287,8 +314,11 @@ class MasterDataSeeder extends Seeder
                 'name' => 'Kopi ATAPMERAH 35g (Pak Isi 10 Bungkus)',
                 'weight' => 350,
                 'grind' => 'Bubuk Halus',
-                'cost' => 32000,
-                'price' => 55000,
+                'cost' => 13000,
+                'price' => 20000,
+                'price_toko' => 19500,
+                'price_kafe' => 19000,
+                'tier' => ['tier_10_59' => 19500, 'tier_60_99' => 19250, 'tier_100_up' => 19000],
                 'stock' => 80,
                 'min' => 15,
             ],
@@ -304,6 +334,9 @@ class MasterDataSeeder extends Seeder
                     'grind_form' => $v['grind'],
                     'cost_price' => $v['cost'],
                     'selling_price' => $v['price'],
+                    'price_toko' => $v['price_toko'],
+                    'price_kafe' => $v['price_kafe'],
+                    'tier_pricing' => $v['tier'] ?? null,
                     'current_stock' => $v['stock'],
                     'minimum_stock' => $v['min'],
                     'is_active' => true,
@@ -336,8 +369,20 @@ class MasterDataSeeder extends Seeder
             ]
         );
 
-        // 4. Pelanggan Mitra Grosir B2B & Retail
+        // 4. Pelanggan Mitra Grosir B2B, Toko, Kafe & Retail
         $salesUser = User::where('role', User::ROLE_SALES)->first();
+
+        // Akun Login Pengujian Khusus Mitra Kafe
+        $kafeUser = User::updateOrCreate(
+            ['email' => 'cafe@kopi.com'],
+            [
+                'name' => 'Mitra Kafe Celebes',
+                'phone' => '081388776655',
+                'role' => User::ROLE_CUSTOMER,
+                'is_active' => true,
+                'password' => Hash::make('password123'),
+            ]
+        );
 
         Customer::updateOrCreate(
             ['code' => 'CUST-KAFE-001'],
@@ -346,14 +391,27 @@ class MasterDataSeeder extends Seeder
                 'business_name' => 'Warkop & Kafe Celebes Palu',
                 'pic_name' => 'Ahmad Rinaldi',
                 'phone' => '081388776655',
-                'email' => 'celebes.kafe@gmail.com',
+                'email' => 'cafe@kopi.com',
                 'address' => 'Jl. Sam Ratulangi No. 18, Palu, Sulawesi Tengah',
                 'shipping_address' => 'Jl. Sam Ratulangi No. 18, Palu, Sulawesi Tengah',
                 'sales_user_id' => $salesUser?->id,
+                'user_id' => $kafeUser->id,
                 'credit_limit' => 5000000.00,
                 'payment_terms_days' => 14,
                 'notes' => 'Mitra warkop lokal langganan kopi campur dan robusta.',
                 'is_active' => true,
+            ]
+        );
+
+        // Akun Login Pengujian Khusus Mitra Toko
+        $tokoUser = User::updateOrCreate(
+            ['email' => 'toko@kopi.com'],
+            [
+                'name' => 'Mitra Toko Berkah',
+                'phone' => '081299887711',
+                'role' => User::ROLE_CUSTOMER,
+                'is_active' => true,
+                'password' => Hash::make('password123'),
             ]
         );
 
@@ -364,10 +422,11 @@ class MasterDataSeeder extends Seeder
                 'business_name' => 'Toko Kelontong Berkah Palu',
                 'pic_name' => 'H. Mansyur',
                 'phone' => '081299887711',
-                'email' => 'toko.berkah.palu@gmail.com',
+                'email' => 'toko@kopi.com',
                 'address' => 'Pasar Tradisional Manonda Kios No. 12, Palu',
                 'shipping_address' => 'Pasar Tradisional Manonda Kios No. 12, Palu',
                 'sales_user_id' => $salesUser?->id,
+                'user_id' => $tokoUser->id,
                 'credit_limit' => 3000000.00,
                 'payment_terms_days' => 7,
                 'notes' => 'Distribusi kopi renceng dan kemasan sachet 10g & 35g.',

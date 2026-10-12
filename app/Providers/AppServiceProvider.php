@@ -26,7 +26,21 @@ class AppServiceProvider extends ServiceProvider
             } catch (\Throwable $e) {
                 // Ignore if database/table not ready yet
             }
-            $view->with('isDevMode', $isDevMode);
+
+            $currentCustomerType = \App\Models\Customer::TYPE_RETAIL;
+            $currentCustomer = null;
+
+            if (\Illuminate\Support\Facades\Auth::check()) {
+                $user = \Illuminate\Support\Facades\Auth::user();
+                $currentCustomerType = $user->getCustomerType();
+                $currentCustomer = $user->customer;
+            }
+
+            $view->with([
+                'isDevMode' => $isDevMode,
+                'currentCustomerType' => $currentCustomerType,
+                'currentCustomer' => $currentCustomer,
+            ]);
         });
     }
 }

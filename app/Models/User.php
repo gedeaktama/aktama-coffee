@@ -107,6 +107,29 @@ class User extends Authenticatable
         return in_array($this->role, $roles, true);
     }
 
+    public function customer(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Customer::class, 'user_id');
+    }
+
+    /**
+     * Ambil tipe customer untuk penentuan harga khusus (retail, toko, kafe)
+     */
+    public function getCustomerType(): string
+    {
+        return $this->customer?->customer_type ?? Customer::TYPE_RETAIL;
+    }
+
+    public function isToko(): bool
+    {
+        return $this->getCustomerType() === Customer::TYPE_TOKO || $this->getCustomerType() === Customer::TYPE_RESELLER;
+    }
+
+    public function isKafe(): bool
+    {
+        return $this->getCustomerType() === Customer::TYPE_KAFE;
+    }
+
     /**
      * Determine if user has internal dashboard access.
      */

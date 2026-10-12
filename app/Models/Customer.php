@@ -26,6 +26,11 @@ class Customer extends Model
         self::TYPE_KONSINYASI => 'Mitra Titip Jual (Konsinyasi)',
     ];
 
+    public function getTypeLabelAttribute(): string
+    {
+        return self::TYPES[$this->customer_type] ?? ucfirst($this->customer_type);
+    }
+
     protected $fillable = [
         'code',
         'customer_type',

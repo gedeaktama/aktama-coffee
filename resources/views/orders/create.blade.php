@@ -59,6 +59,7 @@
                             @foreach($customers as $c)
                                 <option value="{{ $c->id }}" 
                                     data-type="{{ $c->type_label }}"
+                                    data-customer-type="{{ $c->customer_type }}"
                                     data-pic="{{ $c->pic_name }}"
                                     data-phone="{{ $c->phone }}"
                                     data-address="{{ $c->shipping_address ?? $c->address }}"
@@ -347,7 +348,31 @@ document.addEventListener('DOMContentLoaded', function () {
         recalculate();
     }
 
+    function getCustomerType() {
+        const opt = customerSelect.options[customerSelect.selectedIndex];
+        return (opt && opt.dataset.customerType) ? opt.dataset.customerType.toLowerCase() : 'retail';
+    }
+
+    function getVariantTierPrice(variantId, customerType, qty) {
+        const v = availableVariants.find(x => x.id == variantId);
+        if (!v) return 0;
+        customerType = (customerType || 'retail').toLowerCase();
+        if (customerType === 'toko' || customerType === 'reseller' || customerType === 'konsinyasi') {
+            if (v.tier_pricing) {
+                if (qty >= 100 && v.tier_pricing.tier_100_up) return parseFloat(v.tier_pricing.tier_100_up);
+                if (qty >= 60 && v.tier_pricing.tier_60_99) return parseFloat(v.tier_pricing.tier_60_99);
+                if (qty >= 10 && v.tier_pricing.tier_10_59) return parseFloat(v.tier_pricing.tier_10_59);
+            }
+            return parseFloat(v.price_toko || v.price);
+        }
+        if (customerType === 'kafe') {
+            return parseFloat(v.price_kafe || v.price_toko || v.price);
+        }
+        return parseFloat(v.price);
+    }
+
     function recalculate() {
+        const custType = getCustomerType();
         let subtotal = 0;
         document.querySelectorAll('.item-row').forEach(tr => {
             const selVariant = tr.querySelector('.select-variant');
@@ -355,9 +380,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const linePriceEl = tr.querySelector('.line-price');
             const lineSubtotalEl = tr.querySelector('.line-subtotal');
 
-            const opt = selVariant.options[selVariant.selectedIndex];
-            const price = opt && opt.dataset.price ? parseFloat(opt.dataset.price) : 0;
+            const variantId = selVariant.value;
             const qty = parseFloat(inQty.value) || 0;
+            const price = variantId ? getVariantTierPrice(variantId, custType, qty) : 0;
             const lineTotal = qty * price;
 
             linePriceEl.textContent = formatRupiah(price);

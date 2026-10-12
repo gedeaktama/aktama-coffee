@@ -327,9 +327,16 @@
                             <div class="pt-2 border-top mt-auto">
                                 <div class="d-flex justify-content-between align-items-baseline mb-2">
                                     <small class="text-muted">Mulai dari</small>
-                                    <span class="fw-bold text-dark fs-6">
-                                        Rp {{ number_format($prod->variants->min('selling_price') ?? 0, 0, ',', '.') }}
-                                    </span>
+                                    <div>
+                                        <span class="fw-bold text-dark fs-6">
+                                            {{ $prod->getFormattedMinPriceFor($currentCustomerType) }}
+                                        </span>
+                                        @if($currentCustomerType === 'toko')
+                                            <span class="badge bg-success bg-opacity-10 text-success border border-success-subtle rounded-pill px-1 small" style="font-size: 0.65rem;">Toko</span>
+                                        @elseif($currentCustomerType === 'kafe')
+                                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle rounded-pill px-1 small" style="font-size: 0.65rem;">Kafe</span>
+                                        @endif
+                                    </div>
                                 </div>
                                 <div class="d-flex gap-2">
                                     @if($isDevMode)

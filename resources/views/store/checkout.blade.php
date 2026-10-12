@@ -90,9 +90,20 @@
             <!-- Right Column: Order Summary -->
             <div class="col-lg-5">
                 <div class="card card-custom p-4 sticky-top" style="top: 80px;">
-                    <h5 class="fw-bold text-dark mb-3 pb-2 border-bottom">
-                        <i class="bi bi-bag-check me-2 text-primary"></i> Rincian Belanja
-                    </h5>
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                        <h5 class="fw-bold text-dark mb-0">
+                            <i class="bi bi-bag-check me-2 text-primary"></i> Rincian Belanja
+                        </h5>
+                        @if($currentCustomerType === 'toko')
+                            <span class="badge bg-success bg-opacity-10 text-success border border-success-subtle px-2 py-1 rounded-pill small fw-bold">
+                                <i class="bi bi-shop me-1"></i> Mitra Toko
+                            </span>
+                        @elseif($currentCustomerType === 'kafe')
+                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle px-2 py-1 rounded-pill small fw-bold">
+                                <i class="bi bi-cup-hot-fill me-1"></i> Mitra Kafe
+                            </span>
+                        @endif
+                    </div>
 
                     <div class="list-group list-group-flush mb-3">
                         @foreach($cart as $item)
@@ -106,10 +117,26 @@
                         @endforeach
                     </div>
 
+                    @php
+                        $checkoutSavings = 0;
+                        foreach($cart as $c) {
+                            if (isset($c['regular_price']) && $c['regular_price'] > $c['price']) {
+                                $checkoutSavings += ($c['regular_price'] - $c['price']) * $c['quantity'];
+                            }
+                        }
+                    @endphp
+
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-muted">Subtotal:</span>
                         <span class="fw-bold text-dark">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
                     </div>
+
+                    @if($checkoutSavings > 0)
+                        <div class="d-flex justify-content-between mb-2 text-success fw-semibold small">
+                            <span><i class="bi bi-tag-fill me-1"></i> Hemat Harga Mitra:</span>
+                            <span>- Rp {{ number_format($checkoutSavings, 0, ',', '.') }}</span>
+                        </div>
+                    @endif
 
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-muted">Biaya Kirim Flat:</span>

@@ -888,14 +888,37 @@
                                         <i class="bi bi-person-fill"></i>
                                     </span>
                                     <span class="d-none d-md-inline">{{ auth()->user()->name }}</span>
-                                    <span class="badge badge-role badge-role-{{ auth()->user()->role }}">
-                                        {{ auth()->user()->role }}
-                                    </span>
+                                    @if(auth()->user()->isCustomer())
+                                        @if(auth()->user()->isToko())
+                                            <span class="badge bg-success text-white shadow-sm" style="font-size: 0.7rem;">
+                                                <i class="bi bi-shop me-1"></i> Mitra Toko
+                                            </span>
+                                        @elseif(auth()->user()->isKafe())
+                                            <span class="badge bg-warning text-dark shadow-sm" style="font-size: 0.7rem;">
+                                                <i class="bi bi-cup-hot-fill me-1"></i> Mitra Kafe
+                                            </span>
+                                        @else
+                                            <span class="badge bg-secondary text-white" style="font-size: 0.7rem;">
+                                                Retail
+                                            </span>
+                                        @endif
+                                    @else
+                                        <span class="badge badge-role badge-role-{{ auth()->user()->role }}">
+                                            {{ auth()->user()->role }}
+                                        </span>
+                                    @endif
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="storeUserDropdown">
                                     <li class="px-3 py-2 border-bottom">
                                         <div class="fw-bold text-dark">{{ auth()->user()->name }}</div>
                                         <small class="text-muted">{{ auth()->user()->email }}</small>
+                                        @if(auth()->user()->isCustomer())
+                                            <div class="mt-1">
+                                                <span class="badge {{ auth()->user()->isToko() ? 'bg-success' : (auth()->user()->isKafe() ? 'bg-warning text-dark' : 'bg-secondary') }}">
+                                                    Skema: {{ strtoupper(auth()->user()->getCustomerType()) }}
+                                                </span>
+                                            </div>
+                                        @endif
                                     </li>
                                     @if(auth()->user()->canAccessDashboard())
                                         <li>

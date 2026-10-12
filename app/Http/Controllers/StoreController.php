@@ -78,14 +78,25 @@ class StoreController extends Controller
      */
     public function cart()
     {
+        $user = Auth::user();
+        $customerType = $user ? $user->getCustomerType() : Customer::TYPE_RETAIL;
+
         $cart = session()->get('cart', []);
         $total = 0;
 
-        foreach ($cart as $item) {
-            $total += $item['price'] * $item['quantity'];
+        foreach ($cart as $key => $item) {
+            $variant = ProductVariant::find($item['variant_id']);
+            if ($variant) {
+                $price = $variant->getPriceFor($customerType, $item['quantity']);
+                $cart[$key]['price'] = $price;
+                $cart[$key]['regular_price'] = (float)$variant->selling_price;
+                $cart[$key]['customer_type'] = $customerType;
+                $total += $price * $item['quantity'];
+            }
         }
+        session()->put('cart', $cart);
 
-        return view('store.cart', compact('cart', 'total'));
+        return view('store.cart', compact('cart', 'total', 'customerType'));
     }
 
     /**
@@ -110,6 +121,8 @@ class StoreController extends Controller
         }
 
         $cart = session()->get('cart', []);
+        $user = Auth::user();
+        $customerType = $user ? $user->getCustomerType() : Customer::TYPE_RETAIL;
 
         if (isset($cart[$variant->id])) {
             $newQty = $cart[$variant->id]['quantity'] + $quantity;
@@ -117,14 +130,18 @@ class StoreController extends Controller
                 return back()->with('error', "Total kuantitas di keranjang ({$newQty}) melebihi stok tersedia ({$variant->current_stock} pack).");
             }
             $cart[$variant->id]['quantity'] = $newQty;
+            $cart[$variant->id]['price'] = $variant->getPriceFor($customerType, $newQty);
         } else {
+            $price = $variant->getPriceFor($customerType, $quantity);
             $cart[$variant->id] = [
                 'variant_id' => $variant->id,
                 'sku' => $variant->sku,
                 'name' => $variant->product->name . ' - ' . $variant->variant_name,
                 'weight' => $variant->package_weight_grams,
                 'grind_form' => $variant->grind_form,
-                'price' => (float)$variant->selling_price,
+                'regular_price' => (float)$variant->selling_price,
+                'price' => $price,
+                'customer_type' => $customerType,
                 'quantity' => $quantity,
                 'image' => $variant->product->image_url,
             ];
@@ -132,7 +149,13 @@ class StoreController extends Controller
 
         session()->put('cart', $cart);
 
-        return redirect()->route('store.cart')->with('success', "{$variant->product->name} ({$variant->variant_name}) berhasil ditambahkan ke keranjang belanja.");
+        $tierNotice = match ($customerType) {
+            Customer::TYPE_TOKO => ' (Harga Khusus Toko diterapkan)',
+            Customer::TYPE_KAFE => ' (Harga Khusus Kafe diterapkan)',
+            default => '',
+        };
+
+        return redirect()->route('store.cart')->with('success', "{$variant->product->name} ({$variant->variant_name}) berhasil ditambahkan ke keranjang belanja{$tierNotice}.");
     }
 
     /**
@@ -156,7 +179,11 @@ class StoreController extends Controller
                 return back()->with('error', "Stok tersedia hanya {$variant->current_stock} pack.");
             }
 
+            $user = Auth::user();
+            $customerType = $user ? $user->getCustomerType() : Customer::TYPE_RETAIL;
+
             $cart[$variantId]['quantity'] = $qty;
+            $cart[$variantId]['price'] = $variant->getPriceFor($customerType, $qty);
             session()->put('cart', $cart);
         }
 
@@ -254,7 +281,7 @@ class StoreController extends Controller
 
         $user = Auth::user();
 
-        // Cari atau buat customer retail
+        // Cari atau buat customer
         $customer = null;
         if ($user) {
             $customer = Customer::where('user_id', $user->id)->first();
@@ -277,20 +304,27 @@ class StoreController extends Controller
             ]);
         }
 
+        $customerType = $customer->customer_type;
+        $orderType = in_array($customerType, [Customer::TYPE_KAFE, Customer::TYPE_TOKO, Customer::TYPE_RESELLER], true)
+            ? Order::TYPE_B2B
+            : Order::TYPE_RETAIL;
+
         try {
-            $order = DB::transaction(function () use ($validated, $cart, $orderNumber, $customer, $user) {
+            $order = DB::transaction(function () use ($validated, $cart, $orderNumber, $customer, $user, $orderType, $customerType) {
                 $subtotal = 0;
                 $itemsData = [];
 
                 foreach ($cart as $item) {
                     $variant = ProductVariant::findOrFail($item['variant_id']);
-                    $lineTotal = $item['quantity'] * $item['price'];
+                    // Pastikan harga tier sesuai kuantitas dan tipe pelanggan
+                    $appliedPrice = $variant->getPriceFor($customerType, $item['quantity']);
+                    $lineTotal = $item['quantity'] * $appliedPrice;
                     $subtotal += $lineTotal;
 
                     $itemsData[] = [
                         'variant' => $variant,
                         'quantity' => $item['quantity'],
-                        'unit_price' => $item['price'],
+                        'unit_price' => $appliedPrice,
                         'cost_price' => (float)$variant->cost_price,
                         'subtotal' => $lineTotal,
                     ];
@@ -301,14 +335,14 @@ class StoreController extends Controller
 
                 $order = Order::create([
                     'order_number' => $orderNumber,
-                    'order_type' => Order::TYPE_RETAIL,
+                    'order_type' => $orderType,
                     'customer_id' => $customer->id,
                     'user_id' => $user?->id,
                     'sales_user_id' => null,
                     'order_date' => now()->toDateString(),
                     'payment_type' => $validated['payment_type'],
                     'due_date' => null,
-                    'status' => Order::STATUS_CONFIRMED, // Langsung confirmed untuk retail checkout
+                    'status' => Order::STATUS_CONFIRMED,
                     'payment_status' => Order::PAYMENT_STATUS_UNPAID,
                     'subtotal' => $subtotal,
                     'discount' => 0,

@@ -84,6 +84,48 @@
         </div>
     @endif
 
+    <!-- Banner Info Skema Harga Pelanggan (Retail, Toko, Kafe) -->
+    @if($currentCustomerType === 'toko' || $currentCustomerType === 'reseller')
+        <div class="alert alert-success d-flex flex-column flex-md-row align-items-md-center justify-content-between p-3 mb-4 rounded-4 shadow-sm border-0" style="background-color: #ecfdf5; border-left: 6px solid #10b981 !important;">
+            <div class="d-flex align-items-center gap-3 mb-2 mb-md-0">
+                <i class="bi bi-shop fs-2 text-success"></i>
+                <div>
+                    <h6 class="fw-bold text-success mb-0">SKEMA HARGA MITRA TOKO / WARUNG AKTIF</h6>
+                    <small class="text-success text-opacity-75">Seluruh harga produk di bawah otomatis disesuaikan dengan Harga Grosir Toko.</small>
+                </div>
+            </div>
+            <span class="badge bg-success px-3 py-2 fw-bold">HARGA TOKO</span>
+        </div>
+    @elseif($currentCustomerType === 'kafe')
+        <div class="alert alert-warning d-flex flex-column flex-md-row align-items-md-center justify-content-between p-3 mb-4 rounded-4 shadow-sm border-0" style="background-color: #fffbeb; border-left: 6px solid #f59e0b !important;">
+            <div class="d-flex align-items-center gap-3 mb-2 mb-md-0">
+                <i class="bi bi-cup-hot-fill fs-2 text-warning"></i>
+                <div>
+                    <h6 class="fw-bold text-dark mb-0">SKEMA HARGA MITRA KAFE / KEDAI KOPI AKTIF</h6>
+                    <small class="text-muted">Seluruh harga produk di bawah otomatis disesuaikan dengan Harga Khusus Kafe &amp; Barista Horeca.</small>
+                </div>
+            </div>
+            <span class="badge bg-warning text-dark px-3 py-2 fw-bold">HARGA KAFE</span>
+        </div>
+    @else
+        <div class="card p-3 mb-4 rounded-4 border-0 shadow-sm" style="background: linear-gradient(90deg, #f8fafc 0%, #f1f5f9 100%); border-left: 6px solid #b86b35 !important;">
+            <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="bi bi-tags-fill fs-2 text-warning"></i>
+                    <div>
+                        <strong class="text-dark d-block">Menampilkan Harga Konsumen Retail (Umum)</strong>
+                        <small class="text-muted">Punya usaha Warung Kelontong, Toko, atau Kafe? Dapatkan potongan harga grosir yang lebih murah!</small>
+                    </div>
+                </div>
+                @guest
+                    <a href="{{ route('register') }}" class="btn btn-sm btn-warning fw-bold text-dark px-3 shadow-sm flex-shrink-0">
+                        <i class="bi bi-person-plus me-1"></i> Daftar Akun Toko / Kafe &rarr;
+                    </a>
+                @endguest
+            </div>
+        </div>
+    @endif
+
     <!-- Filter Bar -->
     <div class="card p-3 mb-4 border border-light-subtle shadow-sm rounded-4">
         <form method="GET" action="{{ route('store.catalog') }}" class="row g-2 align-items-center">
@@ -166,7 +208,7 @@
                                         <select class="form-select form-select-sm bg-light" disabled>
                                             @foreach($product->variants as $variant)
                                                 <option>
-                                                    {{ $variant->variant_name }} ({{ $variant->package_weight_grams }}g) &mdash; {{ $variant->formatted_price }}
+                                                    {{ $variant->variant_name }} ({{ $variant->package_weight_grams }}g) &mdash; {{ $variant->getFormattedPriceFor($currentCustomerType) }}
                                                 </option>
                                             @endforeach
                                         </select>
@@ -187,11 +229,14 @@
                                                 @foreach($product->variants as $variant)
                                                     <option value="{{ $variant->id }}" {{ $variant->current_stock <= 0 ? 'disabled' : '' }}>
                                                         {{ $variant->variant_name }} ({{ $variant->package_weight_grams }}g) &mdash; 
-                                                        {{ $variant->formatted_price }}
+                                                        {{ $variant->getFormattedPriceFor($currentCustomerType) }}
+                                                        @if($variant->hasSpecialPriceFor($currentCustomerType))
+                                                            [Harga Khusus]
+                                                        @endif
                                                         @if($variant->current_stock <= 0)
                                                             [HABIS]
                                                         @else
-                                                            (Stok: {{ $variant->current_stock }} pack)
+                                                            (Stok: {{ $variant->current_stock }})
                                                         @endif
                                                     </option>
                                                 @endforeach

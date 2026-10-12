@@ -139,6 +139,31 @@
                     </div>
                 @endif
 
+                @if($currentCustomerType === 'toko')
+                    <div class="alert alert-success d-flex align-items-center rounded-3 p-3 mb-3 border-0" style="background-color: #ecfdf5; border-left: 5px solid #10b981 !important;">
+                        <i class="bi bi-shop fs-3 text-success me-3 flex-shrink-0"></i>
+                        <div>
+                            <strong class="d-block text-success">Akun Mitra Toko / Warung Aktif</strong>
+                            <span class="small text-secondary">Harga khusus grosir toko/warung otomatis diterapkan untuk akun Anda.</span>
+                        </div>
+                    </div>
+                @elseif($currentCustomerType === 'kafe')
+                    <div class="alert alert-info d-flex align-items-center rounded-3 p-3 mb-3 border-0" style="background-color: #eff6ff; border-left: 5px solid #3b82f6 !important;">
+                        <i class="bi bi-cup-hot-fill fs-3 text-primary me-3 flex-shrink-0"></i>
+                        <div>
+                            <strong class="d-block text-primary">Akun Mitra Kafe / Horeca Aktif</strong>
+                            <span class="small text-secondary">Harga khusus supply kedai &amp; kafe resmi otomatis diterapkan untuk akun Anda.</span>
+                        </div>
+                    </div>
+                @else
+                    <div class="alert alert-light border d-flex align-items-center rounded-3 p-2 px-3 mb-3 small text-muted">
+                        <i class="bi bi-info-circle-fill text-warning me-2 fs-5"></i>
+                        <div>
+                            Punya Toko atau Kafe? <a href="{{ route('register') }}" class="fw-bold text-dark text-decoration-underline">Daftar Akun Toko / Kafe</a> untuk mendapatkan harga grosir &amp; horeca!
+                        </div>
+                    </div>
+                @endif
+
                 <form method="POST" action="{{ route('store.cart.add') }}" id="addToCartForm">
                     @csrf
                     
@@ -149,11 +174,15 @@
                     @if($product->variants->count() > 0)
                         <div class="d-flex flex-column gap-2 mb-3">
                             @foreach($product->variants as $variant)
+                                @php
+                                    $activeTierPrice = $variant->getPriceFor($currentCustomerType);
+                                    $isDiscounted = ($currentCustomerType !== 'retail' && $activeTierPrice < $variant->selling_price);
+                                @endphp
                                 <label class="border rounded-3 p-3 d-flex justify-content-between align-items-center cursor-pointer variant-label" style="cursor: pointer;">
                                     <div class="d-flex align-items-center gap-3">
                                         <input type="radio" name="product_variant_id" value="{{ $variant->id }}" 
                                             class="form-check-input mt-0 variant-radio" 
-                                            data-price="{{ $variant->selling_price }}" 
+                                            data-price="{{ $activeTierPrice }}" 
                                             data-stock="{{ $variant->current_stock }}"
                                             {{ $loop->first ? 'checked' : '' }}
                                             {{ $variant->current_stock <= 0 ? 'disabled' : '' }}>
@@ -163,7 +192,19 @@
                                         </div>
                                     </div>
                                     <div class="text-end">
-                                        <span class="fw-bold text-dark fs-5">{{ $variant->formatted_price }}</span>
+                                        @if($isDiscounted)
+                                            <div class="small text-muted text-decoration-line-through" style="font-size: 0.78rem;">
+                                                Rp {{ number_format($variant->selling_price, 0, ',', '.') }}
+                                            </div>
+                                            <div class="d-flex align-items-center justify-content-end gap-1">
+                                                <span class="fw-bold text-success fs-5">Rp {{ number_format($activeTierPrice, 0, ',', '.') }}</span>
+                                                <span class="badge bg-success bg-opacity-10 text-success border border-success-subtle rounded-pill px-2 py-0" style="font-size: 0.68rem;">
+                                                    {{ $currentCustomerType === 'toko' ? 'Harga Toko' : 'Harga Kafe' }}
+                                                </span>
+                                            </div>
+                                        @else
+                                            <span class="fw-bold text-dark fs-5">Rp {{ number_format($activeTierPrice, 0, ',', '.') }}</span>
+                                        @endif
                                         <small class="d-block {{ $variant->current_stock <= 0 ? 'text-danger fw-bold' : 'text-success' }}">
                                             {{ $variant->current_stock <= 0 ? 'Stok Habis' : 'Stok: ' . $variant->current_stock . ' pack' }}
                                         </small>
@@ -204,6 +245,57 @@
                     <a href="{{ route('store.cart') }}" class="btn btn-sm btn-outline-dark fw-semibold">
                         <i class="bi bi-cart3 me-1"></i> Buka Keranjang
                     </a>
+                </div>
+            </div>
+
+            <!-- Tabel Skema Harga Transparan (Retail vs Toko vs Kafe) -->
+            <div class="card p-4 border border-light-subtle shadow-sm rounded-4 mb-4" style="background: #fafafa;">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="fw-bold text-dark mb-0">
+                        <i class="bi bi-tags-fill me-1 text-warning"></i> Skema Harga Resmi Sesuai Kategori Akun
+                    </h6>
+                    <span class="badge bg-secondary bg-opacity-10 text-secondary">Transparan</span>
+                </div>
+                <p class="small text-muted mb-3">Perbandingan harga resmi untuk pelanggan Retail (Umum), Mitra Toko / Warung, dan Mitra Kafe / Horeca:</p>
+
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered align-middle mb-0" style="font-size: 0.85rem; background: #ffffff;">
+                        <thead class="table-light text-center">
+                            <tr>
+                                <th>Varian Kemasan</th>
+                                <th>Retail (Umum)</th>
+                                <th class="text-success bg-success bg-opacity-10">Mitra Toko</th>
+                                <th class="text-primary bg-primary bg-opacity-10">Mitra Kafe</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($product->variants as $var)
+                                <tr>
+                                    <td class="fw-semibold">{{ $var->variant_name }}</td>
+                                    <td class="text-center text-muted">Rp {{ number_format($var->selling_price, 0, ',', '.') }}</td>
+                                    <td class="text-center fw-bold text-success bg-success bg-opacity-10">
+                                        Rp {{ number_format($var->price_toko ?? $var->selling_price, 0, ',', '.') }}
+                                        @if(($var->price_toko ?? $var->selling_price) < $var->selling_price)
+                                            <span class="d-block badge bg-success text-white" style="font-size: 0.65rem;">
+                                                Hemat Rp {{ number_format($var->selling_price - $var->price_toko, 0, ',', '.') }}
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td class="text-center fw-bold text-primary bg-primary bg-opacity-10">
+                                        Rp {{ number_format($var->price_kafe ?? $var->price_toko ?? $var->selling_price, 0, ',', '.') }}
+                                        @if(($var->price_kafe ?? $var->selling_price) < $var->selling_price)
+                                            <span class="d-block badge bg-primary text-white" style="font-size: 0.65rem;">
+                                                Hemat Rp {{ number_format($var->selling_price - $var->price_kafe, 0, ',', '.') }}
+                                            </span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-2 text-muted small" style="font-size: 0.75rem;">
+                    <i class="bi bi-info-circle me-1"></i> Harga otomatis disesuaikan saat Anda login menggunakan akun Toko atau Kafe yang telah terdaftar.
                 </div>
             </div>
 
@@ -294,7 +386,7 @@
                                 <div class="mt-auto pt-2 border-top d-flex justify-content-between align-items-center">
                                     <div>
                                         <small class="text-muted d-block" style="font-size: 0.75rem;">Mulai dari</small>
-                                        <strong class="text-dark">Rp {{ number_format($rel->variants->min('selling_price') ?? 0, 0, ',', '.') }}</strong>
+                                        <strong class="text-dark">{{ $rel->getFormattedMinPriceFor($currentCustomerType) }}</strong>
                                     </div>
                                     <a href="{{ route('store.product', $rel->slug) }}" class="btn btn-sm btn-warning fw-bold text-dark">
                                         Lihat Detail
