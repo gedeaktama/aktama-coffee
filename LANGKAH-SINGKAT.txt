@@ -18,10 +18,9 @@ LANGKAH SINGKAT DEPLOY & UPDATE WEBSITE AKTAMA COFFEE (FOLDER: "coffee")
    ssh -p 65002 u107454400@147.93.80.47
    (Gunakan port dan username hosting Anda)
 
-5. Masuk ke direktori aplikasi di server:
-   cd "/home/u107454400/domains/aktama.com/public_html/coffee-source"
-   (atau jika diletakkan langsung di folder coffee:
-    cd "/home/u107454400/domains/aktama.com/public_html/coffee")
+5. Masuk ke direktori source code di server:
+   cd "/home/u107454400/domains/aktama.com/public_html/kopi-source"
+   (atau: cd "/home/u107454400/domains/aktama.com/public_html/coffee-source")
 
 6. Jalankan skrip otomatis deployment:
    bash scripts/linux/deploy-hosting.sh
