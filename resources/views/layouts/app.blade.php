@@ -359,6 +359,7 @@
                    request()->is('logistics*') || 
                    request()->is('finance*') || 
                    request()->is('reports*') ||
+                   request()->is('settings*') ||
                    request()->is('my-orders*');
 @endphp
 
@@ -603,6 +604,20 @@
                                     </a>
                                 </li>
                             @endif
+
+                            <!-- PENGATURAN SISTEM (Owner & Admin) -->
+                            @if(auth()->user()->hasRole(['owner', 'admin']))
+                                <li class="sidebar-group-title">Sistem &amp; Pengaturan</li>
+                                <li class="nav-item">
+                                    <a class="sidebar-item-link {{ request()->routeIs('settings.*') ? 'active' : '' }}" href="{{ route('settings.index') }}">
+                                        <i class="bi bi-sliders"></i>
+                                        <span>Pengaturan Sistem</span>
+                                        @if($isDevMode)
+                                            <span class="badge bg-danger ms-auto" style="font-size: 0.65rem;">DEV ON</span>
+                                        @endif
+                                    </a>
+                                </li>
+                            @endif
                         @endif
                     @endauth
                 </ul>
@@ -642,6 +657,23 @@
 
                 <!-- Aksi Kanan Topbar -->
                 <div class="d-flex align-items-center gap-2 gap-md-3">
+                    <!-- Quick Toggle Mode Pengembang (Owner & Admin) -->
+                    @auth
+                        @if(auth()->user()->hasRole(['owner', 'admin']))
+                            <form method="POST" action="{{ route('settings.dev_mode.toggle') }}" class="d-inline m-0">
+                                @csrf
+                                <input type="hidden" name="state" value="{{ $isDevMode ? '0' : '1' }}">
+                                <button type="submit" class="btn btn-sm {{ $isDevMode ? 'btn-danger' : 'btn-outline-secondary' }} d-flex align-items-center gap-1 shadow-sm px-2 py-1" title="{{ $isDevMode ? 'Mode Pengembang Aktif (Pembelian Dikunci). Klik untuk matikan.' : 'Mode Normal. Klik untuk aktifkan mode pengembang.' }}">
+                                    <i class="bi {{ $isDevMode ? 'bi-shield-lock-fill' : 'bi-shield-check' }}"></i>
+                                    <span class="d-none d-md-inline" style="font-size: 0.78rem;">Mode Pengembang:</span>
+                                    <span class="badge {{ $isDevMode ? 'bg-white text-danger fw-bold' : 'bg-secondary text-white' }}" style="font-size: 0.65rem;">
+                                        {{ $isDevMode ? 'ON' : 'OFF' }}
+                                    </span>
+                                </button>
+                            </form>
+                        @endif
+                    @endauth
+
                     <!-- Shortcut Web Toko -->
                     <a href="{{ route('store.catalog') }}" class="btn btn-sm btn-outline-secondary d-none d-sm-inline-flex align-items-center gap-1" title="Lihat Toko Online">
                         <i class="bi bi-shop"></i>
@@ -680,6 +712,13 @@
                                         <i class="bi bi-shop me-2 text-warning"></i> Etalase Toko Ritel
                                     </a>
                                 </li>
+                                @if(auth()->user()->hasRole(['owner', 'admin']))
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{{ route('settings.index') }}">
+                                            <i class="bi bi-sliders me-2 text-primary"></i> Pengaturan &amp; Dev Mode
+                                        </a>
+                                    </li>
+                                @endif
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form method="POST" action="{{ route('logout') }}" class="m-0">
@@ -737,6 +776,27 @@
     <!-- ============================================================== -->
     <!-- MODE 2: STOREFRONT & PUBLIK (FULL-WIDTH LUXURY COFFEE THEME)   -->
     <!-- ============================================================== -->
+    @if($isDevMode)
+        <!-- BANNER PERINGATAN MODE PENGEMBANG PADA ETALASE TOKO -->
+        <div class="bg-danger text-white py-2 px-3 text-center shadow-sm" style="font-size: 0.85rem; border-bottom: 2px solid rgba(0,0,0,0.2);">
+            <div class="container d-flex flex-wrap align-items-center justify-content-center gap-2">
+                <i class="bi bi-shield-lock-fill fs-6"></i>
+                <span><strong>MODE PENGEMBANG SEDANG AKTIF:</strong> Seluruh transaksi pembelian etalase toko dinonaktifkan sementara untuk pengujian &amp; pemeliharaan.</span>
+                @auth
+                    @if(auth()->user()->hasRole(['owner', 'admin']))
+                        <form method="POST" action="{{ route('settings.dev_mode.toggle') }}" class="d-inline m-0 ms-2">
+                            @csrf
+                            <input type="hidden" name="state" value="0">
+                            <button type="submit" class="btn btn-sm btn-light py-0 px-2 fw-bold text-danger border-0 shadow-sm" style="font-size: 0.75rem;">
+                                <i class="bi bi-toggle-on"></i> Matikan Mode Sekarang
+                            </button>
+                        </form>
+                    @endif
+                @endauth
+            </div>
+        </div>
+    @endif
+
     <div class="d-flex flex-column min-height-100vh" style="min-height: 100vh;">
         <!-- Top Navbar untuk Pengunjung & Pelanggan Toko -->
         <nav class="navbar navbar-expand-lg navbar-dark store-navbar sticky-top">

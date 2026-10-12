@@ -129,6 +129,16 @@
 
             <!-- Form Pilih Varian & Tambah ke Keranjang -->
             <div class="card p-4 border border-light-subtle shadow-sm rounded-4 mb-4" style="background: #ffffff;">
+                @if($isDevMode)
+                    <div class="alert alert-danger d-flex align-items-center rounded-3 p-3 mb-3 border-0" style="background-color: #fee2e2; border-left: 5px solid #ef4444 !important;">
+                        <i class="bi bi-shield-lock-fill fs-3 text-danger me-3 flex-shrink-0"></i>
+                        <div>
+                            <strong class="d-block text-danger">Mode Pengembang Aktif &mdash; Pembelian Dinonaktifkan</strong>
+                            <span class="small text-danger text-opacity-75">Toko sedang dalam pemeliharaan. Anda tetap dapat melihat spesifikasi harga &amp; kemasan, namun tombol pembelian dikunci sementara.</span>
+                        </div>
+                    </div>
+                @endif
+
                 <form method="POST" action="{{ route('store.cart.add') }}" id="addToCartForm">
                     @csrf
                     
@@ -166,15 +176,21 @@
                             <div class="col-sm-4">
                                 <label class="form-label small text-muted mb-1">Jumlah Pesanan:</label>
                                 <div class="input-group">
-                                    <button class="btn btn-outline-secondary" type="button" onclick="decrementQty()">-</button>
-                                    <input type="number" id="qtyInput" name="quantity" class="form-control text-center fw-bold" value="1" min="1" required>
-                                    <button class="btn btn-outline-secondary" type="button" onclick="incrementQty()">+</button>
+                                    <button class="btn btn-outline-secondary" type="button" onclick="decrementQty()" {{ $isDevMode ? 'disabled' : '' }}>-</button>
+                                    <input type="number" id="qtyInput" name="quantity" class="form-control text-center fw-bold" value="1" min="1" {{ $isDevMode ? 'disabled' : 'required' }}>
+                                    <button class="btn btn-outline-secondary" type="button" onclick="incrementQty()" {{ $isDevMode ? 'disabled' : '' }}>+</button>
                                 </div>
                             </div>
                             <div class="col-sm-8 pt-sm-4">
-                                <button type="submit" class="btn btn-warning btn-lg w-100 fw-bold text-dark shadow-sm py-2">
-                                    <i class="bi bi-cart-plus me-1"></i> Masukkan ke Keranjang
-                                </button>
+                                @if($isDevMode)
+                                    <button type="button" class="btn btn-secondary btn-lg w-100 fw-bold py-2 opacity-75 shadow-sm" disabled title="Mode Pengembang Aktif (Pembelian Dinonaktifkan)">
+                                        <i class="bi bi-lock-fill me-1"></i> Pembelian Dinonaktifkan
+                                    </button>
+                                @else
+                                    <button type="submit" class="btn btn-warning btn-lg w-100 fw-bold text-dark shadow-sm py-2">
+                                        <i class="bi bi-cart-plus me-1"></i> Masukkan ke Keranjang
+                                    </button>
+                                @endif
                             </div>
                         </div>
                     @else

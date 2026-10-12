@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AppSetting;
 use App\Models\Category;
 use App\Models\Customer;
 use App\Models\Order;
@@ -92,6 +93,10 @@ class StoreController extends Controller
      */
     public function addToCart(Request $request)
     {
+        if (AppSetting::isDevMode()) {
+            return back()->with('error', 'Mode Pengembang sedang aktif. Seluruh fitur pembelian dan keranjang belanja dinonaktifkan sementara.');
+        }
+
         $validated = $request->validate([
             'product_variant_id' => ['required', 'exists:product_variants,id'],
             'quantity' => ['required', 'integer', 'min:1'],
@@ -178,6 +183,10 @@ class StoreController extends Controller
      */
     public function checkout()
     {
+        if (AppSetting::isDevMode()) {
+            return redirect()->route('store.catalog')->with('error', 'Mode Pengembang sedang aktif. Halaman checkout dinonaktifkan sementara.');
+        }
+
         $cart = session()->get('cart', []);
 
         if (empty($cart)) {
@@ -203,6 +212,10 @@ class StoreController extends Controller
      */
     public function processCheckout(Request $request)
     {
+        if (AppSetting::isDevMode()) {
+            return redirect()->route('store.catalog')->with('error', 'Mode Pengembang sedang aktif. Transaksi pesanan dinonaktifkan sementara.');
+        }
+
         $cart = session()->get('cart', []);
 
         if (empty($cart)) {

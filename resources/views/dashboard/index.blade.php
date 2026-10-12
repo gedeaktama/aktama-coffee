@@ -116,6 +116,33 @@
         </div>
     </div>
 
+    @if($isDevMode)
+        <!-- PERINGATAN DASHBOARD: MODE PENGEMBANG SEDANG AKTIF -->
+        <div class="alert alert-danger d-flex flex-column flex-md-row align-items-md-center justify-content-between p-3 mb-4 rounded-4 shadow-sm border-0" style="background-color: #fee2e2; border-left: 6px solid #ef4444 !important;">
+            <div class="d-flex align-items-center gap-3 mb-2 mb-md-0">
+                <i class="bi bi-shield-lock-fill fs-2 text-danger flex-shrink-0"></i>
+                <div>
+                    <h6 class="fw-bold text-danger mb-0">MODE PENGEMBANG SEDANG AKTIF (PEMBELIAN DIKUNCI)</h6>
+                    <small class="text-danger text-opacity-75">Seluruh transaksi pembelian dan keranjang etalase toko ritel saat ini dinonaktifkan untuk publik.</small>
+                </div>
+            </div>
+            @if($user->hasRole(['owner', 'admin']))
+                <div class="d-flex gap-2">
+                    <form method="POST" action="{{ route('settings.dev_mode.toggle') }}" class="m-0">
+                        @csrf
+                        <input type="hidden" name="state" value="0">
+                        <button type="submit" class="btn btn-sm btn-success fw-bold px-3 shadow-sm">
+                            <i class="bi bi-toggle-on me-1"></i> Buka Toko (Matikan Mode)
+                        </button>
+                    </form>
+                    <a href="{{ route('settings.index') }}" class="btn btn-sm btn-outline-danger fw-bold">
+                        <i class="bi bi-sliders me-1"></i> Kelola di Pengaturan
+                    </a>
+                </div>
+            @endif
+        </div>
+    @endif
+
     <!-- 2. EXECUTIVE KPI METRICS (FINANCIAL & OPERATIONAL) -->
     <div class="row g-3 mb-4">
         <!-- KPI 1: Total Omset Penjualan -->
@@ -247,6 +274,15 @@
                     <a href="{{ route('reports.profit') }}" class="action-quick-btn">
                         <i class="bi bi-graph-up-arrow text-success"></i>
                         <span>Laba Kotor &amp; HPP</span>
+                    </a>
+                </div>
+            @endif
+
+            @if($user->hasRole(['owner', 'admin']))
+                <div class="col-sm-6 col-md-4 col-xl-2">
+                    <a href="{{ route('settings.index') }}" class="action-quick-btn">
+                        <i class="bi bi-sliders text-danger"></i>
+                        <span>Pengaturan &amp; Dev</span>
                     </a>
                 </div>
             @endif

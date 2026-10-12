@@ -288,6 +288,15 @@
             </div>
         </div>
 
+        @if($isDevMode)
+            <div class="alert alert-danger d-flex align-items-center rounded-3 p-3 mb-4 border-0" style="background-color: #fee2e2; border-left: 5px solid #ef4444 !important;">
+                <i class="bi bi-shield-lock-fill fs-3 text-danger me-3 flex-shrink-0"></i>
+                <div class="small text-danger">
+                    <strong>Mode Pengembang Aktif:</strong> Etalase produk saat ini dalam mode pratinjau. Seluruh transaksi pembelian dinonaktifkan sementara.
+                </div>
+            </div>
+        @endif
+
         <div class="row g-4">
             @foreach($featuredProducts as $prod)
                 <div class="col-sm-6 col-lg-3">
@@ -323,9 +332,15 @@
                                     </span>
                                 </div>
                                 <div class="d-flex gap-2">
-                                    <a href="{{ route('store.product', $prod->slug) }}" class="btn btn-warning btn-sm w-100 fw-bold text-dark shadow-sm">
-                                        <i class="bi bi-eye me-1"></i> Detail &amp; Beli
-                                    </a>
+                                    @if($isDevMode)
+                                        <a href="{{ route('store.product', $prod->slug) }}" class="btn btn-outline-dark btn-sm w-100 fw-bold shadow-sm">
+                                            <i class="bi bi-eye me-1"></i> Lihat Spesifikasi
+                                        </a>
+                                    @else
+                                        <a href="{{ route('store.product', $prod->slug) }}" class="btn btn-warning btn-sm w-100 fw-bold text-dark shadow-sm">
+                                            <i class="bi bi-eye me-1"></i> Detail &amp; Beli
+                                        </a>
+                                    @endif
                                 </div>
                             </div>
                         </div>

@@ -13,6 +13,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\SupplierController;
 use Illuminate\Support\Facades\Route;
@@ -264,5 +265,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard/finance-zone', function () {
             return response()->json(['status' => 'success', 'message' => 'Akses Khusus Finance Disetujui']);
         })->name('dashboard.finance');
+    });
+
+    // PENGATURAN SISTEM & MODE PENGEMBANG (Owner & Admin)
+    Route::middleware('role:owner,admin')->group(function () {
+        Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+        Route::post('/settings/dev-mode/toggle', [SettingController::class, 'toggleDevMode'])->name('settings.dev_mode.toggle');
     });
 });

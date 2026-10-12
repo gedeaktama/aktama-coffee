@@ -123,9 +123,19 @@
                         <span class="fw-bold text-success fs-5">Rp {{ number_format($total + 15000, 0, ',', '.') }}</span>
                     </div>
 
-                    <a href="{{ route('store.checkout') }}" class="btn btn-coffee w-100 py-2 fw-bold shadow-sm">
-                        <i class="bi bi-credit-card me-1"></i> Lanjut ke Checkout &rarr;
-                    </a>
+                    @if($isDevMode)
+                        <div class="alert alert-danger p-2 mb-3 rounded-3 small border-0" style="background-color: #fee2e2; border-left: 4px solid #ef4444 !important;">
+                            <i class="bi bi-shield-lock-fill text-danger me-1"></i>
+                            <strong>Mode Pengembang:</strong> Checkout dinonaktifkan sementara.
+                        </div>
+                        <button type="button" class="btn btn-secondary w-100 py-2 fw-bold opacity-75 shadow-sm" disabled title="Mode Pengembang Aktif">
+                            <i class="bi bi-lock-fill me-1"></i> Checkout Dinonaktifkan
+                        </button>
+                    @else
+                        <a href="{{ route('store.checkout') }}" class="btn btn-coffee w-100 py-2 fw-bold shadow-sm">
+                            <i class="bi bi-credit-card me-1"></i> Lanjut ke Checkout &rarr;
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>

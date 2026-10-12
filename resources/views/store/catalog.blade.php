@@ -73,6 +73,17 @@
         </div>
     </div>
 
+    @if($isDevMode)
+        <!-- Banner Peringatan Mode Pengembang -->
+        <div class="alert alert-danger d-flex align-items-center rounded-4 shadow-sm mb-4 border-0" style="background-color: #fee2e2; border-left: 6px solid #ef4444 !important;" role="alert">
+            <i class="bi bi-shield-lock-fill fs-2 me-3 flex-shrink-0 text-danger"></i>
+            <div class="flex-grow-1">
+                <h6 class="alert-heading fw-bold text-danger mb-1">Mode Pengembang Aktif &mdash; Transaksi Pembelian Dinonaktifkan</h6>
+                <p class="small text-danger text-opacity-75 mb-0">Toko saat ini sedang dalam mode pengujian &amp; pemeliharaan. Anda dapat melihat spesifikasi dan galeri foto produk, namun tombol pembelian produk dinonaktifkan sementara.</p>
+            </div>
+        </div>
+    @endif
+
     <!-- Filter Bar -->
     <div class="card p-3 mb-4 border border-light-subtle shadow-sm rounded-4">
         <form method="GET" action="{{ route('store.catalog') }}" class="row g-2 align-items-center">
@@ -150,33 +161,53 @@
                                 </a>
                             </div>
                             @if($product->variants->count() > 0)
-                                <form method="POST" action="{{ route('store.cart.add') }}">
-                                    @csrf
+                                @if($isDevMode)
                                     <div class="mb-2">
-                                        <select name="product_variant_id" class="form-select form-select-sm" required>
+                                        <select class="form-select form-select-sm bg-light" disabled>
                                             @foreach($product->variants as $variant)
-                                                <option value="{{ $variant->id }}" {{ $variant->current_stock <= 0 ? 'disabled' : '' }}>
-                                                    {{ $variant->variant_name }} ({{ $variant->package_weight_grams }}g) &mdash; 
-                                                    {{ $variant->formatted_price }}
-                                                    @if($variant->current_stock <= 0)
-                                                        [HABIS]
-                                                    @else
-                                                        (Stok: {{ $variant->current_stock }} pack)
-                                                    @endif
+                                                <option>
+                                                    {{ $variant->variant_name }} ({{ $variant->package_weight_grams }}g) &mdash; {{ $variant->formatted_price }}
                                                 </option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <div class="d-flex gap-2">
-                                        <div class="input-group input-group-sm" style="width: 100px;">
-                                            <span class="input-group-text bg-light text-muted px-2">Qty</span>
-                                            <input type="number" name="quantity" class="form-control text-center px-1" value="1" min="1" required>
-                                        </div>
-                                        <button type="submit" class="btn btn-sm btn-warning fw-bold text-dark flex-grow-1 shadow-sm">
-                                            <i class="bi bi-cart-plus me-1"></i> Beli Sekarang
+                                        <button type="button" class="btn btn-sm btn-secondary w-100 fw-bold opacity-75" disabled title="Mode Pengembang Aktif (Pembelian Dinonaktifkan)">
+                                            <i class="bi bi-lock-fill me-1"></i> Pembelian Dinonaktifkan
                                         </button>
+                                        <a href="{{ route('store.product', $product->slug) }}" class="btn btn-sm btn-outline-dark" title="Pratinjau Detail">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
                                     </div>
-                                </form>
+                                @else
+                                    <form method="POST" action="{{ route('store.cart.add') }}">
+                                        @csrf
+                                        <div class="mb-2">
+                                            <select name="product_variant_id" class="form-select form-select-sm" required>
+                                                @foreach($product->variants as $variant)
+                                                    <option value="{{ $variant->id }}" {{ $variant->current_stock <= 0 ? 'disabled' : '' }}>
+                                                        {{ $variant->variant_name }} ({{ $variant->package_weight_grams }}g) &mdash; 
+                                                        {{ $variant->formatted_price }}
+                                                        @if($variant->current_stock <= 0)
+                                                            [HABIS]
+                                                        @else
+                                                            (Stok: {{ $variant->current_stock }} pack)
+                                                        @endif
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="d-flex gap-2">
+                                            <div class="input-group input-group-sm" style="width: 100px;">
+                                                <span class="input-group-text bg-light text-muted px-2">Qty</span>
+                                                <input type="number" name="quantity" class="form-control text-center px-1" value="1" min="1" required>
+                                            </div>
+                                            <button type="submit" class="btn btn-sm btn-warning fw-bold text-dark flex-grow-1 shadow-sm">
+                                                <i class="bi bi-cart-plus me-1"></i> Beli Sekarang
+                                            </button>
+                                        </div>
+                                    </form>
+                                @endif
                             @else
                                 <span class="badge bg-secondary">Varian Belum Tersedia</span>
                             @endif
