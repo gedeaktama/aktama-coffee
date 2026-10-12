@@ -10,8 +10,12 @@ set -e
 # ==============================================================================
 
 # Direktori Proyek di Server Niagahoster / cPanel (Pola Aktama Digital)
-# Default: Source code di 'coffee-source' dan web publik di 'coffee'
-DEFAULT_APP_ROOT="/home/u107454400/domains/aktama.com/public_html/coffee-source"
+# Default: Source code di 'kopi-source' (atau 'coffee-source') dan web publik di 'coffee'
+if [ -d "/home/u107454400/domains/aktama.com/public_html/kopi-source" ]; then
+    DEFAULT_APP_ROOT="/home/u107454400/domains/aktama.com/public_html/kopi-source"
+else
+    DEFAULT_APP_ROOT="/home/u107454400/domains/aktama.com/public_html/coffee-source"
+fi
 DEFAULT_WEB_ROOT="/home/u107454400/domains/aktama.com/public_html/coffee"
 
 # Auto-deteksi jika skrip dijalankan dari dalam direktori source proyek
@@ -96,19 +100,20 @@ if [ "$WEB_ROOT" != "$APP_ROOT/public" ] && [ -d "$WEB_ROOT" ]; then
     cp -r public/. "$WEB_ROOT"/
 
     # Buat file index.php terarah jika belum ada
+    APP_DIR_NAME="$(basename "$APP_ROOT")"
     cat > "$WEB_ROOT/index.php" <<PHP
 <?php
 use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
-if (file_exists(\$maintenance = __DIR__.'/../coffee-source/storage/framework/maintenance.php')) {
+if (file_exists(\$maintenance = __DIR__.'/../$APP_DIR_NAME/storage/framework/maintenance.php')) {
     require \$maintenance;
 }
 
-require __DIR__.'/../coffee-source/vendor/autoload.php';
+require __DIR__.'/../$APP_DIR_NAME/vendor/autoload.php';
 
-\$app = require_once __DIR__.'/../coffee-source/bootstrap/app.php';
+\$app = require_once __DIR__.'/../$APP_DIR_NAME/bootstrap/app.php';
 
 \$app->handleRequest(Request::capture());
 PHP
