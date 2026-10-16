@@ -226,6 +226,7 @@ Setelah database di-import, Anda dapat langsung masuk ke dashboard administrasi 
 
 | Gejala Masalah | Penyebab Utama | Solusi |
 | :--- | :--- | :--- |
+| **Your Composer dependencies require a PHP version ">= 8.2.0". You are running 7.4.33.** | Terminal SSH server cPanel secara default masih menggunakan binary `/usr/bin/php` versi 7.4 | Jalankan di terminal SSH: `echo "alias php='/usr/local/bin/ea-php82'" >> ~/.bashrc && source ~/.bashrc` (atau untuk CloudLinux: `echo "alias php='/opt/alt/php82/usr/bin/php'" >> ~/.bashrc && source ~/.bashrc`). Atau di cPanel masuk menu **MultiPHP Manager** dan ubah domain ke PHP 8.2. |
 | **500 Internal Server Error** | Folder `storage/` atau `bootstrap/cache/` tidak memiliki izin tulis | Ubah permission folder `storage/` dan `bootstrap/cache/` menjadi `775` (atau `755`) via File Manager cPanel. |
 | **Gambar Produk 404 Tidak Muncul** | Symlink `storage` belum dibuat atau path belum mengarah ke target yang benar | Jalankan Langkah 5 (Opsi A via Terminal atau Opsi B via `storage-link-runner.php`). Pastikan file foto kemasan ada di `public/images/products/`. |
 | **Halaman Error: "Vite Manifest Not Found"** | File asset Vite belum ter-build | Aplikasi menggunakan styling Bootstrap CDN dan Vanilla CSS independen, sehingga tidak bergantung pada Vite compile di server. |

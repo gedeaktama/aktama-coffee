@@ -36,25 +36,60 @@ echo "=========================================================="
 
 cd "$APP_ROOT"
 
-# 1. Deteksi Binary PHP (Dukungan CloudLinux Alt-PHP Niagahoster & Standar cPanel)
-PHP_BIN="php"
-if [ -x "/opt/alt/php83/usr/bin/php" ]; then
-    PHP_BIN="/opt/alt/php83/usr/bin/php"
-elif [ -x "/opt/alt/php82/usr/bin/php" ]; then
-    PHP_BIN="/opt/alt/php82/usr/bin/php"
-elif [ -x "/usr/local/bin/php" ]; then
-    PHP_BIN="/usr/local/bin/php"
+# 1. Deteksi Binary PHP 8.2+ (Dukungan CloudLinux, EasyApache cPanel, Alt-PHP, dan Standar Linux)
+PHP_BIN=""
+CANDIDATES=(
+    "/usr/local/bin/ea-php83"
+    "/usr/local/bin/ea-php82"
+    "/opt/alt/php83/usr/bin/php"
+    "/opt/alt/php82/usr/bin/php"
+    "/opt/cpanel/ea-php83/root/usr/bin/php"
+    "/opt/cpanel/ea-php82/root/usr/bin/php"
+    "/usr/local/bin/php83"
+    "/usr/local/bin/php82"
+    "/usr/bin/ea-php83"
+    "/usr/bin/ea-php82"
+    "/usr/bin/php83"
+    "/usr/bin/php82"
+    "$(which php8.3 2>/dev/null || true)"
+    "$(which php8.2 2>/dev/null || true)"
+    "$(which php 2>/dev/null || true)"
+    "/usr/local/bin/php"
+    "/usr/bin/php"
+)
+
+for candidate in "${CANDIDATES[@]}"; do
+    if [ -n "$candidate" ] && [ -x "$candidate" ]; then
+        PHP_VER_ID=$("$candidate" -r 'echo PHP_VERSION_ID;' 2>/dev/null || echo "0")
+        if [ "$PHP_VER_ID" -ge 80200 ] 2>/dev/null; then
+            PHP_BIN="$candidate"
+            break
+        fi
+    fi
+done
+
+if [ -z "$PHP_BIN" ]; then
+    echo "=========================================================="
+    echo "  [ERROR] PHP versi >= 8.2 tidak ditemukan di server!"
+    echo "  Sistem mendeteksi PHP default masih versi lama."
+    echo "  Silakan ubah versi PHP di cPanel -> MultiPHP Manager /"
+    echo "  Select PHP Version menjadi PHP 8.2 atau PHP 8.3."
+    echo "=========================================================="
+    exit 1
 fi
-echo "==> Menggunakan PHP: $($PHP_BIN -v | head -n 1)"
+
+echo "==> Menggunakan PHP 8.2+: $($PHP_BIN -v | head -n 1)"
 
 # 2. Deteksi Binary Composer
-COMPOSER_BIN="composer"
+COMPOSER_PATH=""
 if command -v composer2 >/dev/null 2>&1; then
-    COMPOSER_BIN="$(command -v composer2)"
+    COMPOSER_PATH="$(command -v composer2)"
 elif command -v composer >/dev/null 2>&1; then
-    COMPOSER_BIN="$(command -v composer)"
+    COMPOSER_PATH="$(command -v composer)"
+elif [ -f "/usr/local/bin/composer" ]; then
+    COMPOSER_PATH="/usr/local/bin/composer"
 elif [ -f "$APP_ROOT/composer.phar" ]; then
-    COMPOSER_BIN="$PHP_BIN $APP_ROOT/composer.phar"
+    COMPOSER_PATH="$APP_ROOT/composer.phar"
 fi
 
 # 3. Tarik update kode terbaru dari repositori GitHub
@@ -78,11 +113,19 @@ mkdir -p storage/framework/cache/data storage/framework/sessions storage/framewo
 chmod -R 775 storage bootstrap/cache 2>/dev/null || true
 
 # 4. Install PHP Dependencies Produksi (Vendor Laravel)
-echo "==> [2/6] Memperbarui paket Composer (tanpa dev)..."
-if command -v "$COMPOSER_BIN" >/dev/null 2>&1 || [ -f "$APP_ROOT/composer.phar" ]; then
-    "$PHP_BIN" $COMPOSER_BIN install --no-dev --prefer-dist --optimize-autoloader --no-interaction
+echo "==> [2/6] Memperbarui paket Composer dengan $($PHP_BIN -v | head -n 1 | awk '{print $1,$2}')..."
+if [ -n "$COMPOSER_PATH" ] && [ -f "$COMPOSER_PATH" ]; then
+    "$PHP_BIN" "$COMPOSER_PATH" install --no-dev --prefer-dist --optimize-autoloader --no-interaction
+elif command -v composer >/dev/null 2>&1; then
+    "$PHP_BIN" "$(command -v composer)" install --no-dev --prefer-dist --optimize-autoloader --no-interaction
 else
-    echo "    Composer tidak ditemukan, melewati composer install."
+    echo "    Mengunduh composer.phar versi terbaru..."
+    "$PHP_BIN" -r "copy('https://getcomposer.org/composer.phar', 'composer.phar');" || true
+    if [ -f "$APP_ROOT/composer.phar" ]; then
+        "$PHP_BIN" "$APP_ROOT/composer.phar" install --no-dev --prefer-dist --optimize-autoloader --no-interaction
+    else
+        echo "    Composer tidak ditemukan, melewati composer install."
+    fi
 fi
 
 # Generate APP_KEY jika belum ada (mengatasi 500 Server Error)
@@ -97,11 +140,9 @@ fi
 echo "==> [3/6] Menjalankan migrasi database..."
 "$PHP_BIN" artisan migrate --force
 
-# Jika database baru dan produk masih kosong, otomatis isi data resmi & akun staf
-if ! "$PHP_BIN" artisan tinker --execute="exit(App\Models\Product::count() > 0 ? 0 : 1);" >/dev/null 2>&1; then
-    echo "    Mengisi data awal produk resmi & akun staf (db:seed)..."
-    "$PHP_BIN" artisan db:seed --force || true
-fi
+# Sinkronkan data produk resmi & Alfamidi ke database
+echo "==> Menyinkronkan katalog produk resmi & Alfamidi ke database..."
+"$PHP_BIN" artisan db:seed --class=AlfamidiProductSeeder --force || true
 
 # 6. Pembersihan dan Pembangunan Cache Produksi (High Performance)
 echo "==> [4/6] Membangun cache performa tinggi (optimize & cache)..."

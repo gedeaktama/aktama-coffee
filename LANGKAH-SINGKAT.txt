@@ -25,6 +25,12 @@ LANGKAH SINGKAT DEPLOY & UPDATE WEBSITE AKTAMA COFFEE (FOLDER: "coffee")
 6. Jalankan skrip otomatis deployment:
    bash scripts/linux/deploy-hosting.sh
 
+   >>> JIKA MUNCUL ERROR: 'You are running 7.4.33': <<<
+   Di terminal SSH cPanel, ketik 1 baris ini untuk mengaktifkan PHP 8.2:
+   echo "alias php='/usr/local/bin/ea-php82'" >> ~/.bashrc && source ~/.bashrc
+   (atau jika server CloudLinux: echo "alias php='/opt/alt/php82/usr/bin/php'" >> ~/.bashrc && source ~/.bashrc)
+   Lalu ulangi: bash scripts/linux/deploy-hosting.sh
+
 7. Selesai! Buka dan periksa website di browser:
    https://aktama.com/coffee  atau  https://coffee.aktama.com
 
