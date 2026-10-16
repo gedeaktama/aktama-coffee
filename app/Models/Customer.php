@@ -32,6 +32,7 @@ class Customer extends Model
     }
 
     public const STORE_CHAIN_ALFAMART = 'alfamart';
+    public const STORE_CHAIN_ALFAMIDI = 'alfamidi';
     public const STORE_CHAIN_INDOMARET = 'indomaret';
     public const STORE_CHAIN_KELONTONG = 'kelontong';
     public const STORE_CHAIN_KAFE = 'kafe';
@@ -39,6 +40,7 @@ class Customer extends Model
 
     public const STORE_CHAINS = [
         self::STORE_CHAIN_ALFAMART => 'Alfamart',
+        self::STORE_CHAIN_ALFAMIDI => 'Alfamidi',
         self::STORE_CHAIN_INDOMARET => 'Indomaret',
         self::STORE_CHAIN_KELONTONG => 'Toko Kelontong / Grosir',
         self::STORE_CHAIN_KAFE => 'Kafe / Kedai Kopi',

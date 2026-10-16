@@ -53,6 +53,7 @@
                             <label class="form-label fw-semibold">Jaringan / Brand Toko</label>
                             <select name="store_chain" class="form-select">
                                 <option value="lainnya" {{ old('store_chain', $customer->store_chain) == 'lainnya' ? 'selected' : '' }}>Lainnya / Mitra Bebas</option>
+                                <option value="alfamidi" {{ old('store_chain', $customer->store_chain) == 'alfamidi' ? 'selected' : '' }}>Alfamidi</option>
                                 <option value="alfamart" {{ old('store_chain', $customer->store_chain) == 'alfamart' ? 'selected' : '' }}>Alfamart</option>
                                 <option value="indomaret" {{ old('store_chain', $customer->store_chain) == 'indomaret' ? 'selected' : '' }}>Indomaret</option>
                                 <option value="kelontong" {{ old('store_chain', $customer->store_chain) == 'kelontong' ? 'selected' : '' }}>Toko Kelontong / Grosir</option>

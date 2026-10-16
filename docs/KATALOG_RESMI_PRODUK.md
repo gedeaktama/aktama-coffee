@@ -108,9 +108,37 @@ Kopi ATAPMERAH hadir dalam kemasan 35 gram yang praktis untuk dinikmati sehari-h
 
 ---
 
+---
+
+## 5. Daftar Harga Resmi PT Kopi Bintang Harapan — Ritel Modern Alfamidi (September 2026)
+
+Berdasarkan Surat Resmi Pemberitahuan Kenaikan Harga Produk dari **PT. KOPI BINTANG HARAPAN** (Palu, 14 September 2026) kepada **Pimpinan PT. Midi Utama Indonesia Tbk (Alfamidi)**:
+
+### A. Kategori Kopi Robusta (Bintang Harapan)
+
+| Netto | Isi | Volume / Karton (Bal) | Barcode Resmi | Ukuran Bungkus | Ukuran Pak/Bal | Harga Toko / Alfamidi (Bungkus)* | Harga Toko / Alfamidi (Pak/Bal)* | HET Rekomendasi Ritel |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **50 Gr** | 1 Q | 25 Bks | `8994418101065` | 8,5 x 16 cm | 30 x 15,5 cm | **Rp 5.675,68** | **Rp 141.891,89** | Rp 7.000 |
+| **125 Gr** | 1 Q | 50 bks | `8994418101713` | 20 x 15 cm | 48 x 40 cm | **Rp 14.189,00** | **Rp 709.450,00** | Rp 17.500 |
+| **250 Gr** | 1 Q | 50 bks | `8994418101102` | 22 x 14 cm | 58 x 40 cm | **Rp 28.378,00** | **Rp 1.418.900,00** | Rp 35.000 |
+| **400 Gr** | 1 Q | 30 bks | `8994418101119` | 28 x 14 cm | 40 x 42 cm | **Rp 43.243,00** | **Rp 1.297.290,00** | Rp 53.000 |
+
+### B. Kategori Kopi Arabica (Bintang Harapan)
+
+| Netto | Isi | Volume / Karton (Bal) | Barcode Resmi | Ukuran Bungkus | Ukuran Pak/Bal | Harga Toko / Alfamidi (Bungkus)* | Harga Toko / Alfamidi (Pak/Bal)* | HET Rekomendasi Ritel |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **125 Gr** | 1 Q | 50 bks | `8994418101720` | 20 x 15 cm | 48 x 40 cm | **Rp 16.554,00** | **Rp 827.700,00** | Rp 21.000 |
+| **250 Gr** | 1 Q | 50 bks | `8994418101348` | 22 x 14 cm | 58 x 40 cm | **Rp 33.108,00** | **Rp 1.655.400,00** | Rp 42.000 |
+| **400 Gr** | 1 Q | 30 bks | `8994418101355` | 28 x 14 cm | 40 x 42 cm | **Rp 50.450,00** | **Rp 1.513.500,00** | Rp 63.000 |
+
+> *\*) Catatan Resmi:* Harga pada tabel di atas belum termasuk PPN dan belum termasuk diskon 5%. Seluruh data telah diinput ke dalam database aplikasi dan siap digunakan untuk transaksi grosir B2B, konsinyasi, dan distribusi.
+
+---
+
 ## Saran penggunaan di website
 
 - Gunakan foto depan sebagai gambar utama produk.
 - Gunakan foto belakang sebagai foto tambahan pada halaman detail.
-- Periksa berat bersih, komposisi, kode produksi, tanggal kedaluwarsa, nomor izin edar, logo halal, barcode, dan QR code dengan kemasan fisik sebelum memublikasikan informasi.
+- Barcode resmi EAN-13 pada tabel di atas dapat langsung discan oleh kasir toko ritel modern atau kurir armada saat pengiriman.
 - Sesuaikan harga, stok, dan ongkos kirim berdasarkan data penjualan aktual.
+
