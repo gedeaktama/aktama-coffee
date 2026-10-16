@@ -132,10 +132,10 @@
 
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Sales Penanggung Jawab</label>
-                        <select name="sales_user_id" class="form-select">
+                        <select name="sales_user_id" class="form-select form-select-searchable" data-placeholder="-- Cari Sales PIC (Nama / Email) --">
                             <option value="">-- Tanpa Sales / Mandiri --</option>
                             @foreach($salesList as $sales)
-                                <option value="{{ $sales->id }}" {{ old('sales_user_id') == $sales->id ? 'selected' : '' }}>
+                                <option value="{{ $sales->id }}" data-role="Sales" data-email="{{ $sales->email }}" {{ old('sales_user_id') == $sales->id ? 'selected' : '' }}>
                                     {{ $sales->name }} ({{ $sales->email }})
                                 </option>
                             @endforeach

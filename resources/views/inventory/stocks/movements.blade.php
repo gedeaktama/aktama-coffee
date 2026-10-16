@@ -35,10 +35,10 @@
     <div class="card card-custom p-3 mb-4">
         <form method="GET" action="{{ route('inventory.movements') }}" class="row g-2 align-items-center">
             <div class="col-md-5">
-                <select name="variant_id" class="form-select">
+                <select name="variant_id" class="form-select form-select-searchable" data-placeholder="-- Cari Varian Kopi / SKU --">
                     <option value="">-- Semua Varian Kopi / SKU --</option>
                     @foreach($variants as $v)
-                        <option value="{{ $v->id }}" {{ request('variant_id') == $v->id ? 'selected' : '' }}>
+                        <option value="{{ $v->id }}" data-sku="{{ $v->sku }}" {{ request('variant_id') == $v->id ? 'selected' : '' }}>
                             {{ $v->sku }} &mdash; {{ $v->product->name }} ({{ $v->variant_name }}, {{ $v->package_weight_grams }}g)
                         </option>
                     @endforeach

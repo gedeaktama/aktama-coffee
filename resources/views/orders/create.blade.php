@@ -54,7 +54,7 @@
 
                     <div class="mb-3">
                         <label for="customer_id" class="form-label fw-semibold">Pilih Mitra Pelanggan B2B <span class="text-danger">*</span></label>
-                        <select name="customer_id" id="customer_id" class="form-select @error('customer_id') is-invalid @enderror" required>
+                        <select name="customer_id" id="customer_id" class="form-select form-select-searchable @error('customer_id') is-invalid @enderror" data-placeholder="-- Ketik nama toko, cafe, PIC, atau alamat --" required>
                             <option value="">-- Pilih Pelanggan B2B --</option>
                             @foreach($customers as $c)
                                 <option value="{{ $c->id }}" 
@@ -129,13 +129,21 @@
             <!-- Right Column: Products Table & Summary -->
             <div class="col-lg-8">
                 <div class="card card-custom p-4 mb-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
-                        <h5 class="fw-bold text-dark mb-0">
-                            <i class="bi bi-box-seam me-2 text-primary"></i> Varian Kopi yang Dipesan
-                        </h5>
-                        <button type="button" class="btn btn-sm btn-outline-success" id="btnAddRow">
-                            <i class="bi bi-plus-circle me-1"></i> Tambah Item Kopi
-                        </button>
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3 pb-2 border-bottom">
+                        <div>
+                            <h5 class="fw-bold text-dark mb-0">
+                                <i class="bi bi-box-seam me-2 text-primary"></i> Varian Kopi yang Dipesan
+                            </h5>
+                            <small class="text-muted">Cari varian di tabel atau pilih cepat dari katalog.</small>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-sm btn-warning text-dark fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#quickProductModalOrder">
+                                <i class="bi bi-grid-3x3-gap-fill me-1"></i> Katalog Cepat (Pilih Varian)
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-success" id="btnAddRow">
+                                <i class="bi bi-plus-circle me-1"></i> Tambah Baris
+                            </button>
+                        </div>
                     </div>
 
                     <div class="table-responsive mb-3">
@@ -201,6 +209,52 @@
             </div>
         </div>
     </form>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MODAL KATALOG CEPAT PILIH VARIAN KOPI (SALES ORDER)
+     ═══════════════════════════════════════════════════════════ -->
+<div class="modal fade" id="quickProductModalOrder" tabindex="-1" aria-labelledby="quickProductModalOrderLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-dark text-white p-3">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="p-2 bg-warning rounded-3 text-dark">
+                        <i class="bi bi-grid-3x3-gap-fill fs-5"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold text-white mb-0" id="quickProductModalOrderLabel">Katalog Varian Kopi &mdash; Pilih Cepat</h5>
+                        <small class="text-white-50">Cari, atur jumlah, dan tambahkan beberapa varian kopi ke pesanan sekaligus</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-3 p-md-4 bg-light">
+                <div class="card card-custom p-3 mb-3 border-0 shadow-sm">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                        <input type="text" id="orderModalSearchInput" class="form-control border-start-0" placeholder="Ketik nama kopi, SKU, gramasi (contoh: Gayo, 250g, Biji)...">
+                    </div>
+                </div>
+
+                <div class="row g-3" id="orderModalVariantGrid">
+                    <!-- Injected dynamically by JS from availableVariants -->
+                </div>
+
+                <div id="orderModalEmptyState" class="text-center py-5 d-none">
+                    <i class="bi bi-search text-muted display-4 mb-2 d-block"></i>
+                    <h6 class="fw-bold text-muted">Tidak ditemukan varian kopi yang cocok</h6>
+                    <p class="text-muted small">Coba kata kunci pencarian lainnya.</p>
+                </div>
+            </div>
+            <div class="modal-footer bg-white d-flex justify-content-between align-items-center p-3">
+                <span class="text-muted small">
+                    <i class="bi bi-lightning-charge text-warning me-1"></i> Klik <strong>Pilih</strong> untuk memasukkan varian ke daftar pesanan.
+                </span>
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Selesai &amp; Tutup</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Variant Options Data -->
@@ -294,7 +348,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         tr.innerHTML = `
             <td>
-                <select name="items[${rowIndex}][product_variant_id]" class="form-select form-select-sm select-variant" required>
+                <select name="items[${rowIndex}][product_variant_id]" class="form-select form-select-sm select-variant form-select-searchable" data-placeholder="-- Ketik nama kopi atau SKU --" required>
                     ${optionsHtml}
                 </select>
                 <small class="stock-info text-muted d-block mt-1"></small>
@@ -321,6 +375,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const inQty = tr.querySelector('.input-qty');
         const btnRemove = tr.querySelector('.btn-remove-row');
         const lblStock = tr.querySelector('.stock-info');
+
+        if (typeof window.KopiSearchSelect === 'function') {
+            new window.KopiSearchSelect(selVariant);
+        }
 
         selVariant.addEventListener('change', function () {
             const opt = this.options[this.selectedIndex];
@@ -420,6 +478,106 @@ document.addEventListener('DOMContentLoaded', function () {
     addRow();
     if (customerSelect.value) {
         updateCustomerDetails();
+    }
+
+    // Modal Quick Catalog Populator & Filter
+    const modalGrid = document.getElementById('orderModalVariantGrid');
+    const modalSearch = document.getElementById('orderModalSearchInput');
+    const modalEmpty = document.getElementById('orderModalEmptyState');
+
+    function renderOrderModalCards(filter = '') {
+        if (!modalGrid) return;
+        modalGrid.innerHTML = '';
+        const q = filter.trim().toLowerCase();
+        let count = 0;
+
+        availableVariants.forEach(v => {
+            const searchTerms = `${v.sku} ${v.name}`.toLowerCase();
+            if (q && !searchTerms.includes(q)) return;
+
+            const col = document.createElement('div');
+            col.className = 'col-md-6 col-lg-4';
+            const stockBadge = v.current_stock > 10 
+                ? `<span class="badge bg-success bg-opacity-10 text-success border border-success"><i class="bi bi-check-circle me-1"></i> Stok ${v.current_stock}</span>`
+                : (v.current_stock > 0 
+                    ? `<span class="badge bg-warning bg-opacity-10 text-warning-emphasis border border-warning">Sisa ${v.current_stock}</span>`
+                    : `<span class="badge bg-danger bg-opacity-10 text-danger border border-danger">Stok Habis</span>`);
+
+            col.innerHTML = `
+                <div class="card h-100 border p-3 variant-pick-card position-relative shadow-sm">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge bg-secondary font-monospace">${v.sku}</span>
+                        ${stockBadge}
+                    </div>
+                    <h6 class="fw-bold text-dark mb-1">${v.name}</h6>
+                    <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top">
+                        <div>
+                            <small class="text-muted d-block" style="font-size: 0.72rem;">Harga Satuan</small>
+                            <span class="fw-bold text-dark">${formatRupiah(v.price)}</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-1">
+                            <input type="number" class="form-control form-control-sm text-center quick-qty-input" value="1" min="1" max="${v.current_stock > 0 ? v.current_stock : 1}" style="width: 60px;">
+                            <button type="button" class="btn btn-sm btn-warning text-dark fw-bold btn-add-order-modal">
+                                <i class="bi bi-plus-lg me-1"></i> Pilih
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            col.querySelector('.btn-add-order-modal').addEventListener('click', function() {
+                const qty = parseInt(col.querySelector('.quick-qty-input').value || 1);
+                
+                // Cek apakah varian sudah ada
+                let existingRow = null;
+                document.querySelectorAll('#itemsBody .item-row').forEach(r => {
+                    const sel = r.querySelector('.select-variant');
+                    if (sel && sel.value == v.id) existingRow = r;
+                });
+
+                if (existingRow) {
+                    const inQty = existingRow.querySelector('.input-qty');
+                    inQty.value = parseInt(inQty.value || 0) + qty;
+                    recalculate();
+                } else {
+                    const firstRow = document.querySelector('#itemsBody .item-row');
+                    const firstSel = firstRow ? firstRow.querySelector('.select-variant') : null;
+                    if (firstSel && !firstSel.value) {
+                        firstSel.value = v.id;
+                        if (firstSel._kopiSearchSelect) firstSel._kopiSearchSelect.syncFromSelect();
+                        firstRow.querySelector('.input-qty').value = qty;
+                        firstSel.dispatchEvent(new Event('change'));
+                    } else {
+                        addRow(v.id, qty);
+                    }
+                }
+
+                const origHtml = this.innerHTML;
+                this.className = 'btn btn-sm btn-success text-white fw-bold';
+                this.innerHTML = '<i class="bi bi-check-lg me-1"></i> Ditambah';
+                setTimeout(() => {
+                    this.className = 'btn btn-sm btn-warning text-dark fw-bold btn-add-order-modal';
+                    this.innerHTML = origHtml;
+                }, 1000);
+            });
+
+            modalGrid.appendChild(col);
+            count++;
+        });
+
+        if (count === 0) {
+            modalEmpty.classList.remove('d-none');
+        } else {
+            modalEmpty.classList.add('d-none');
+        }
+    }
+
+    renderOrderModalCards();
+
+    if (modalSearch) {
+        modalSearch.addEventListener('input', function() {
+            renderOrderModalCards(this.value);
+        });
     }
 });
 </script>

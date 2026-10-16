@@ -161,13 +161,269 @@
             border-radius: 4px;
         }
 
-        .sidebar-group-title {
-            font-size: 0.7rem;
+        /* ========================================================
+           SIDEBAR QUICK SEARCH & ACCORDION DROPDOWN STYLES
+           ======================================================== */
+        .sidebar-search-container {
+            padding: 0.65rem 0.75rem 0.45rem;
+            background-color: rgba(9, 9, 11, 0.75) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            flex-shrink: 0;
+            transition: all 0.25s ease;
+        }
+
+        .sidebar-search-bar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .sidebar-search-icon {
+            position: absolute;
+            left: 0.65rem;
+            color: var(--admin-sidebar-muted);
+            font-size: 0.8rem;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .sidebar-search-input {
+            width: 100%;
+            background-color: #202024;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 0.4rem 1.6rem 0.4rem 2rem;
+            font-size: 0.76rem;
+            color: #ffffff;
+            transition: all 0.2s ease;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .sidebar-search-input:focus {
+            border-color: var(--admin-accent);
+            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25);
+            background-color: #27272a;
+        }
+
+        .sidebar-search-input::placeholder {
+            color: var(--admin-sidebar-muted);
+            font-size: 0.74rem;
+        }
+
+        .sidebar-search-clear {
+            position: absolute;
+            right: 0.45rem;
+            background: transparent;
+            border: none;
+            color: var(--admin-sidebar-muted);
+            cursor: pointer;
+            font-size: 0.72rem;
+            padding: 2px 5px;
+            border-radius: 4px;
+            line-height: 1;
+            transition: color 0.15s ease;
+        }
+
+        .sidebar-search-clear:hover {
+            color: #ffffff;
+        }
+
+        .sidebar-quick-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.35rem;
+            padding: 0 0.15rem;
+        }
+
+        .sidebar-role-indicator {
+            font-size: 0.63rem;
+            color: var(--admin-sidebar-muted);
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.05em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 130px;
+        }
+
+        .sidebar-toggle-all-btn {
+            background: transparent;
+            border: none;
+            color: var(--admin-sidebar-muted);
+            font-size: 0.68rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: all 0.18s ease;
+            font-family: inherit;
+        }
+
+        .sidebar-toggle-all-btn:hover {
+            color: #ffffff;
+            background-color: var(--admin-sidebar-hover);
+        }
+
+        /* ─── SIDEBAR ACCORDION GROUP & TITLES ─── */
+        .sidebar-nav-group-wrapper {
+            list-style: none;
+            margin-bottom: 0.25rem;
+            position: relative;
+            transition: margin 0.2s ease;
+        }
+
+        .sidebar-group-title {
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
             color: var(--admin-sidebar-muted) !important;
-            padding: 0.85rem 0.65rem 0.35rem 0.65rem;
+            padding: 0.48rem 0.65rem;
+            margin: 0.15rem 0;
+            border-radius: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.4rem;
+            transition: all 0.18s ease;
+            border: 1px solid transparent;
+        }
+
+        .sidebar-group-title:hover {
+            color: #ffffff !important;
+            background-color: var(--admin-sidebar-hover) !important;
+        }
+
+        .sidebar-group-title:focus-visible {
+            outline: 2px solid var(--admin-accent);
+            outline-offset: -1px;
+        }
+
+        .sidebar-nav-group-wrapper.has-active > .sidebar-group-title {
+            color: #ffffff !important;
+            font-weight: 800;
+            background: rgba(245, 158, 11, 0.12) !important;
+            border-left: 3px solid var(--admin-accent);
+            border-radius: 4px 8px 8px 4px;
+        }
+
+        .sidebar-group-title-left {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1;
+        }
+
+        .sidebar-group-title-right {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            flex-shrink: 0;
+        }
+
+        .sidebar-group-count {
+            font-size: 0.62rem;
+            font-weight: 700;
+            font-family: inherit;
+            color: var(--admin-sidebar-muted);
+            background: rgba(255, 255, 255, 0.08);
+            padding: 1px 5px;
+            border-radius: 6px;
+            line-height: 1.2;
+            transition: all 0.18s ease;
+        }
+
+        .sidebar-nav-group-wrapper.has-active .sidebar-group-count {
+            color: var(--admin-accent);
+            background: rgba(245, 158, 11, 0.2);
+        }
+
+        .sidebar-group-chevron {
+            font-size: 0.72rem;
+            transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1), color 0.18s ease;
+            color: var(--admin-sidebar-muted);
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .sidebar-nav-group-wrapper.is-collapsed .sidebar-group-chevron {
+            transform: rotate(-90deg);
+        }
+
+        .sidebar-nav-group-wrapper:not(.is-collapsed) .sidebar-group-chevron {
+            transform: rotate(0deg);
+        }
+
+        .sidebar-group-title:hover .sidebar-group-chevron {
+            color: #ffffff;
+        }
+
+        .sidebar-subnav-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            padding-left: 0;
+            margin-bottom: 0;
+            gap: 2px;
+            overflow: hidden;
+            max-height: 1200px;
+            opacity: 1;
+            transition: max-height 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease, margin 0.2s ease;
+        }
+
+        .sidebar-nav-group-wrapper.is-collapsed .sidebar-subnav-list {
+            max-height: 0 !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+
+        /* Empty search state */
+        .sidebar-no-results {
+            padding: 1.25rem 0.75rem;
+            text-align: center;
+            color: var(--admin-sidebar-muted);
+            font-size: 0.78rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            border: 1px dashed rgba(255, 255, 255, 0.12);
+        }
+
+        .sidebar-no-results button {
+            margin-top: 0.5rem;
+            padding: 0.3rem 0.65rem;
+            border-radius: 6px;
+            background: var(--admin-sidebar-hover);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .sidebar-no-results button:hover {
+            background: var(--admin-accent);
+            color: #000000;
+            border-color: transparent;
         }
 
         .sidebar-item-link {
@@ -322,6 +578,262 @@
         .badge-role-driver { background-color: #d97706; color: #fff; }
         .badge-role-customer { background-color: #64748b; color: #fff; }
 
+        /* ========================================================
+           KOPI SEARCH SELECT (SMART SEARCHABLE COMBOBOX)
+           ======================================================== */
+        .kopi-search-select-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .kopi-search-select-wrapper.is-hidden-native select {
+            position: absolute !important;
+            opacity: 0 !important;
+            width: 1px !important;
+            height: 1px !important;
+            margin: -1px !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+            clip: rect(0, 0, 0, 0) !important;
+            border: 0 !important;
+            pointer-events: none !important;
+        }
+
+        .kopi-select-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            min-height: 40px;
+            padding: 0.45rem 0.85rem;
+            font-size: 0.875rem;
+            color: #1e293b;
+            background-color: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.15s ease-in-out;
+        }
+
+        .kopi-select-trigger:hover {
+            border-color: #94a3b8;
+            background-color: #f8fafc;
+        }
+
+        .kopi-select-trigger.is-open {
+            border-color: var(--admin-accent, #f59e0b);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+            background-color: #ffffff;
+        }
+
+        .kopi-select-trigger.is-invalid {
+            border-color: #ef4444 !important;
+            background-color: #fef2f2 !important;
+        }
+
+        .kopi-select-trigger.is-disabled {
+            background-color: #f1f5f9;
+            border-color: #e2e8f0;
+            color: #94a3b8;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .kopi-select-value {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-grow: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .kopi-select-placeholder {
+            color: #94a3b8;
+            font-style: normal;
+        }
+
+        .kopi-select-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            margin-left: 0.5rem;
+        }
+
+        .kopi-select-clear {
+            display: none;
+            cursor: pointer;
+            color: #94a3b8;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            line-height: 1;
+            transition: all 0.15s ease;
+        }
+
+        .kopi-select-trigger:hover .kopi-select-clear.is-visible {
+            display: inline-block;
+        }
+
+        .kopi-select-clear:hover {
+            color: #ef4444;
+            background: #fee2e2;
+        }
+
+        .kopi-select-chevron {
+            color: #64748b;
+            font-size: 0.75rem;
+            transition: transform 0.2s ease;
+        }
+
+        .kopi-select-trigger.is-open .kopi-select-chevron {
+            transform: rotate(180deg);
+        }
+
+        /* Floating Dropdown Panel */
+        .kopi-select-dropdown {
+            position: fixed;
+            z-index: 10050;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            animation: kopiSelectPop 0.15s ease-out;
+        }
+
+        @keyframes kopiSelectPop {
+            from { opacity: 0; transform: translateY(-3px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .kopi-select-dropdown.is-open {
+            display: flex;
+        }
+
+        .kopi-select-search-box {
+            padding: 0.5rem 0.65rem;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .kopi-select-search-input {
+            width: 100%;
+            padding: 0.4rem 0.65rem;
+            font-size: 0.85rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            outline: none;
+            background: #ffffff;
+        }
+
+        .kopi-select-search-input:focus {
+            border-color: var(--admin-accent, #f59e0b);
+            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+        }
+
+        .kopi-select-options-list {
+            max-height: 270px;
+            overflow-y: auto;
+            padding: 0.35rem;
+            margin: 0;
+            list-style: none;
+        }
+
+        .kopi-select-group-header {
+            padding: 0.4rem 0.65rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #92400e;
+            background: #fef3c7;
+            border-radius: 5px;
+            margin: 0.35rem 0 0.2rem 0;
+        }
+
+        .kopi-select-option {
+            padding: 0.45rem 0.65rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: #1e293b;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+            transition: background 0.12s ease;
+            margin-bottom: 2px;
+        }
+
+        .kopi-select-option:hover,
+        .kopi-select-option.is-highlighted {
+            background-color: #fffbeb;
+            color: #92400e;
+        }
+
+        .kopi-select-option.is-selected {
+            background-color: #fef3c7;
+            color: #78350f;
+            font-weight: 600;
+        }
+
+        .kopi-select-option-main {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+
+        .kopi-select-option-sub {
+            font-size: 0.75rem;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+        }
+
+        .kopi-select-match-highlight {
+            background-color: #fde68a;
+            color: #78350f;
+            font-weight: 700;
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+
+        .kopi-select-empty {
+            padding: 1.5rem 0.75rem;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+
+        /* Quick Catalog Modal & Cards */
+        .variant-pick-card {
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            background: #ffffff;
+        }
+        .variant-pick-card:hover {
+            border-color: #f59e0b !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(245, 158, 11, 0.12) !important;
+        }
+        .filter-chip {
+            border-radius: 20px;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.15s ease;
+        }
+
         /* Print Media Styles */
         @media print {
             .admin-sidebar,
@@ -406,9 +918,31 @@
                 </div>
             @endauth
 
+            <!-- Sidebar Quick Search & Accordion Controls -->
+            <div class="sidebar-search-container" id="sidebarSearchContainer">
+                <div class="sidebar-search-bar">
+                    <i class="bi bi-search sidebar-search-icon"></i>
+                    <input type="text" id="sidebarMenuSearch" class="sidebar-search-input" placeholder="Cari menu ERP cepat..." autocomplete="off" spellcheck="false" title="Ketik untuk mencari menu cepat">
+                    <button type="button" id="sidebarSearchClear" class="sidebar-search-clear" title="Bersihkan pencarian" style="display:none;">✕</button>
+                </div>
+                <div class="sidebar-quick-actions">
+                    <span class="sidebar-role-indicator">
+                        @auth
+                            {{ strtoupper(auth()->user()->role ?? 'ERP') }}
+                        @else
+                            MENU ERP
+                        @endauth
+                    </span>
+                    <button type="button" id="sidebarToggleAllBtn" class="sidebar-toggle-all-btn" title="Buka / Ciutkan Semua Kategori">
+                        <span id="sidebarToggleAllIcon">⊟</span>
+                        <span id="sidebarToggleAllText">Ciutkan</span>
+                    </button>
+                </div>
+            </div>
+
             <!-- Navigasi Menu Vertikal (Scrollable) -->
-            <div class="sidebar-nav-scroll">
-                <ul class="nav flex-column">
+            <div class="sidebar-nav-scroll" id="sidebarNavScroll">
+                <ul class="nav flex-column" id="kopiSidebarNav">
                     <!-- LINK CEPAT KE TOKO RETAIL -->
                     <li class="sidebar-group-title">Akses Cepat</li>
                     <li class="nav-item">
@@ -649,6 +1183,84 @@
                     @endauth
                 </ul>
             </div>
+
+            <!-- Instant Pre-render for Kopi Sidebar Accordion (Zero Flash) -->
+            <script>
+                (function() {
+                    try {
+                        var scrollEl = document.getElementById('sidebarNavScroll') || document.querySelector('.sidebar-nav-scroll');
+                        var listEl = document.getElementById('kopiSidebarNav') || (scrollEl ? scrollEl.querySelector('ul.nav') : null);
+                        if (!listEl) return;
+
+                        // 1. Restore scroll instantly
+                        var sp = sessionStorage.getItem('kopi_sidebar_scroll');
+                        if (scrollEl && sp !== null) {
+                            scrollEl.scrollTop = parseInt(sp, 10);
+                        }
+
+                        // 2. Auto-group items under .sidebar-group-title into .sidebar-nav-group-wrapper
+                        var titles = Array.from(listEl.querySelectorAll(':scope > .sidebar-group-title'));
+                        if (titles.length === 0) return;
+
+                        var userRole = '{{ auth()->user()->role ?? "guest" }}';
+                        var storageKey = 'kopi_sidebar_accordion_' + userRole;
+                        var savedRaw = localStorage.getItem(storageKey);
+                        var savedState = savedRaw ? JSON.parse(savedRaw) : null;
+                        var hasAnySaved = savedState && typeof savedState === 'object';
+                        var anyActiveInNav = listEl.querySelector('.sidebar-item-link.active') !== null;
+
+                        titles.forEach(function(title, idx) {
+                            var items = [];
+                            var next = title.nextElementSibling;
+                            while (next && next.classList.contains('nav-item')) {
+                                items.push(next);
+                                next = next.nextElementSibling;
+                            }
+
+                            // Create wrapper li
+                            var wrapper = document.createElement('li');
+                            wrapper.className = 'sidebar-nav-group-wrapper';
+                            listEl.insertBefore(wrapper, title);
+                            wrapper.appendChild(title);
+
+                            var subnav = document.createElement('ul');
+                            subnav.className = 'sidebar-subnav-list';
+                            items.forEach(function(it) {
+                                subnav.appendChild(it);
+                            });
+                            wrapper.appendChild(subnav);
+
+                            // Check active status
+                            var hasActive = subnav.querySelector('.sidebar-item-link.active') !== null;
+                            var titleKey = title.innerText.replace(/[\n\r]+/g, ' ').replace(/\s+/g, ' ').trim().toUpperCase();
+
+                            if (hasActive) {
+                                wrapper.classList.add('has-active', 'is-open');
+                                wrapper.classList.remove('is-collapsed');
+                            } else if (hasAnySaved) {
+                                if (savedState[titleKey] === true) {
+                                    wrapper.classList.add('is-open');
+                                    wrapper.classList.remove('is-collapsed');
+                                } else {
+                                    wrapper.classList.add('is-collapsed');
+                                    wrapper.classList.remove('is-open');
+                                }
+                            } else {
+                                // Default first visit:
+                                // If any active item exists in the sidebar, only open active section!
+                                // Else open first section, collapse rest!
+                                if (!anyActiveInNav && idx === 0) {
+                                    wrapper.classList.add('is-open');
+                                    wrapper.classList.remove('is-collapsed');
+                                } else {
+                                    wrapper.classList.add('is-collapsed');
+                                    wrapper.classList.remove('is-open');
+                                }
+                            }
+                        });
+                    } catch(e) {}
+                })();
+            </script>
 
             <!-- Footer Sidebar: Tombol Keluar -->
             <div class="sidebar-bottom-bar">
@@ -1052,6 +1664,844 @@
                     }
                 });
             }
+        });
+
+        // ═══════════════════════════════════════════════════════════
+        // KOPI DISTRO — COLLAPSIBLE SIDEBAR ACCORDION & MENU SEARCH
+        // ═══════════════════════════════════════════════════════════
+        (function() {
+            const scrollEl = document.getElementById('sidebarNavScroll') || document.querySelector('.sidebar-nav-scroll');
+            const listEl = document.getElementById('kopiSidebarNav') || (scrollEl ? scrollEl.querySelector('ul.nav') : null);
+            if (!scrollEl || !listEl) return;
+
+            const userRole = '{{ auth()->user()->role ?? "guest" }}';
+            const storageKey = 'kopi_sidebar_accordion_' + userRole;
+            const searchInput = document.getElementById('sidebarMenuSearch');
+            const searchClearBtn = document.getElementById('sidebarSearchClear');
+            const toggleAllBtn = document.getElementById('sidebarToggleAllBtn');
+            const toggleAllIcon = document.getElementById('sidebarToggleAllIcon');
+            const toggleAllText = document.getElementById('sidebarToggleAllText');
+
+            function ensureGrouping() {
+                let wrappers = listEl.querySelectorAll(':scope > .sidebar-nav-group-wrapper');
+                if (wrappers.length > 0) return wrappers;
+
+                const titles = Array.from(listEl.querySelectorAll(':scope > .sidebar-group-title'));
+                titles.forEach(function(title) {
+                    const items = [];
+                    let next = title.nextElementSibling;
+                    while (next && next.classList.contains('nav-item')) {
+                        items.push(next);
+                        next = next.nextElementSibling;
+                    }
+                    const wrapper = document.createElement('li');
+                    wrapper.className = 'sidebar-nav-group-wrapper';
+                    listEl.insertBefore(wrapper, title);
+                    wrapper.appendChild(title);
+
+                    const subnav = document.createElement('ul');
+                    subnav.className = 'sidebar-subnav-list';
+                    items.forEach(it => subnav.appendChild(it));
+                    wrapper.appendChild(subnav);
+                });
+
+                return listEl.querySelectorAll(':scope > .sidebar-nav-group-wrapper');
+            }
+
+            function initKopiAccordion() {
+                const wrappers = ensureGrouping();
+                if (!wrappers || wrappers.length === 0) return;
+
+                wrappers.forEach(function(wrapper) {
+                    const titleEl = wrapper.querySelector('.sidebar-group-title');
+                    const subnav = wrapper.querySelector('.sidebar-subnav-list');
+                    if (!titleEl || !subnav) return;
+
+                    const items = subnav.querySelectorAll('.nav-item');
+                    const itemCount = items.length;
+                    const hasActive = subnav.querySelector('.sidebar-item-link.active') !== null;
+
+                    if (hasActive) {
+                        wrapper.classList.add('has-active', 'is-open');
+                        wrapper.classList.remove('is-collapsed');
+                    }
+
+                    // Injeksi chevron dan badge count jika belum ada
+                    if (!titleEl.querySelector('.sidebar-group-chevron')) {
+                        const originalHTML = titleEl.innerHTML;
+                        titleEl.innerHTML = `
+                            <div class="sidebar-group-title-left">${originalHTML}</div>
+                            <div class="sidebar-group-title-right">
+                                <span class="sidebar-group-count" title="${itemCount} menu">${itemCount}</span>
+                                <i class="bi bi-chevron-down sidebar-group-chevron"></i>
+                            </div>
+                        `;
+                    }
+
+                    // Aksesibilitas
+                    titleEl.setAttribute('role', 'button');
+                    titleEl.setAttribute('tabindex', '0');
+                    const isCollapsed = wrapper.classList.contains('is-collapsed');
+                    titleEl.setAttribute('aria-expanded', isCollapsed ? 'false' : 'true');
+
+                    // Event klik
+                    titleEl.addEventListener('click', function(e) {
+                        if (e.target.closest('a')) return;
+
+                        const currentlyCollapsed = wrapper.classList.contains('is-collapsed');
+                        if (currentlyCollapsed) {
+                            wrapper.classList.remove('is-collapsed');
+                            wrapper.classList.add('is-open');
+                            titleEl.setAttribute('aria-expanded', 'true');
+                        } else {
+                            wrapper.classList.add('is-collapsed');
+                            wrapper.classList.remove('is-open');
+                            titleEl.setAttribute('aria-expanded', 'false');
+                        }
+
+                        saveAccordionState();
+                        updateToggleAllState();
+                    });
+
+                    // Keyboard enter / space
+                    titleEl.addEventListener('keydown', function(e) {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            titleEl.click();
+                        }
+                    });
+                });
+
+                updateToggleAllState();
+            }
+
+            function saveAccordionState() {
+                try {
+                    const state = {};
+                    listEl.querySelectorAll('.sidebar-nav-group-wrapper').forEach(function(wrp) {
+                        const titleEl = wrp.querySelector('.sidebar-group-title-left') || wrp.querySelector('.sidebar-group-title');
+                        if (!titleEl) return;
+                        const key = titleEl.innerText.replace(/[\n\r]+/g, ' ').replace(/\s+/g, ' ').trim().toUpperCase();
+                        state[key] = !wrp.classList.contains('is-collapsed');
+                    });
+                    localStorage.setItem(storageKey, JSON.stringify(state));
+                } catch(e) {}
+            }
+
+            function updateToggleAllState() {
+                if (!toggleAllBtn || !toggleAllIcon || !toggleAllText) return;
+                const wrappers = Array.from(listEl.querySelectorAll('.sidebar-nav-group-wrapper'));
+                const nonActiveOpen = wrappers.some(w => !w.classList.contains('has-active') && !w.classList.contains('is-collapsed'));
+
+                if (nonActiveOpen) {
+                    toggleAllIcon.textContent = '⊟';
+                    toggleAllText.textContent = 'Ciutkan Semua';
+                } else {
+                    toggleAllIcon.textContent = '⊞';
+                    toggleAllText.textContent = 'Buka Semua';
+                }
+            }
+
+            if (toggleAllBtn) {
+                toggleAllBtn.addEventListener('click', function() {
+                    const wrappers = Array.from(listEl.querySelectorAll('.sidebar-nav-group-wrapper'));
+                    const nonActiveOpen = wrappers.some(w => !w.classList.contains('has-active') && !w.classList.contains('is-collapsed'));
+
+                    wrappers.forEach(function(w) {
+                        const titleEl = w.querySelector('.sidebar-group-title');
+                        if (nonActiveOpen) {
+                            if (!w.classList.contains('has-active')) {
+                                w.classList.add('is-collapsed');
+                                w.classList.remove('is-open');
+                                if (titleEl) titleEl.setAttribute('aria-expanded', 'false');
+                            }
+                        } else {
+                            w.classList.remove('is-collapsed');
+                            w.classList.add('is-open');
+                            if (titleEl) titleEl.setAttribute('aria-expanded', 'true');
+                        }
+                    });
+
+                    saveAccordionState();
+                    updateToggleAllState();
+                });
+            }
+
+            // Quick Menu Filter
+            if (searchInput) {
+                let searchTimeout;
+
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    const q = this.value.trim().toLowerCase();
+
+                    if (searchClearBtn) {
+                        searchClearBtn.style.display = q ? 'block' : 'none';
+                    }
+
+                    searchTimeout = setTimeout(function() {
+                        filterKopiMenu(q);
+                    }, 50);
+                });
+
+                searchInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        searchInput.value = '';
+                        if (searchClearBtn) searchClearBtn.style.display = 'none';
+                        filterKopiMenu('');
+                        searchInput.blur();
+                    }
+                });
+
+                if (searchClearBtn) {
+                    searchClearBtn.addEventListener('click', function() {
+                        searchInput.value = '';
+                        searchClearBtn.style.display = 'none';
+                        filterKopiMenu('');
+                        searchInput.focus();
+                    });
+                }
+            }
+
+            function filterKopiMenu(query) {
+                const wrappers = listEl.querySelectorAll('.sidebar-nav-group-wrapper');
+                let totalMatches = 0;
+
+                const existingEmpty = scrollEl.querySelector('.sidebar-no-results');
+                if (existingEmpty) existingEmpty.remove();
+
+                if (!query) {
+                    wrappers.forEach(function(wrp) {
+                        wrp.style.display = '';
+                        const titleEl = wrp.querySelector('.sidebar-group-title');
+                        const countEl = wrp.querySelector('.sidebar-group-count');
+                        const subnav = wrp.querySelector('.sidebar-subnav-list');
+                        if (!subnav) return;
+
+                        const items = subnav.querySelectorAll('.nav-item');
+                        items.forEach(it => it.style.display = '');
+
+                        if (countEl) countEl.textContent = items.length;
+
+                        try {
+                            const raw = localStorage.getItem(storageKey);
+                            const saved = raw ? JSON.parse(raw) : {};
+                            const leftEl = wrp.querySelector('.sidebar-group-title-left') || titleEl;
+                            const key = leftEl ? leftEl.innerText.replace(/[\n\r]+/g, ' ').replace(/\s+/g, ' ').trim().toUpperCase() : '';
+                            const hasActive = wrp.classList.contains('has-active');
+
+                            if (hasActive || saved[key] === true) {
+                                wrp.classList.remove('is-collapsed');
+                                wrp.classList.add('is-open');
+                                if (titleEl) titleEl.setAttribute('aria-expanded', 'true');
+                            } else {
+                                wrp.classList.add('is-collapsed');
+                                wrp.classList.remove('is-open');
+                                if (titleEl) titleEl.setAttribute('aria-expanded', 'false');
+                            }
+                        } catch(e) {}
+                    });
+                    updateToggleAllState();
+                    return;
+                }
+
+                wrappers.forEach(function(wrp) {
+                    const subnav = wrp.querySelector('.sidebar-subnav-list');
+                    const titleEl = wrp.querySelector('.sidebar-group-title');
+                    const countEl = wrp.querySelector('.sidebar-group-count');
+                    if (!subnav) return;
+
+                    let sectionMatches = 0;
+                    const items = subnav.querySelectorAll('.nav-item');
+
+                    items.forEach(function(it) {
+                        const linkText = (it.querySelector('span')?.textContent || it.textContent || '').toLowerCase();
+                        if (linkText.includes(query)) {
+                            it.style.display = '';
+                            sectionMatches++;
+                            totalMatches++;
+                        } else {
+                            it.style.display = 'none';
+                        }
+                    });
+
+                    if (sectionMatches > 0) {
+                        wrp.style.display = '';
+                        wrp.classList.remove('is-collapsed');
+                        wrp.classList.add('is-open');
+                        if (titleEl) titleEl.setAttribute('aria-expanded', 'true');
+                        if (countEl) countEl.textContent = `${sectionMatches}/${items.length}`;
+                    } else {
+                        wrp.style.display = 'none';
+                    }
+                });
+
+                if (totalMatches === 0) {
+                    const emptyDiv = document.createElement('div');
+                    emptyDiv.className = 'sidebar-no-results';
+                    emptyDiv.innerHTML = `
+                        <div style="font-size:1.1rem; margin-bottom:0.3rem;">🔍</div>
+                        <div>Menu "<strong>${escapeHtml(query)}</strong>" tidak ditemukan.</div>
+                        <button type="button" onclick="document.getElementById('sidebarSearchClear').click()">Reset Filter</button>
+                    `;
+                    scrollEl.appendChild(emptyDiv);
+                }
+            }
+
+            function escapeHtml(str) {
+                return str.replace(/[&<>'"]/g, tag => ({
+                    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+                }[tag] || tag));
+            }
+
+            // Scroll retention
+            function restoreSidebarScroll() {
+                const savedScroll = sessionStorage.getItem('kopi_sidebar_scroll');
+                if (savedScroll !== null) {
+                    scrollEl.scrollTop = parseInt(savedScroll, 10);
+                }
+                const activeLink = listEl.querySelector('.sidebar-item-link.active');
+                if (activeLink) {
+                    const navRect = scrollEl.getBoundingClientRect();
+                    const linkRect = activeLink.getBoundingClientRect();
+                    const isOutOfView = (linkRect.top < navRect.top - 10 || linkRect.bottom > navRect.bottom + 10);
+                    if (savedScroll === null || isOutOfView) {
+                        activeLink.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'instant' });
+                        sessionStorage.setItem('kopi_sidebar_scroll', scrollEl.scrollTop);
+                    }
+                }
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    initKopiAccordion();
+                    restoreSidebarScroll();
+                });
+            } else {
+                initKopiAccordion();
+                restoreSidebarScroll();
+            }
+
+            scrollEl.addEventListener('click', function(e) {
+                const link = e.target.closest('a');
+                if (link) {
+                    sessionStorage.setItem('kopi_sidebar_scroll', scrollEl.scrollTop);
+                }
+            });
+
+            window.addEventListener('beforeunload', function() {
+                sessionStorage.setItem('kopi_sidebar_scroll', scrollEl.scrollTop);
+            });
+
+            let scrollTimer;
+            scrollEl.addEventListener('scroll', function() {
+                clearTimeout(scrollTimer);
+                scrollTimer = setTimeout(function() {
+                    sessionStorage.setItem('kopi_sidebar_scroll', scrollEl.scrollTop);
+                }, 60);
+            }, { passive: true });
+        })();
+    </script>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         KOPI DISTRO — SMART SEARCHABLE COMBOBOX ENGINE (KopiSearchSelect)
+         ═══════════════════════════════════════════════════════════ -->
+    <script>
+        window.KopiSearchSelect = class {
+            constructor(selectEl, customOptions = {}) {
+                if (!selectEl || selectEl._kopiSearchSelect) return selectEl ? selectEl._kopiSearchSelect : null;
+                this.selectEl = selectEl;
+                selectEl._kopiSearchSelect = this;
+
+                this.placeholder = selectEl.getAttribute('data-placeholder') ||
+                                   (selectEl.options[0] && !selectEl.options[0].value ? selectEl.options[0].text : 'Ketik untuk mencari...');
+                this.searchPlaceholder = selectEl.getAttribute('data-search-placeholder') || 'Ketik nama, SKU, atau kata kunci...';
+                
+                this.isOpen = false;
+                this.highlightedIndex = -1;
+                this.visibleOptions = [];
+                this.items = [];
+
+                this.buildUI();
+                this.syncFromSelect();
+                this.bindEvents();
+            }
+
+            buildUI() {
+                // Wrapper
+                this.wrapper = document.createElement('div');
+                this.wrapper.className = 'kopi-search-select-wrapper is-hidden-native';
+                this.selectEl.parentNode.insertBefore(this.wrapper, this.selectEl);
+                this.wrapper.appendChild(this.selectEl);
+
+                // Trigger Button
+                this.trigger = document.createElement('div');
+                this.trigger.className = 'kopi-select-trigger';
+                this.trigger.setAttribute('tabindex', '0');
+                this.trigger.setAttribute('role', 'combobox');
+                this.trigger.setAttribute('aria-expanded', 'false');
+
+                if (this.selectEl.disabled) {
+                    this.trigger.classList.add('is-disabled');
+                }
+                if (this.selectEl.classList.contains('is-invalid')) {
+                    this.trigger.classList.add('is-invalid');
+                }
+
+                this.valueContainer = document.createElement('div');
+                this.valueContainer.className = 'kopi-select-value';
+                
+                this.actionsContainer = document.createElement('div');
+                this.actionsContainer.className = 'kopi-select-actions';
+
+                this.clearBtn = document.createElement('span');
+                this.clearBtn.className = 'kopi-select-clear';
+                this.clearBtn.title = 'Hapus pilihan';
+                this.clearBtn.innerHTML = '&times;';
+
+                this.chevron = document.createElement('i');
+                this.chevron.className = 'bi bi-chevron-down kopi-select-chevron';
+
+                this.actionsContainer.appendChild(this.clearBtn);
+                this.actionsContainer.appendChild(this.chevron);
+
+                this.trigger.appendChild(this.valueContainer);
+                this.trigger.appendChild(this.actionsContainer);
+                this.wrapper.appendChild(this.trigger);
+
+                // Floating Dropdown Panel
+                this.dropdown = document.createElement('div');
+                this.dropdown.className = 'kopi-select-dropdown';
+                
+                // Search Box
+                const searchBox = document.createElement('div');
+                searchBox.className = 'kopi-select-search-box';
+
+                const searchIcon = document.createElement('i');
+                searchIcon.className = 'bi bi-search text-muted small ms-1';
+
+                this.searchInput = document.createElement('input');
+                this.searchInput.type = 'text';
+                this.searchInput.className = 'kopi-select-search-input';
+                this.searchInput.placeholder = this.searchPlaceholder;
+                this.searchInput.autocomplete = 'off';
+
+                searchBox.appendChild(searchIcon);
+                searchBox.appendChild(this.searchInput);
+                this.dropdown.appendChild(searchBox);
+
+                // Options List
+                this.optionsList = document.createElement('ul');
+                this.optionsList.className = 'kopi-select-options-list';
+                this.dropdown.appendChild(this.optionsList);
+
+                // Empty state
+                this.emptyState = document.createElement('div');
+                this.emptyState.className = 'kopi-select-empty d-none';
+                this.emptyState.innerHTML = '<i class="bi bi-search text-muted d-block mb-1"></i> Tidak ditemukan hasil yang cocok';
+                this.dropdown.appendChild(this.emptyState);
+
+                document.body.appendChild(this.dropdown);
+            }
+
+            parseOptions() {
+                this.items = [];
+                const children = Array.from(this.selectEl.children);
+
+                children.forEach(child => {
+                    if (child.tagName === 'OPTGROUP') {
+                        const groupLabel = child.getAttribute('label') || '';
+                        const groupItems = [];
+                        Array.from(child.children).forEach(opt => {
+                            if (opt.tagName === 'OPTION') {
+                                groupItems.push(this.createItemData(opt, groupLabel));
+                            }
+                        });
+                        this.items.push({
+                            isGroup: true,
+                            label: groupLabel,
+                            items: groupItems
+                        });
+                    } else if (child.tagName === 'OPTION') {
+                        this.items.push(this.createItemData(child, null));
+                    }
+                });
+            }
+
+            createItemData(optionEl, groupLabel) {
+                return {
+                    isGroup: false,
+                    optionEl: optionEl,
+                    value: optionEl.value,
+                    text: optionEl.textContent.trim(),
+                    disabled: optionEl.disabled,
+                    groupLabel: groupLabel,
+                    sku: optionEl.getAttribute('data-sku') || '',
+                    stock: optionEl.getAttribute('data-stock') !== null ? parseInt(optionEl.getAttribute('data-stock'), 10) : null,
+                    price: optionEl.getAttribute('data-price') !== null ? parseFloat(optionEl.getAttribute('data-price')) : null,
+                    pic: optionEl.getAttribute('data-pic') || '',
+                    phone: optionEl.getAttribute('data-phone') || '',
+                    type: optionEl.getAttribute('data-type') || optionEl.getAttribute('data-customer-type') || '',
+                    role: optionEl.getAttribute('data-role') || '',
+                    searchTerms: (
+                        optionEl.textContent + ' ' +
+                        (optionEl.getAttribute('data-sku') || '') + ' ' +
+                        (optionEl.getAttribute('data-pic') || '') + ' ' +
+                        (optionEl.getAttribute('data-phone') || '') + ' ' +
+                        (optionEl.getAttribute('data-type') || '') + ' ' +
+                        (groupLabel || '')
+                    ).toLowerCase()
+                };
+            }
+
+            renderOptions(filterText = '') {
+                this.parseOptions();
+                this.optionsList.innerHTML = '';
+                this.visibleOptions = [];
+                this.highlightedIndex = -1;
+
+                const q = filterText.trim().toLowerCase();
+                let totalRendered = 0;
+
+                const renderOptionItem = (itemData) => {
+                    if (q && !itemData.searchTerms.includes(q)) {
+                        return null;
+                    }
+
+                    const li = document.createElement('li');
+                    li.className = 'kopi-select-option';
+                    if (itemData.value === this.selectEl.value) {
+                        li.classList.add('is-selected');
+                    }
+                    if (itemData.disabled) {
+                        li.classList.add('is-disabled');
+                        li.style.opacity = '0.5';
+                        li.style.pointerEvents = 'none';
+                    }
+
+                    // Main row
+                    const mainRow = document.createElement('div');
+                    mainRow.className = 'kopi-select-option-main';
+
+                    const titleSpan = document.createElement('span');
+                    titleSpan.className = 'fw-medium';
+                    titleSpan.innerHTML = this.highlightMatch(itemData.text, q);
+                    mainRow.appendChild(titleSpan);
+
+                    // Right badges if any
+                    if (itemData.sku) {
+                        const skuBadge = document.createElement('span');
+                        skuBadge.className = 'badge bg-dark-subtle text-dark border font-monospace small';
+                        skuBadge.textContent = itemData.sku;
+                        mainRow.appendChild(skuBadge);
+                    } else if (itemData.role) {
+                        const roleBadge = document.createElement('span');
+                        roleBadge.className = 'badge bg-primary-subtle text-primary border small';
+                        roleBadge.textContent = itemData.role;
+                        mainRow.appendChild(roleBadge);
+                    } else if (itemData.type) {
+                        const typeBadge = document.createElement('span');
+                        typeBadge.className = 'badge bg-warning-subtle text-warning-emphasis border small';
+                        typeBadge.textContent = itemData.type;
+                        mainRow.appendChild(typeBadge);
+                    }
+
+                    li.appendChild(mainRow);
+
+                    // Sub row (stock, price, phone, PIC)
+                    const subItems = [];
+                    if (itemData.stock !== null) {
+                        if (itemData.stock > 0) {
+                            subItems.push(`<span class="text-success fw-semibold"><i class="bi bi-check2"></i> Stok: ${itemData.stock} pack</span>`);
+                        } else {
+                            subItems.push(`<span class="text-danger fw-semibold"><i class="bi bi-x"></i> Stok Habis</span>`);
+                        }
+                    }
+                    if (itemData.price !== null && itemData.price > 0) {
+                        subItems.push(`<span class="text-dark fw-bold">Rp ${itemData.price.toLocaleString('id-ID')}</span>`);
+                    }
+                    if (itemData.pic) {
+                        subItems.push(`<span><i class="bi bi-person text-muted"></i> PIC: ${itemData.pic}</span>`);
+                    }
+                    if (itemData.phone) {
+                        subItems.push(`<span><i class="bi bi-telephone text-muted"></i> ${itemData.phone}</span>`);
+                    }
+
+                    if (subItems.length > 0) {
+                        const subRow = document.createElement('div');
+                        subRow.className = 'kopi-select-option-sub';
+                        subRow.innerHTML = subItems.join('<span class="text-muted">&bull;</span>');
+                        li.appendChild(subRow);
+                    }
+
+                    li.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.selectItem(itemData);
+                    });
+
+                    this.visibleOptions.push({ element: li, itemData: itemData });
+                    totalRendered++;
+                    return li;
+                };
+
+                this.items.forEach(item => {
+                    if (item.isGroup) {
+                        const matchingChildren = [];
+                        item.items.forEach(child => {
+                            const el = renderOptionItem(child);
+                            if (el) matchingChildren.push(el);
+                        });
+
+                        if (matchingChildren.length > 0) {
+                            const groupLi = document.createElement('li');
+                            groupLi.className = 'kopi-select-group-header';
+                            groupLi.textContent = item.label;
+                            this.optionsList.appendChild(groupLi);
+                            matchingChildren.forEach(el => this.optionsList.appendChild(el));
+                        }
+                    } else {
+                        const el = renderOptionItem(item);
+                        if (el) this.optionsList.appendChild(el);
+                    }
+                });
+
+                if (totalRendered === 0) {
+                    this.emptyState.classList.remove('d-none');
+                    this.optionsList.classList.add('d-none');
+                } else {
+                    this.emptyState.classList.add('d-none');
+                    this.optionsList.classList.remove('d-none');
+                }
+            }
+
+            highlightMatch(text, query) {
+                if (!query) return text;
+                const reg = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                return text.replace(reg, '<mark class="kopi-select-match-highlight">$1</mark>');
+            }
+
+            selectItem(itemData) {
+                this.selectEl.value = itemData.value;
+                this.syncFromSelect();
+                this.close();
+
+                // Trigger native change & input events
+                this.selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+                this.selectEl.dispatchEvent(new Event('input', { bubbles: true }));
+                if (typeof this.selectEl.onchange === 'function') {
+                    this.selectEl.onchange();
+                }
+            }
+
+            clearSelection() {
+                this.selectEl.value = '';
+                this.syncFromSelect();
+                this.close();
+
+                this.selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+                this.selectEl.dispatchEvent(new Event('input', { bubbles: true }));
+                if (typeof this.selectEl.onchange === 'function') {
+                    this.selectEl.onchange();
+                }
+            }
+
+            syncFromSelect() {
+                const val = this.selectEl.value;
+                const selectedOpt = this.selectEl.selectedOptions[0];
+
+                if (selectedOpt && val !== '') {
+                    const text = selectedOpt.textContent.trim();
+                    const sku = selectedOpt.getAttribute('data-sku');
+                    const stock = selectedOpt.getAttribute('data-stock');
+                    const type = selectedOpt.getAttribute('data-type');
+                    const pic = selectedOpt.getAttribute('data-pic');
+
+                    let html = '';
+                    if (sku) {
+                        html = `<span class="badge bg-secondary font-monospace me-1">${sku}</span> <strong>${text.split('[')[0].split('—')[0].trim()}</strong>`;
+                        if (stock !== null) {
+                            const stInt = parseInt(stock, 10);
+                            html += ` <span class="badge ${stInt > 0 ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-danger-subtle text-danger'} ms-auto">Stok: ${stInt}</span>`;
+                        }
+                    } else if (type || pic) {
+                        html = `<strong>${text.split('(')[0].trim()}</strong>`;
+                        if (type) html += ` <span class="badge bg-warning-subtle text-warning-emphasis border ms-1">${type}</span>`;
+                        if (pic) html += ` <small class="text-muted ms-auto"><i class="bi bi-person me-1"></i>${pic}</small>`;
+                    } else {
+                        html = `<strong>${text}</strong>`;
+                    }
+
+                    this.valueContainer.innerHTML = html;
+                    this.clearBtn.classList.add('is-visible');
+                } else {
+                    this.valueContainer.innerHTML = `<span class="kopi-select-placeholder">${this.placeholder}</span>`;
+                    this.clearBtn.classList.remove('is-visible');
+                }
+
+                if (this.selectEl.classList.contains('is-invalid')) {
+                    this.trigger.classList.add('is-invalid');
+                } else {
+                    this.trigger.classList.remove('is-invalid');
+                }
+            }
+
+            open() {
+                if (this.isOpen || this.selectEl.disabled) return;
+
+                // Close any other open KopiSelect dropdowns
+                document.querySelectorAll('.kopi-select-dropdown.is-open').forEach(dd => {
+                    dd.classList.remove('is-open');
+                });
+                document.querySelectorAll('.kopi-select-trigger.is-open').forEach(tr => {
+                    tr.classList.remove('is-open');
+                });
+
+                this.isOpen = true;
+                this.trigger.classList.add('is-open');
+                this.trigger.setAttribute('aria-expanded', 'true');
+                this.dropdown.classList.add('is-open');
+
+                this.positionDropdown();
+                this.searchInput.value = '';
+                this.renderOptions('');
+
+                setTimeout(() => {
+                    this.searchInput.focus();
+                }, 30);
+            }
+
+            close() {
+                if (!this.isOpen) return;
+                this.isOpen = false;
+                this.trigger.classList.remove('is-open');
+                this.trigger.setAttribute('aria-expanded', 'false');
+                this.dropdown.classList.remove('is-open');
+            }
+
+            positionDropdown() {
+                const rect = this.trigger.getBoundingClientRect();
+                const dropdownHeight = 320;
+                const spaceBelow = window.innerHeight - rect.bottom;
+                const openUpwards = spaceBelow < dropdownHeight && rect.top > dropdownHeight;
+
+                this.dropdown.style.width = Math.max(rect.width, 260) + 'px';
+                this.dropdown.style.left = rect.left + 'px';
+
+                if (openUpwards) {
+                    this.dropdown.style.top = 'auto';
+                    this.dropdown.style.bottom = (window.innerHeight - rect.top + 4) + 'px';
+                } else {
+                    this.dropdown.style.top = (rect.bottom + 4) + 'px';
+                    this.dropdown.style.bottom = 'auto';
+                }
+            }
+
+            bindEvents() {
+                this.trigger.addEventListener('click', (e) => {
+                    if (e.target.closest('.kopi-select-clear')) {
+                        this.clearSelection();
+                        return;
+                    }
+                    if (this.isOpen) {
+                        this.close();
+                    } else {
+                        this.open();
+                    }
+                });
+
+                this.trigger.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        this.open();
+                    }
+                });
+
+                this.searchInput.addEventListener('input', (e) => {
+                    this.renderOptions(e.target.value);
+                });
+
+                this.searchInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        this.close();
+                        this.trigger.focus();
+                    } else if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        this.moveHighlight(1);
+                    } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        this.moveHighlight(-1);
+                    } else if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (this.highlightedIndex >= 0 && this.visibleOptions[this.highlightedIndex]) {
+                            this.selectItem(this.visibleOptions[this.highlightedIndex].itemData);
+                            this.trigger.focus();
+                        }
+                    }
+                });
+
+                // Click outside closes
+                document.addEventListener('pointerdown', (e) => {
+                    if (this.isOpen && !this.trigger.contains(e.target) && !this.dropdown.contains(e.target)) {
+                        this.close();
+                    }
+                });
+
+                // Reposition on window resize or scroll
+                window.addEventListener('resize', () => {
+                    if (this.isOpen) this.positionDropdown();
+                }, { passive: true });
+
+                window.addEventListener('scroll', () => {
+                    if (this.isOpen) this.positionDropdown();
+                }, { passive: true });
+
+                // Listen for external change on select
+                this.selectEl.addEventListener('change', () => {
+                    this.syncFromSelect();
+                });
+            }
+
+            moveHighlight(direction) {
+                if (this.visibleOptions.length === 0) return;
+                this.highlightedIndex += direction;
+                if (this.highlightedIndex < 0) this.highlightedIndex = 0;
+                if (this.highlightedIndex >= this.visibleOptions.length) {
+                    this.highlightedIndex = this.visibleOptions.length - 1;
+                }
+
+                this.visibleOptions.forEach((opt, idx) => {
+                    if (idx === this.highlightedIndex) {
+                        opt.element.classList.add('is-highlighted');
+                        opt.element.scrollIntoView({ block: 'nearest' });
+                    } else {
+                        opt.element.classList.remove('is-highlighted');
+                    }
+                });
+            }
+
+            destroy() {
+                if (this.dropdown && this.dropdown.parentNode) {
+                    this.dropdown.parentNode.removeChild(this.dropdown);
+                }
+                if (this.wrapper && this.wrapper.parentNode) {
+                    this.wrapper.parentNode.insertBefore(this.selectEl, this.wrapper);
+                    this.wrapper.parentNode.removeChild(this.wrapper);
+                }
+                delete this.selectEl._kopiSearchSelect;
+            }
+        };
+
+        window.initKopiSearchableSelect = function(container = document) {
+            const selects = container.querySelectorAll('select.form-select-searchable, select.select-searchable, select[data-searchable="true"]');
+            selects.forEach(sel => {
+                if (!sel._kopiSearchSelect) {
+                    new window.KopiSearchSelect(sel);
+                }
+            });
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            window.initKopiSearchableSelect();
         });
     </script>
     @stack('scripts')

@@ -84,7 +84,7 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <select name="customer_id" class="form-select">
+                <select name="customer_id" class="form-select form-select-searchable" data-placeholder="-- Semua Toko Mitra --">
                     <option value="">-- Semua Toko Mitra --</option>
                     @foreach($customers as $c)
                         <option value="{{ $c->id }}" {{ request('customer_id') == $c->id ? 'selected' : '' }}>{{ $c->business_name }}</option>
