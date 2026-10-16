@@ -22,9 +22,10 @@ Dokumen ini melacak status terkini pembangunan sistem, file yang telah dibuat, h
 | **Tahap 2** | Master Data (Kategori, Produk & Varian/SKU, Supplier, Pelanggan Bisnis) | **SELESAI & TERUJI (100%)** | 20/20 test lulus (59 assertions). |
 | **Tahap 3** | Persediaan & Pembelian Supplier (Stok Masuk, Mutasi, Stok Minimum, Audit) | **SELESAI & TERUJI (100%)** | 27/27 test lulus (83 assertions). |
 | **Tahap 4** | Penjualan Grosir B2B & Retail Online (Order Sales, Keranjang, Checkout) | **SELESAI & TERUJI (100%)** | 33/33 test lulus (115 assertions). |
-| **Tahap 5** | Pembayaran & Manajemen Piutang Tempo (Faktur, Plafon Kredit, TOP) | **SIAP DIMULAI** | Menunggu persetujuan pengguna. |
-| **Tahap 6** | Pengiriman (Surat Jalan), Dashboard Owner & Laporan HPP / Laba Kotor | Terjadwal | Akan dikerjakan setelah Tahap 5. |
-| **Tahap 7** | Pengujian Menyeluruh, Hardening Keamanan & Panduan Shared Hosting | Terjadwal | Tahap akhir. |
+| **Tahap 5** | Pembayaran & Manajemen Piutang Tempo (Faktur, Plafon Kredit, TOP) | **SELESAI & TERUJI (100%)** | 46/46 test lulus (186 assertions). |
+| **Tahap 6** | Pengiriman (Surat Jalan), Logistik & Pelacakan Pengiriman | **SELESAI & TERUJI (100%)** | 52/52 test lulus (212 assertions). |
+| **Tahap 7** | Laporan Bisnis, Laba Kotor, HPP & Ekspor CSV | **SELESAI & TERUJI (100%)** | 52/52 test lulus (212 assertions). |
+| **Tahap 8** | Distribusi Ritel Modern, Mobile Scanner Driver, GPS Geofencing & Peta Armada | **SELESAI & TERUJI (100%)** | 58/58 test lulus (231 assertions). |
 
 ---
 
@@ -313,32 +314,70 @@ Tahap 7 merupakan puncak sistem analitik bisnis terintegrasi bagi Owner, Manajem
 
 ---
 
-## Ringkasan Akhir Status Proyek (Tahap 1 s/d 7 Selesai 100%)
+## Tahap 8: Distribusi Ritel Modern, Mobile Scanner Driver, GPS Geofencing & Peta Armada (SELESAI & TERUJI)
 
-Seluruh 7 tahapan pengembangan aplikasi bisnis distribusi dan penjualan kopi kemasan berbasis Laravel 11 telah **selesai dibangun, terintegrasi penuh, dan teruji 100%**:
-- **Total Test Cases**: 52 Tests Lulus (212 Assertions).
-- **Semua Role**: Owner, Admin, Sales, Warehouse, Finance, Customer (RBAC Middleware enforced).
+Tahap 8 memperluas sistem Kopi Distro untuk mengotomatisasi rantai distribusi ke jaringan ritel modern (Alfamart, Indomaret, kafe, dan toko kelontong mitra) dengan kendali penuh di tangan Owner:
+
+1. **Skema Basis Data & Entitas Baru**:
+   - `database/migrations/2026_10_16_000001_add_geo_and_qr_to_customers_table.php`: Menambahkan kolom `latitude`, `longitude`, `qr_token` (unik), `store_chain`, dan `min_stock_alert` pada tabel pelanggan `customers`.
+   - `database/migrations/2026_10_16_000002_create_store_visits_table.php`: Tabel `store_visits` pencatat riwayat kunjungan sopir (check-in time, check-out time, koordinat GPS sopir, jarak toleransi meter, flag `is_geofence_valid`, foto bukti serah terima / POD, ringkasan produk laku, restock, dan total nominal rupiah).
+2. **Model Eloquent & Relasi**:
+   - `app/Models/StoreVisit.php`: Relasi `belongsTo(Customer::class)`, `belongsTo(User::class, 'driver_user_id')`, helper hitung durasi menit kunjungan dan label status.
+   - `app/Models/Customer.php`: Ditambahkan helper `generateQrToken()`, `getActiveConsignmentStock()`, `getOverdueDebtAmount()`, dan `getGoogleMapsUrl()`.
+   - `app/Models/User.php`: Ditambahkan role `driver`, method `isDriver()`, dan relasi `storeVisits()`.
+3. **Controller & Fitur Lapangan**:
+   - `app/Http/Controllers/DriverPortalController.php`:
+     - Dashboard mobile sopir (`GET /driver`).
+     - Scanner kamera HTML5-QRCode native browser (`GET /driver/scan`).
+     - Check-in toko dengan audit sisa stok rak, restock, dan upload POD (`GET/POST /driver/visit/{visit}`).
+     - Riwayat kunjungan sopir (`GET /driver/visits`).
+     - Cetak stiker QR code rak toko (`GET /driver/print-qr/{customer}`).
+   - `app/Http/Controllers/StoreMapController.php`:
+     - Peta interaktif sebaran toko ritel Leaflet + OSM (`GET /maps/stores`).
+     - Peta pelacakan rute & jejak armada sopir (`GET /maps/driver-tracking`).
+   - `app/Http/Controllers/DashboardController.php`:
+     - Dashboard eksekutif Owner dengan KPI Omset Harian Realtime, Laba Kotor HPP (Margin %), Multi-level Inventory (Gudang Pusat vs Titip Toko), Toko Terlaris, Produk Terfavorit, dan Alert Toko Menunggak.
+4. **Tampilan Antarmuka (Blade + Bootstrap 5 + Leaflet.js + HTML5-QRCode)**:
+   - `resources/views/driver/dashboard.blade.php`, `scan.blade.php`, `visit_detail.blade.php`, `visits_history.blade.php`, `print_qr.blade.php`.
+   - `resources/views/maps/stores.blade.php`, `maps/driver_tracking.blade.php`.
+   - `resources/views/dashboard/index.blade.php` (Command Center Eksekutif).
+   - Penambahan input koordinat GPS & Jaringan Toko di `resources/views/master/customers/create.blade.php`, `edit.blade.php`, `show.blade.php`, `index.blade.php`.
+5. **Seeder Data Nyata (`StoreDistributionSeeder.php`)**:
+   - 6 jaringan toko ritel nyata (Alfamart Hayam Wuruk, Alfamart Teuku Umar, Indomaret Sudirman, Indomaret Gatot Subroto, Toko Kelontong Berkah Jaya, Kafe Kopi Senja) dengan koordinat GPS realistis, simulasi konsinyasi, dan riwayat kunjungan.
+   - Akun driver `driver@kopi.com` (Budi Santoso - Armada 1) dan `driver2@kopi.com` (Joko Supriyadi - Armada 2).
+
+---
+
+## Ringkasan Akhir Status Proyek (Tahap 1 s/d 8 Selesai 100%)
+
+Seluruh 8 tahapan pengembangan aplikasi bisnis distribusi dan penjualan kopi kemasan berbasis Laravel 11 telah **selesai dibangun, terintegrasi penuh, dan teruji 100%**:
+- **Total Test Cases**: 58 Tests Lulus (231 Assertions).
+- **Semua Role**: Owner, Admin, Driver 1, Driver 2, Warehouse, Sales, Finance, Customer (RBAC Middleware enforced).
+
 ---
 
 ## Dokumentasi Kredensial Akun Pengguna & Password
 Dokumentasi lengkap seluruh akun telah dicatat pada file tersendiri:
 - 👉 [`docs/DAFTAR_AKUN_DAN_PASSWORD.md`](DAFTAR_AKUN_DAN_PASSWORD.md)
+- 👉 [`docs/PANDUAN_SISTEM_DISTRIBUSI_DAN_TRACKING.md`](PANDUAN_SISTEM_DISTRIBUSI_DAN_TRACKING.md)
 
 | No | Role | Email | Password | Modul Utama |
 |:--:|:---|:---|:---:|:---|
-| 1 | **Owner** | `owner@kopi.com` | `password123` | Akses penuh: Laporan Laba Rugi/HPP, Monitoring Piutang, Otorisasi Kredit |
-| 2 | **Admin** | `admin@kopi.com` | `password123` | Manajemen Master Data, Pengguna, Transaksi, dan Laporan |
-| 3 | **Sales** | `sales@kopi.com` | `password123` | Input Order Grosir B2B, Pemantauan Plafon Kredit Pelanggan |
-| 4 | **Warehouse** | `warehouse@kopi.com` | `password123` | Penerimaan PO Supplier, Mutasi Stok, Stock Opname, Surat Jalan |
-| 5 | **Finance** | `finance@kopi.com` | `password123` | Invoicing, Pembayaran Cicilan/Lunas, Pemulihan Plafon, Kuitansi |
-| 6 | **Customer** | `pelanggan@gmail.com` | `password123` | Belanja Online Ritel B2C, Keranjang Belanja, Riwayat Pesanan |
+| 1 | **Owner** | `owner@kopi.com` | `password123` | Executive Command Center, Omset Harian, Laba Kotor HPP, Multi-level Inventory, Peta Sebaran Toko & Rute Armada |
+| 2 | **Admin** | `admin@kopi.com` | `password123` | Manajemen Master Toko, Setup Koordinat GPS, Cetak Stiker QR Toko, Master Produk & Kategori |
+| 3 | **Driver 1** | `driver@kopi.com` | `password123` | Portal Mobile Sopir Armada 1, Scanner QR Kamera HP, Audit Sisa Rak & Restock, Upload POD |
+| 4 | **Driver 2** | `driver2@kopi.com` | `password123` | Portal Mobile Sopir Armada 2 (Cadangan / Wilayah Luar Kota) |
+| 5 | **Sales** | `sales@kopi.com` | `password123` | Input Order Grosir B2B, Pemantauan Plafon Kredit Pelanggan |
+| 6 | **Warehouse** | `warehouse@kopi.com` | `password123` | Penerimaan PO Supplier, Mutasi Stok, Stock Opname, Surat Jalan |
+| 7 | **Finance** | `finance@kopi.com` | `password123` | Invoicing, Pembayaran Cicilan/Lunas, Pemulihan Plafon, Kuitansi |
+| 8 | **Customer** | `pelanggan@gmail.com` | `password123` | Belanja Online Ritel B2C, Keranjang Belanja, Riwayat Pesanan |
 
 ---
 
 ## Pembaruan Antarmuka Pengguna (UI/UX): Left Sidebar Navigation Framework
 Tata letak navigasi telah ditingkatkan secara menyeluruh dari top-navbar menjadi **Left Sidebar Navigation Framework** berbasis Bootstrap 5 yang ergonomis, cepat, dan standar aplikasi enterprise/ERP:
 1. **Sidebar Sebelah Kiri (`app-sidebar`)**:
-   - Menu dikelompokkan rapi ke dalam kategori bisnis: **Navigasi Utama**, **Master Data**, **Gudang & Persediaan**, **Penjualan (Sales)**, **Logistik & Kirim**, **Keuangan & Piutang**, dan **Laporan & Analisis**.
+   - Menu dikelompokkan rapi ke dalam kategori bisnis: **Navigasi Utama**, **Distribusi & Armada (Portal Sopir, Peta Toko, Pelacakan Rute)**, **Master Data**, **Gudang & Persediaan**, **Penjualan (Sales)**, **Logistik & Kirim**, **Keuangan & Piutang**, dan **Laporan & Analisis**.
    - Dilengkapi badge peran pengguna (*Role Badge*), indikator menu aktif (*active highlight*), dan tombol cepat logout.
    - Menggunakan komponen native Bootstrap `offcanvas-lg` sehingga otomatis beradaptasi menjadi *drawer offcanvas* di perangkat seluler / tablet dan sidebar tetap (*fixed*) di layar desktop/laptop.
 2. **Topbar Header (`app-topbar`)**:
@@ -346,4 +385,5 @@ Tata letak navigasi telah ditingkatkan secara menyeluruh dari top-navbar menjadi
    - Indikator konteks halaman (*breadcrumbs*).
    - Akses cepat ke etalase toko ritel, indikator counter keranjang belanja (*cart badge*), dan dropdown profil pengguna.
 3. **Kompatibilitas Dokumen Cetak (`@media print`)**:
-   - Sidebar dan topbar otomatis disembunyikan saat mencetak dokumen Surat Jalan (`SJ`) dan Kuitansi Resmi Pembayaran, sehingga hasil cetak bersih dan rapi.
+   - Sidebar dan topbar otomatis disembunyikan saat mencetak dokumen Surat Jalan (`SJ`), Stiker QR Toko, dan Kuitansi Resmi Pembayaran, sehingga hasil cetak bersih dan rapi.
+
