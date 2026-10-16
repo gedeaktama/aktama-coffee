@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             MasterDataSeeder::class,
             InventorySeeder::class,
+            StoreDistributionSeeder::class,
         ]);
     }
 }

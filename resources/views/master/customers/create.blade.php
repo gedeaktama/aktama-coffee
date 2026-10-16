@@ -41,22 +41,34 @@
                             <select name="customer_type" class="form-select @error('customer_type') is-invalid @enderror" required>
                                 <option value="kafe" {{ old('customer_type') == 'kafe' ? 'selected' : '' }}>Kafe / Kedai Kopi</option>
                                 <option value="toko" {{ old('customer_type') == 'toko' ? 'selected' : '' }}>Toko Kecil & Kelontong</option>
+                                <option value="konsinyasi" {{ old('customer_type') == 'konsinyasi' ? 'selected' : '' }}>Mitra Titip Jual (Konsinyasi)</option>
                                 <option value="reseller" {{ old('customer_type') == 'reseller' ? 'selected' : '' }}>Reseller Kopi</option>
                                 <option value="retail" {{ old('customer_type') == 'retail' ? 'selected' : '' }}>Konsumen Retail</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Jaringan / Brand Toko</label>
+                            <select name="store_chain" class="form-select">
+                                <option value="lainnya">Lainnya / Mitra Bebas</option>
+                                <option value="alfamart" {{ old('store_chain') == 'alfamart' ? 'selected' : '' }}>Alfamart</option>
+                                <option value="indomaret" {{ old('store_chain') == 'indomaret' ? 'selected' : '' }}>Indomaret</option>
+                                <option value="kelontong" {{ old('store_chain') == 'kelontong' ? 'selected' : '' }}>Toko Kelontong / Grosir</option>
+                                <option value="kafe" {{ old('store_chain') == 'kafe' ? 'selected' : '' }}>Kafe / Kedai Kopi</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Nama Usaha / Nama Entitas <span class="text-danger">*</span></label>
-                        <input type="text" name="business_name" class="form-control @error('business_name') is-invalid @enderror" value="{{ old('business_name') }}" placeholder="Contoh: Kopi Kulo / Kafe Sejahtera" required>
+                        <input type="text" name="business_name" class="form-control @error('business_name') is-invalid @enderror" value="{{ old('business_name') }}" placeholder="Contoh: Alfamart Hayam Wuruk / Kopi Kulo" required>
                         @error('business_name') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold">Penanggung Jawab (PIC) <span class="text-danger">*</span></label>
-                            <input type="text" name="pic_name" class="form-control @error('pic_name') is-invalid @enderror" value="{{ old('pic_name') }}" placeholder="Nama pemilik / manager" required>
+                            <input type="text" name="pic_name" class="form-control @error('pic_name') is-invalid @enderror" value="{{ old('pic_name') }}" placeholder="Nama kepala toko / manager" required>
                             @error('pic_name') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
@@ -72,14 +84,40 @@
                         <input type="email" name="email" class="form-control" value="{{ old('email') }}" placeholder="usaha@example.com">
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Alamat Penagihan</label>
-                        <textarea name="address" class="form-control" rows="2" placeholder="Alamat kantor / outlet utama...">{{ old('address') }}</textarea>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Alamat Penagihan</label>
+                            <textarea name="address" class="form-control" rows="2" placeholder="Alamat kantor / outlet utama...">{{ old('address') }}</textarea>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Alamat Pengiriman Barang</label>
+                            <textarea name="shipping_address" class="form-control" rows="2" placeholder="Alamat tujuan pengiriman...">{{ old('shipping_address') }}</textarea>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Alamat Pengiriman Barang</label>
-                        <textarea name="shipping_address" class="form-control" rows="2" placeholder="Alamat tujuan pengiriman (gudang / outlet jika berbeda)...">{{ old('shipping_address') }}</textarea>
+                    <!-- Koordinat Lokasi GPS Toko & Batas Stok Aman -->
+                    <div class="p-3 bg-light rounded-3 mb-3 border">
+                        <div class="d-flex align-items-center gap-1 mb-2">
+                            <i class="bi bi-geo-alt-fill text-danger"></i>
+                            <strong class="small text-dark">Koordinat GPS Peta & Batas Stok</strong>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-md-4">
+                                <label class="form-label small text-muted mb-1">Latitude</label>
+                                <input type="text" name="latitude" class="form-control form-control-sm" value="{{ old('latitude') }}" placeholder="-8.653400">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small text-muted mb-1">Longitude</label>
+                                <input type="text" name="longitude" class="form-control form-control-sm" value="{{ old('longitude') }}" placeholder="115.228500">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small text-muted mb-1">Batas Minimal Stok</label>
+                                <input type="number" name="min_stock_alert" class="form-control form-control-sm" value="{{ old('min_stock_alert', 5) }}" min="1">
+                            </div>
+                        </div>
+                        <small class="text-muted mt-1 d-block" style="font-size: 0.72rem;">
+                            Koordinat GPS digunakan untuk Peta Toko, Peta Rute Sopir, dan validasi kehadiran (anti-fraud).
+                        </small>
                     </div>
                 </div>
             </div>

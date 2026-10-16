@@ -135,6 +135,14 @@
                                 @endif
                             </td>
                             <td class="text-end pe-4">
+                                <a href="{{ route('driver.print_qr', $customer) }}" target="_blank" class="btn btn-sm btn-outline-warning text-dark me-1" title="Cetak Stiker QR Code Toko">
+                                    <i class="bi bi-qr-code"></i>
+                                </a>
+                                @if($customer->google_maps_url)
+                                    <a href="{{ $customer->google_maps_url }}" target="_blank" class="btn btn-sm btn-outline-info text-dark me-1" title="Buka Rute di Google Maps">
+                                        <i class="bi bi-compass"></i>
+                                    </a>
+                                @endif
                                 <a href="{{ route('customers.show', $customer) }}" class="btn btn-sm btn-outline-dark me-1" title="Lihat Profil">
                                     <i class="bi bi-eye"></i>
                                 </a>

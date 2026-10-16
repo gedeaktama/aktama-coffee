@@ -56,6 +56,22 @@ class UserSeeder extends Seeder
                 'is_active' => true,
                 'password' => $defaultPassword,
             ],
+            [
+                'name' => 'Budi Santoso (Driver Armada 1)',
+                'email' => 'driver@kopi.com',
+                'phone' => '081234567895',
+                'role' => User::ROLE_DRIVER,
+                'is_active' => true,
+                'password' => $defaultPassword,
+            ],
+            [
+                'name' => 'Joko Supriyadi (Driver Armada 2)',
+                'email' => 'driver2@kopi.com',
+                'phone' => '081234567896',
+                'role' => User::ROLE_DRIVER,
+                'is_active' => true,
+                'password' => $defaultPassword,
+            ],
         ];
 
         foreach ($users as $userData) {

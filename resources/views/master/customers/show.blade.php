@@ -16,12 +16,20 @@
             </nav>
             <h3 class="fw-bold mb-0 text-dark">{{ $customer->business_name }}</h3>
         </div>
-        <div class="d-flex gap-2">
-            <a href="{{ route('customers.edit', $customer) }}" class="btn btn-outline-primary">
-                <i class="bi bi-pencil me-1"></i> Edit Pelanggan
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{{ route('driver.print_qr', $customer) }}" target="_blank" class="btn btn-warning fw-bold text-dark">
+                <i class="bi bi-qr-code me-1"></i> Cetak Stiker QR Toko
             </a>
-            <a href="{{ route('customers.index') }}" class="btn btn-light">
-                <i class="bi bi-arrow-left me-1"></i> Kembali ke Daftar
+            @if($customer->google_maps_url)
+                <a href="{{ $customer->google_maps_url }}" target="_blank" class="btn btn-outline-primary">
+                    <i class="bi bi-compass me-1"></i> Rute Maps
+                </a>
+            @endif
+            <a href="{{ route('customers.edit', $customer) }}" class="btn btn-outline-secondary">
+                <i class="bi bi-pencil me-1"></i> Edit
+            </a>
+            <a href="{{ route('customers.index') }}" class="btn btn-light border">
+                <i class="bi bi-arrow-left me-1"></i> Kembali
             </a>
         </div>
     </div>

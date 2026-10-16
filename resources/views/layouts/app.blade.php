@@ -319,6 +319,7 @@
         .badge-role-sales { background-color: #2e7d32; color: #fff; }
         .badge-role-warehouse { background-color: #ea580c; color: #fff; }
         .badge-role-finance { background-color: #0891b2; color: #fff; }
+        .badge-role-driver { background-color: #d97706; color: #fff; }
         .badge-role-customer { background-color: #64748b; color: #fff; }
 
         /* Print Media Styles */
@@ -360,6 +361,9 @@
                    request()->is('finance*') || 
                    request()->is('reports*') ||
                    request()->is('settings*') ||
+                   request()->is('driver*') ||
+                   request()->is('maps*') ||
+                   request()->is('consignments*') ||
                    request()->is('my-orders*');
 @endphp
 
@@ -547,6 +551,29 @@
                                     <a class="sidebar-item-link {{ request()->routeIs('delivery.*') ? 'active' : '' }}" href="{{ route('delivery.index') }}">
                                         <i class="bi bi-truck"></i>
                                         <span>Surat Jalan &amp; Ekspedisi</span>
+                                    </a>
+                                </li>
+                            @endif
+
+                            <!-- DISTRIBUSI & ARMADA LAPANGAN -->
+                            @if(auth()->user()->hasRole(['owner', 'admin', 'sales', 'warehouse', 'driver']))
+                                <li class="sidebar-group-title">Distribusi &amp; Armada Toko</li>
+                                <li class="nav-item">
+                                    <a class="sidebar-item-link {{ request()->routeIs('driver.*') ? 'active' : '' }}" href="{{ route('driver.dashboard') }}">
+                                        <i class="bi bi-qr-code-scan text-warning"></i>
+                                        <span>Portal Sopir &amp; Scan Toko</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="sidebar-item-link {{ request()->routeIs('maps.stores') ? 'active' : '' }}" href="{{ route('maps.stores') }}">
+                                        <i class="bi bi-geo-alt-fill text-success"></i>
+                                        <span>Peta Sebaran Toko</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="sidebar-item-link {{ request()->routeIs('maps.driver_tracking') ? 'active' : '' }}" href="{{ route('maps.driver_tracking') }}">
+                                        <i class="bi bi-bicycle text-info"></i>
+                                        <span>Peta Jejak Sopir</span>
                                     </a>
                                 </li>
                             @endif

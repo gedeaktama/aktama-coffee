@@ -17,6 +17,7 @@ class User extends Authenticatable
     public const ROLE_SALES = 'sales';
     public const ROLE_WAREHOUSE = 'warehouse';
     public const ROLE_FINANCE = 'finance';
+    public const ROLE_DRIVER = 'driver';
     public const ROLE_CUSTOMER = 'customer';
 
     public const ROLES = [
@@ -25,6 +26,7 @@ class User extends Authenticatable
         self::ROLE_SALES => 'Sales',
         self::ROLE_WAREHOUSE => 'Warehouse',
         self::ROLE_FINANCE => 'Finance',
+        self::ROLE_DRIVER => 'Driver / Kurir Lapangan',
         self::ROLE_CUSTOMER => 'Customer',
     ];
 
@@ -93,6 +95,16 @@ class User extends Authenticatable
         return $this->role === self::ROLE_CUSTOMER;
     }
 
+    public function isDriver(): bool
+    {
+        return $this->role === self::ROLE_DRIVER;
+    }
+
+    public function storeVisits(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(StoreVisit::class);
+    }
+
     /**
      * Check if user has any of the given roles.
      *
@@ -141,6 +153,7 @@ class User extends Authenticatable
             self::ROLE_SALES,
             self::ROLE_WAREHOUSE,
             self::ROLE_FINANCE,
+            self::ROLE_DRIVER,
         ], true);
     }
 }

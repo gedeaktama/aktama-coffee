@@ -72,6 +72,7 @@ Semua akun default menggunakan password: **`password123`**
 | **Sales** | `sales@kopi.com` | Mengelola pelanggan bisnis dan membuat pesanan grosir (B2B). |
 | **Warehouse** | `warehouse@kopi.com` | Konfirmasi penerimaan barang supplier, stok fisik, surat jalan pengiriman. |
 | **Finance** | `finance@kopi.com` | Verifikasi transfer, pencatatan faktur, buku piutang tempo, dan pelunasan. |
+| **Driver** | `driver@kopi.com` | Portal Mobile Sopir: scan QR toko, validasi GPS geofence, audit sisa rak, bukti serah terima (POD). |
 | **Customer** | `pelanggan@gmail.com` | Akun retail publik untuk belanja kopi kemasan pribadi. |
 
 ---
@@ -83,16 +84,19 @@ Buka browser dan arahkan ke alamat:
 - **Halaman Depan Toko (Publik)**: [http://localhost:8080/kopi/public](http://localhost:8080/kopi/public)
 - **Halaman Masuk (Login)**: [http://localhost:8080/kopi/public/login](http://localhost:8080/kopi/public/login)
 - **Halaman Registrasi Retail**: [http://localhost:8080/kopi/public/register](http://localhost:8080/kopi/public/register)
-- **Dashboard Internal Staf**: [http://localhost:8080/kopi/public/dashboard](http://localhost:8080/kopi/public/dashboard)
+- **Dashboard Internal Staf / Owner**: [http://localhost:8080/kopi/public/dashboard](http://localhost:8080/kopi/public/dashboard)
+- **Portal Mobile Sopir & Scanner Toko**: [http://localhost:8080/kopi/public/driver](http://localhost:8080/kopi/public/driver)
+- **Peta Sebaran Toko Interaktif (Alfamart, Indomaret, dll)**: [http://localhost:8080/kopi/public/maps/stores](http://localhost:8080/kopi/public/maps/stores)
+- **Peta Jejak & Rute Perjalanan Sopir**: [http://localhost:8080/kopi/public/maps/driver-tracking](http://localhost:8080/kopi/public/maps/driver-tracking)
 
-> **Fitur Praktis**: Pada halaman login, telah disediakan tombol *Quick Demo Fill* untuk memilih akun role mana saja hanya dengan 1 kali klik.
+> **Fitur Praktis**: Pada halaman login, telah disediakan tombol *Quick Demo Fill* untuk memilih akun role mana saja (termasuk Sopir/Driver) hanya dengan 1 kali klik.
 
 ### B. Menjalankan Pengujian Otomatis (Testing)
 Jalankan test runner PHPUnit/Artisan Test:
 ```bash
 php artisan test
 ```
-Seluruh 13 skenario pengujian autentikasi dan middleware otorisasi role akan dijalankan secara otomatis.
+Seluruh 58 skenario pengujian autentikasi, master data, portal driver, peta geolokasi, dan kalkulasi bisnis akan dijalankan secara otomatis.
 
 ---
 

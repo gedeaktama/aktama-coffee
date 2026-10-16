@@ -1,76 +1,108 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard ERP - Kopi Distro')
+@section('title', 'Dashboard Eksekutif ERP - Kopi Distro')
 
 @push('styles')
 <style>
-    .kpi-card {
+    /* Styling Executive ERP Dashboard */
+    .exec-hero-banner {
+        background: linear-gradient(135deg, #18181b 0%, #27272a 50%, #3e271a 100%);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+        color: #ffffff;
+        border-radius: 20px;
+        padding: 1.75rem 2rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    }
+    .exec-hero-banner::after {
+        content: '';
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 180px;
+        height: 180px;
+        background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+    .kpi-metric-card {
         background: #ffffff;
         border: 1px solid #e2e8f0;
-        border-radius: 14px;
-        padding: 1.25rem 1.5rem;
+        border-radius: 16px;
+        padding: 1.25rem 1.4rem;
         transition: all 0.25s ease;
         position: relative;
         overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
     }
-    .kpi-card:hover {
+    .kpi-metric-card:hover {
         transform: translateY(-3px);
-        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.07);
         border-color: #cbd5e1;
     }
-    .kpi-icon-wrap {
-        width: 52px;
-        height: 52px;
-        border-radius: 12px;
+    .kpi-metric-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+    }
+    .kpi-card-revenue::before { background: linear-gradient(90deg, #10b981, #059669); }
+    .kpi-card-profit::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
+    .kpi-card-visits::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+    .kpi-card-stock::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+
+    .kpi-icon-pill {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 1.4rem;
-        flex-shrink: 0;
     }
-    .action-quick-btn {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 0.9rem 1.25rem;
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
+    .exec-action-btn {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: #ffffff;
+        padding: 0.6rem 1.15rem;
         border-radius: 12px;
-        text-decoration: none;
-        color: #1e293b;
         font-weight: 600;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
         transition: all 0.2s ease;
     }
-    .action-quick-btn:hover {
-        background: #f8fafc;
+    .exec-action-btn:hover {
+        background: #f59e0b;
+        color: #18181b;
         border-color: #f59e0b;
-        color: #b45309;
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
     }
-    .action-quick-btn i {
-        font-size: 1.25rem;
+    .stock-layer-box {
+        background: #f8fafc;
+        border: 1px solid #edf2f7;
+        border-radius: 14px;
+        padding: 1rem 1.25rem;
+        height: 100%;
     }
-
-    @media (max-width: 768px) {
-        .kpi-card {
-            padding: 1rem !important;
-        }
-        .kpi-icon-wrap {
-            width: 42px !important;
-            height: 42px !important;
-            font-size: 1.15rem !important;
-        }
-        .action-quick-btn {
-            padding: 0.65rem 0.75rem !important;
-            font-size: 0.8rem !important;
-            gap: 0.45rem !important;
-        }
-        .action-quick-btn i {
-            font-size: 1.05rem !important;
-        }
+    .rank-badge {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 0.75rem;
     }
+    .rank-1 { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+    .rank-2 { background: #e2e8f0; color: #475569; border: 1px solid #cbd5e1; }
+    .rank-3 { background: #ffedd5; color: #c2410c; border: 1px solid #fed7aa; }
+    .rank-other { background: #f1f5f9; color: #64748b; }
 </style>
 @endpush
 
@@ -78,361 +110,381 @@
 <div class="py-2">
 
     <!-- 1. EXECUTIVE WELCOME BANNER -->
-    <div class="card p-4 mb-4 border-0 text-white shadow-sm" style="background: linear-gradient(135deg, #18110c 0%, #2b170e 55%, #422214 100%); border-radius: 16px;">
-        <div class="row align-items-center gy-3">
-            <div class="col-lg-8">
-                <div class="d-flex align-items-center gap-2 mb-2">
-                    <span class="badge badge-role badge-role-{{ $user->role }} px-3 py-1">
-                        HAK AKSES: {{ strtoupper($user->role) }}
-                    </span>
-                    <span class="badge bg-success bg-opacity-75">
-                        <i class="bi bi-shield-check me-1"></i> Sistem ERP Beroperasi Normal
-                    </span>
-                </div>
-                <h2 class="fw-bold text-white mb-2">Selamat Datang, {{ $user->name }}!</h2>
-                <p class="text-white-50 mb-0" style="max-width: 720px; line-height: 1.55;">
-                    @if($user->isOwner())
-                        Anda memiliki <strong>akses eksekutif penuh</strong> atas seluruh konfigurasi bisnis, plafon kredit pelanggan B2B, audit persediaan gudang, serta analisis laba kotor &amp; HPP.
-                    @elseif($user->isAdmin())
-                        Anda mengelola master data produk &amp; SKU gramasi, mitra pemasok, pelanggan B2B, dan seluruh transaksi penjualan harian.
-                    @elseif($user->isSales())
-                        Anda mengelola kemitraan pelanggan grosir binaan, memantau sisa plafon kredit, dan menerbitkan Pesanan Grosir B2B baru.
-                    @elseif($user->isWarehouse())
-                        Anda bertanggung jawab atas penerimaan PO bahan baku supplier, mutasi stok fisik, opname audit, dan penerbitan Surat Jalan pengiriman.
-                    @elseif($user->isFinance())
-                        Anda mengelola penerbitan faktur penjualan, verifikasi pembayaran bertahap/lunas, pemulihan otomatis plafon kredit, dan penagihan piutang tempo.
-                    @else
-                        Anda terhubung ke sistem terpadu operasional Kopi Distro.
-                    @endif
+    <div class="exec-hero-banner mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-warning text-dark px-3 py-1 rounded-pill fw-bold">
+                    <i class="bi bi-broadcast me-1"></i> EXECUTIVE LIVE MONITORING
+                </span>
+                <span class="text-white-50 small">{{ now()->translatedFormat('l, d F Y') }}</span>
+            </div>
+
+            <!-- Shortcut Buttons -->
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{{ route('maps.stores') }}" class="exec-action-btn">
+                    <i class="bi bi-geo-alt-fill text-warning"></i> Peta Toko
+                </a>
+                <a href="{{ route('maps.driver_tracking') }}" class="exec-action-btn">
+                    <i class="bi bi-bicycle text-info"></i> Jejak Sopir
+                </a>
+                <a href="{{ route('driver.dashboard') }}" class="exec-action-btn">
+                    <i class="bi bi-qr-code-scan text-success"></i> Portal Sopir
+                </a>
+            </div>
+        </div>
+
+        <div class="row align-items-center">
+            <div class="col-12 col-lg-8">
+                <h3 class="fw-bold mb-1">Pusat Kendali Distribusi Kopi Distro</h3>
+                <p class="text-white-50 mb-0 small">
+                    Memantau pasokan ke jaringan Alfamart, Indomaret, kafe, omset harian, keuntungan HPP, dan jejak armada pengantaran secara realtime.
                 </p>
             </div>
-            <div class="col-lg-4 text-lg-end">
-                <div class="d-inline-block text-start p-3 rounded-3 bg-white bg-opacity-10 border border-white border-opacity-20">
-                    <small class="text-white-50 d-block">Sesi Waktu Saat Ini</small>
-                    <span class="fw-bold text-white fs-6">{{ now()->translatedFormat('l, d F Y') }}</span>
-                    <small class="text-white-50 d-block mt-1">Status Database: <span class="text-success fw-bold">Sinkron &amp; Terpusat</span></small>
-                </div>
+            <div class="col-12 col-lg-4 text-lg-end mt-3 mt-lg-0">
+                <span class="badge bg-dark border border-secondary px-3 py-2 rounded-pill small">
+                    <span class="spinner-grow spinner-grow-sm text-success me-1"></span>
+                    Armada Aktif: <strong>{{ $fieldFleetMetrics['total_active_drivers'] }} Sopir</strong>
+                </span>
             </div>
         </div>
     </div>
 
-    @if($isDevMode)
-        <!-- PERINGATAN DASHBOARD: MODE PENGEMBANG SEDANG AKTIF -->
-        <div class="alert alert-danger d-flex flex-column flex-md-row align-items-md-center justify-content-between p-3 mb-4 rounded-4 shadow-sm border-0" style="background-color: #fee2e2; border-left: 6px solid #ef4444 !important;">
-            <div class="d-flex align-items-center gap-3 mb-2 mb-md-0">
-                <i class="bi bi-shield-lock-fill fs-2 text-danger flex-shrink-0"></i>
-                <div>
-                    <h6 class="fw-bold text-danger mb-0">MODE PENGEMBANG SEDANG AKTIF (PEMBELIAN DIKUNCI)</h6>
-                    <small class="text-danger text-opacity-75">Seluruh transaksi pembelian dan keranjang etalase toko ritel saat ini dinonaktifkan untuk publik.</small>
-                </div>
-            </div>
-            @if($user->hasRole(['owner', 'admin']))
-                <div class="d-flex gap-2">
-                    <form method="POST" action="{{ route('settings.dev_mode.toggle') }}" class="m-0">
-                        @csrf
-                        <input type="hidden" name="state" value="0">
-                        <button type="submit" class="btn btn-sm btn-success fw-bold px-3 shadow-sm">
-                            <i class="bi bi-toggle-on me-1"></i> Buka Toko (Matikan Mode)
-                        </button>
-                    </form>
-                    <a href="{{ route('settings.index') }}" class="btn btn-sm btn-outline-danger fw-bold">
-                        <i class="bi bi-sliders me-1"></i> Kelola di Pengaturan
-                    </a>
-                </div>
-            @endif
-        </div>
-    @endif
-
-    <!-- 2. EXECUTIVE KPI METRICS (FINANCIAL & OPERATIONAL) -->
+    <!-- 2. REALTIME CORE KPI CARDS (JAWABAN KEBUTUHAN UTAMA USER) -->
     <div class="row g-3 mb-4">
-        <!-- KPI 1: Total Omset Penjualan -->
-        <div class="col-sm-6 col-xl-3">
-            <div class="kpi-card h-100">
-                <div class="d-flex align-items-center justify-content-between mb-2">
-                    <span class="text-muted small fw-bold text-uppercase" style="letter-spacing: 0.5px;">Total Omset Penjualan</span>
-                    <div class="kpi-icon-wrap bg-success bg-opacity-10 text-success">
-                        <i class="bi bi-cash-stack"></i>
+        <!-- 1. OMSET HARI INI -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="kpi-metric-card kpi-card-revenue h-100">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <span class="text-muted small text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Omset Hari Ini</span>
+                        <h4 class="fw-bold text-dark mt-1 mb-0">
+                            Rp {{ number_format($realtimeSales['today_sales'], 0, ',', '.') }}
+                        </h4>
                     </div>
-                </div>
-                <div class="fw-bold text-dark fs-4 mb-1">
-                    Rp {{ number_format($masterCounts['total_sales_amount'], 0, ',', '.') }}
-                </div>
-                <div class="d-flex align-items-center justify-content-between pt-2 border-top small text-muted">
-                    <span>Dari {{ $masterCounts['total_orders'] }} transaksi</span>
-                    <a href="{{ route('reports.sales') }}" class="text-success fw-semibold text-decoration-none">Laporan &rarr;</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- KPI 2: Piutang Dagang B2B Aktif -->
-        <div class="col-sm-6 col-xl-3">
-            <div class="kpi-card h-100">
-                <div class="d-flex align-items-center justify-content-between mb-2">
-                    <span class="text-muted small fw-bold text-uppercase" style="letter-spacing: 0.5px;">Piutang Dagang B2B</span>
-                    <div class="kpi-icon-wrap bg-warning bg-opacity-15 text-warning">
+                    <div class="kpi-icon-pill bg-success-subtle text-success">
                         <i class="bi bi-wallet2"></i>
                     </div>
                 </div>
-                <div class="fw-bold text-dark fs-4 mb-1">
-                    Rp {{ number_format($masterCounts['active_receivables'], 0, ',', '.') }}
-                </div>
-                <div class="d-flex align-items-center justify-content-between pt-2 border-top small text-muted">
-                    <span>{{ $masterCounts['overdue_invoices'] }} faktur jatuh tempo</span>
-                    <a href="{{ route('finance.receivables.index') }}" class="text-warning text-dark fw-semibold text-decoration-none">Monitor &rarr;</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- KPI 3: Pesanan Penjualan -->
-        <div class="col-sm-6 col-xl-3">
-            <div class="kpi-card h-100">
-                <div class="d-flex align-items-center justify-content-between mb-2">
-                    <span class="text-muted small fw-bold text-uppercase" style="letter-spacing: 0.5px;">Pesanan Penjualan</span>
-                    <div class="kpi-icon-wrap bg-primary bg-opacity-10 text-primary">
-                        <i class="bi bi-receipt"></i>
-                    </div>
-                </div>
-                <div class="fw-bold text-dark fs-4 mb-1">
-                    {{ $masterCounts['total_orders'] }} <small class="fs-6 text-muted font-normal">Order</small>
-                </div>
-                <div class="d-flex align-items-center justify-content-between pt-2 border-top small text-muted">
-                    <span>{{ $masterCounts['pending_orders'] }} pending konfirmasi</span>
-                    <a href="{{ route('orders.index') }}" class="text-primary fw-semibold text-decoration-none">Semua &rarr;</a>
+                <div class="d-flex align-items-center justify-content-between pt-2 border-top small">
+                    <span class="text-muted">Kemarin: Rp {{ number_format($realtimeSales['yesterday_sales'], 0, ',', '.') }}</span>
+                    @if($realtimeSales['growth_percent'] >= 0)
+                        <span class="text-success fw-bold"><i class="bi bi-arrow-up-right"></i> +{{ $realtimeSales['growth_percent'] }}%</span>
+                    @else
+                        <span class="text-danger fw-bold"><i class="bi bi-arrow-down-right"></i> {{ $realtimeSales['growth_percent'] }}%</span>
+                    @endif
                 </div>
             </div>
         </div>
 
-        <!-- KPI 4: Persediaan Fisik Gudang -->
-        <div class="col-sm-6 col-xl-3">
-            <div class="kpi-card h-100">
-                <div class="d-flex align-items-center justify-content-between mb-2">
-                    <span class="text-muted small fw-bold text-uppercase" style="letter-spacing: 0.5px;">Persediaan Gudang</span>
-                    <div class="kpi-icon-wrap bg-info bg-opacity-10 text-info">
-                        <i class="bi bi-boxes"></i>
-                    </div>
-                </div>
-                <div class="fw-bold text-dark fs-4 mb-1">
-                    {{ number_format($masterCounts['total_stock'], 0, ',', '.') }} <small class="fs-6 text-muted">Pack</small>
-                </div>
-                <div class="d-flex align-items-center justify-content-between pt-2 border-top small text-muted">
-                    <span>{{ $masterCounts['variants'] }} SKU ({{ $masterCounts['low_stock'] }} menipis)</span>
-                    <a href="{{ route('inventory.index') }}" class="text-info fw-semibold text-decoration-none">Cek Stok &rarr;</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 3. SHORTCUT AKSI CEPAT BISNIS -->
-    <div class="card p-3 mb-4 bg-white border border-light-subtle rounded-4 shadow-sm">
-        <div class="d-flex align-items-center justify-content-between mb-2 px-1">
-            <small class="fw-bold text-uppercase text-secondary" style="font-size: 0.72rem; letter-spacing: 0.6px;">
-                <i class="bi bi-lightning-charge-fill text-warning me-1"></i> Aksi Cepat Operasional Bisnis
-            </small>
-        </div>
-        <div class="row g-2">
-            @if($user->hasRole(['owner', 'admin', 'sales']))
-                <div class="col-sm-6 col-md-4 col-xl-2">
-                    <a href="{{ route('orders.create') }}" class="action-quick-btn">
-                        <i class="bi bi-plus-circle text-success"></i>
-                        <span>Input Order B2B</span>
-                    </a>
-                </div>
-            @endif
-
-            @if($user->hasRole(['owner', 'admin', 'warehouse']))
-                <div class="col-sm-6 col-md-4 col-xl-2">
-                    <a href="{{ route('purchases.create') }}" class="action-quick-btn">
-                        <i class="bi bi-cart-plus text-info"></i>
-                        <span>Buat PO Supplier</span>
-                    </a>
-                </div>
-                <div class="col-sm-6 col-md-4 col-xl-2">
-                    <a href="{{ route('delivery.index') }}" class="action-quick-btn">
-                        <i class="bi bi-truck text-warning"></i>
-                        <span>Surat Jalan</span>
-                    </a>
-                </div>
-            @endif
-
-            @if($user->hasRole(['owner', 'admin', 'sales', 'finance']))
-                <div class="col-sm-6 col-md-4 col-xl-2">
-                    <a href="{{ route('finance.invoices.index') }}" class="action-quick-btn">
-                        <i class="bi bi-file-earmark-text text-primary"></i>
-                        <span>Faktur Invoices</span>
-                    </a>
-                </div>
-                <div class="col-sm-6 col-md-4 col-xl-2">
-                    <a href="{{ route('finance.receivables.index') }}" class="action-quick-btn">
-                        <i class="bi bi-hourglass-split text-danger"></i>
-                        <span>Kontrol Piutang</span>
-                    </a>
-                </div>
-            @endif
-
-            @if($user->hasRole(['owner', 'admin', 'finance']))
-                <div class="col-sm-6 col-md-4 col-xl-2">
-                    <a href="{{ route('reports.profit') }}" class="action-quick-btn">
-                        <i class="bi bi-graph-up-arrow text-success"></i>
-                        <span>Laba Kotor &amp; HPP</span>
-                    </a>
-                </div>
-            @endif
-
-            @if($user->hasRole(['owner', 'admin']))
-                <div class="col-sm-6 col-md-4 col-xl-2">
-                    <a href="{{ route('settings.index') }}" class="action-quick-btn">
-                        <i class="bi bi-sliders text-danger"></i>
-                        <span>Pengaturan &amp; Dev</span>
-                    </a>
-                </div>
-            @endif
-        </div>
-    </div>
-
-    <!-- 4. DUA PANEL UTAMA: RECENT ORDERS & CRITICAL ALERTS -->
-    <div class="row g-4">
-        <!-- Panel Kiri: Pesanan Penjualan Terbaru -->
-        <div class="col-lg-8">
-            <div class="card p-4 h-100 bg-white border border-light-subtle rounded-4 shadow-sm">
-                <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+        <!-- 2. KEUNTUNGAN / LABA BERSIH HARI INI -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="kpi-metric-card kpi-card-profit h-100">
+                <div class="d-flex justify-content-between align-items-start mb-2">
                     <div>
-                        <h5 class="fw-bold text-dark mb-0">Pesanan Penjualan Terbaru</h5>
-                        <small class="text-muted">Aktivitas pesanan grosir B2B dan transaksi retail online</small>
+                        <span class="text-muted small text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Keuntungan HPP Hari Ini</span>
+                        <h4 class="fw-bold text-warning-emphasis mt-1 mb-0">
+                            Rp {{ number_format($realtimeSales['today_profit'], 0, ',', '.') }}
+                        </h4>
                     </div>
-                    <a href="{{ route('orders.index') }}" class="btn btn-outline-secondary btn-sm">
-                        Lihat Semua &rarr;
-                    </a>
+                    <div class="kpi-icon-pill bg-warning-subtle text-warning">
+                        <i class="bi bi-cash-coin"></i>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-between pt-2 border-top small">
+                    <span class="text-muted">Margin Laba Harian:</span>
+                    <strong class="text-dark">{{ $realtimeSales['today_margin'] }}%</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. TOKO DIKUNJUNGI HARI INI -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="kpi-metric-card kpi-card-visits h-100">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <span class="text-muted small text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Kunjungan Toko Hari Ini</span>
+                        <h4 class="fw-bold text-primary mt-1 mb-0">
+                            {{ $fieldFleetMetrics['stores_visited_today'] }} Toko Selesai
+                        </h4>
+                    </div>
+                    <div class="kpi-icon-pill bg-primary-subtle text-primary">
+                        <i class="bi bi-bicycle"></i>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-between pt-2 border-top small">
+                    <span class="text-muted">Sedang di Lokasi:</span>
+                    <span class="badge bg-warning-subtle text-warning">{{ $fieldFleetMetrics['active_visits_now'] }} Toko</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. STOK MENGAPUNG DI TOKO -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="kpi-metric-card kpi-card-stock h-100">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <span class="text-muted small text-uppercase fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Stok di Rak Semua Toko</span>
+                        <h4 class="fw-bold text-info mt-1 mb-0">
+                            {{ number_format($stockOverview['stores_floating_stock'], 0, ',', '.') }} Pack
+                        </h4>
+                    </div>
+                    <div class="kpi-icon-pill bg-info-subtle text-info">
+                        <i class="bi bi-shop-window"></i>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-between pt-2 border-top small">
+                    <span class="text-muted">Total Pasar (Gudang+Toko):</span>
+                    <strong class="text-dark">{{ number_format($stockOverview['total_market_stock'], 0, ',', '.') }} Pack</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. MULTI-LEVEL INVENTORY OVERVIEW CARD -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body p-3 p-md-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h5 class="fw-bold mb-0">Multi-Layer Persediaan Kopi (Gudang &amp; Pasar)</h5>
+                    <small class="text-muted">Visibilitas stok di gudang utama versus stok mengapung di rak Alfamart/Indomaret</small>
+                </div>
+                <a href="{{ route('inventory.index') }}" class="btn btn-sm btn-outline-secondary rounded-pill">
+                    Detail Kartu Stok
+                </a>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-12 col-md-4">
+                    <div class="stock-layer-box">
+                        <span class="text-muted small d-block">Stok Gudang Utama (Pusat)</span>
+                        <h3 class="fw-bold text-dark mt-1 mb-1">{{ number_format($stockOverview['warehouse_stock'], 0, ',', '.') }}</h3>
+                        <small class="text-muted">Valuasi Modal: Rp {{ number_format($stockOverview['warehouse_value'], 0, ',', '.') }}</small>
+                    </div>
                 </div>
 
-                @if($recentOrders->count() > 0)
+                <div class="col-12 col-md-4">
+                    <div class="stock-layer-box border-warning bg-warning bg-opacity-10">
+                        <span class="text-warning-emphasis small d-block fw-bold">Stok Mengapung di Rak Toko (Konsinyasi)</span>
+                        <h3 class="fw-bold text-warning-emphasis mt-1 mb-1">{{ number_format($stockOverview['stores_floating_stock'], 0, ',', '.') }}</h3>
+                        <small class="text-muted">Valuasi di Pasar: Rp {{ number_format($stockOverview['stores_value'], 0, ',', '.') }}</small>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <div class="stock-layer-box border-primary bg-primary bg-opacity-10">
+                        <span class="text-primary small d-block fw-bold">Total Stok Keseluruhan (Pusat + Pasar)</span>
+                        <h3 class="fw-bold text-primary mt-1 mb-1">{{ number_format($stockOverview['total_market_stock'], 0, ',', '.') }}</h3>
+                        <small class="text-muted">Total Aset Kopi: Rp {{ number_format($stockOverview['total_asset_value'], 0, ',', '.') }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. TWO COLUMNS RANKING LEADERBOARDS: TOP PRODUK & TOP TOKO -->
+    <div class="row g-3 mb-4">
+        <!-- TOP SELLING PRODUCTS -->
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-3 p-md-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-warning text-dark px-2 py-1 rounded-3"><i class="bi bi-trophy-fill"></i></span>
+                            <h5 class="fw-bold mb-0">Produk Paling Banyak Laku</h5>
+                        </div>
+                        <a href="{{ route('reports.sales') }}" class="small text-decoration-none">Semua Produk &rarr;</a>
+                    </div>
+
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0 text-nowrap">
+                        <table class="table table-hover align-middle mb-0">
                             <thead class="table-light small">
                                 <tr>
-                                    <th>No. Pesanan</th>
-                                    <th>Pelanggan</th>
-                                    <th>Kanal</th>
-                                    <th class="text-end">Total Nilai</th>
-                                    <th class="text-center">Status</th>
-                                    <th class="text-end">Aksi</th>
+                                    <th style="width: 40px;">#</th>
+                                    <th>Varian Produk Kopi</th>
+                                    <th class="text-center">Sisa Stok</th>
+                                    <th class="text-end">Total Laku</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($recentOrders as $ord)
-                                    <tr>
-                                        <td>
-                                            <a href="{{ route('orders.show', $ord) }}" class="fw-bold font-monospace text-decoration-none text-dark">
-                                                {{ $ord->order_number }}
-                                            </a>
-                                            <small class="d-block text-muted">{{ $ord->order_date->format('d/m/Y') }}</small>
-                                        </td>
-                                        <td>
-                                            <span class="fw-semibold text-dark">{{ $ord->customer->name ?? 'Pelanggan Walk-in' }}</span>
-                                            <small class="d-block text-muted">{{ $ord->customer->phone ?? '-' }}</small>
-                                        </td>
-                                        <td>
-                                            @if($ord->order_type === 'b2b')
-                                                <span class="badge bg-primary bg-opacity-10 text-primary">Grosir B2B</span>
-                                            @else
-                                                <span class="badge bg-warning bg-opacity-20 text-dark">Retail B2C</span>
-                                            @endif
-                                        </td>
-                                        <td class="text-end fw-bold text-dark">
-                                            Rp {{ number_format($ord->total_amount, 0, ',', '.') }}
-                                        </td>
-                                        <td class="text-center">
-                                            <span class="badge bg-{{ $ord->status_badge }}">
-                                                {{ $ord->status_label }}
-                                            </span>
-                                        </td>
-                                        <td class="text-end">
-                                            <a href="{{ route('orders.show', $ord) }}" class="btn btn-sm btn-light border py-1 px-2" title="Lihat Detail">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @endforeach
+                                @forelse($topSellingProducts as $idx => $prod)
+                                <tr>
+                                    <td>
+                                        @php
+                                            $rankClass = match($idx) { 0 => 'rank-1', 1 => 'rank-2', 2 => 'rank-3', default => 'rank-other' };
+                                        @endphp
+                                        <div class="rank-badge {{ $rankClass }}">{{ $idx + 1 }}</div>
+                                    </td>
+                                    <td>
+                                        <strong class="d-block text-dark small">{{ $prod->variant_name }}</strong>
+                                        <small class="text-muted">{{ $prod->product->name ?? '' }}</small>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge {{ $prod->current_stock <= $prod->minimum_stock ? 'bg-danger' : 'bg-light text-dark border' }}">
+                                            {{ $prod->current_stock }} pack
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <strong class="text-success fs-6">{{ $prod->total_sold_qty }}</strong>
+                                        <span class="text-muted small">pack</span>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="4" class="text-center py-3 text-muted">Belum ada data penjualan tercatat.</td>
+                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
-                @else
-                    <div class="py-4 text-center text-muted">
-                        <i class="bi bi-receipt fs-1 text-secondary opacity-50 mb-2 d-block"></i>
-                        <p class="mb-0">Belum ada transaksi pesanan yang dicatat.</p>
-                    </div>
-                @endif
+                </div>
             </div>
         </div>
 
-        <!-- Panel Kanan: Alert Stok Rendah & Piutang Overdue -->
-        <div class="col-lg-4">
-            <div class="d-flex flex-column gap-4 h-100">
-                <!-- Widget Peringatan Stok Rendah -->
-                <div class="card p-3 bg-white border border-light-subtle rounded-4 shadow-sm flex-grow-1">
-                    <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
-                        <h6 class="fw-bold text-dark mb-0">
-                            <i class="bi bi-exclamation-triangle text-warning me-1"></i> Alert Stok Kritis
-                        </h6>
-                        <a href="{{ route('inventory.index') }}" class="small text-decoration-none">Gudang &rarr;</a>
+        <!-- TOP PERFORMING STORES -->
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-3 p-md-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-primary text-white px-2 py-1 rounded-3"><i class="bi bi-shop"></i></span>
+                            <h5 class="fw-bold mb-0">Toko Paling Banyak Laku</h5>
+                        </div>
+                        <a href="{{ route('maps.stores') }}" class="small text-decoration-none">Peta Toko &rarr;</a>
                     </div>
 
-                    @if($lowStockVariants->count() > 0)
-                        <div class="d-flex flex-column gap-2">
-                            @foreach($lowStockVariants as $lsv)
-                                <div class="p-2 rounded-3 bg-light border d-flex justify-content-between align-items-center">
-                                    <div class="overflow-hidden">
-                                        <div class="fw-semibold text-dark text-truncate small">{{ $lsv->variant_name }}</div>
-                                        <small class="text-muted font-monospace">{{ $lsv->sku }}</small>
-                                    </div>
-                                    <div class="text-end flex-shrink-0 ms-2">
-                                        <span class="badge bg-danger">
-                                            {{ $lsv->current_stock }} pack
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light small">
+                                <tr>
+                                    <th style="width: 40px;">#</th>
+                                    <th>Nama Toko Mitra</th>
+                                    <th class="text-center">Stok Rak</th>
+                                    <th class="text-end">Omset Disumbang</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($topPerformingStores as $idx => $st)
+                                <tr>
+                                    <td>
+                                        @php
+                                            $rankClass = match($idx) { 0 => 'rank-1', 1 => 'rank-2', 2 => 'rank-3', default => 'rank-other' };
+                                        @endphp
+                                        <div class="rank-badge {{ $rankClass }}">{{ $idx + 1 }}</div>
+                                    </td>
+                                    <td>
+                                        <strong class="d-block text-dark small">{{ $st->business_name }}</strong>
+                                        <small class="badge bg-light text-dark border">{{ strtoupper($st->store_chain ?? 'Retail') }}</small>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-light text-dark border">
+                                            {{ $st->getActiveConsignmentStock() }} pack
                                         </span>
-                                        <small class="d-block text-muted" style="font-size: 0.68rem;">Min: {{ $lsv->minimum_stock }}</small>
-                                    </div>
+                                    </td>
+                                    <td class="text-end">
+                                        <strong class="text-dark small">Rp {{ number_format($st->total_revenue, 0, ',', '.') }}</strong>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="4" class="text-center py-3 text-muted">Belum ada data transaksi toko.</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. TOKO MENUNGGAK & KUNJUNGAN TERBARU HARI INI -->
+    <div class="row g-3">
+        <!-- WIDGET TOKO MENUNGGAK (OVERDUE AGING ALERT) -->
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 h-100 border-start border-4 border-danger">
+                <div class="card-body p-3 p-md-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-danger text-white px-2 py-1 rounded-3"><i class="bi bi-exclamation-triangle-fill"></i></span>
+                            <h5 class="fw-bold mb-0">Peringatan Toko Menunggak Tagihan</h5>
+                        </div>
+                        <a href="{{ route('finance.receivables.index') }}" class="small text-danger text-decoration-none fw-bold">Kelola Piutang &rarr;</a>
+                    </div>
+
+                    @if($overdueStores->isNotEmpty())
+                        <div class="list-group list-group-flush">
+                            @foreach($overdueStores as $ost)
+                            <div class="list-group-item px-0 py-2 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong class="d-block text-dark small">{{ $ost->business_name }}</strong>
+                                    <small class="text-danger">
+                                        <i class="bi bi-clock-history me-1"></i> Lewat jatuh tempo {{ $ost->overdue_days }} hari
+                                    </small>
                                 </div>
+                                <div class="text-end">
+                                    <strong class="d-block text-danger fs-6">
+                                        Rp {{ number_format($ost->overdue_total, 0, ',', '.') }}
+                                    </strong>
+                                    <a href="tel:{{ $ost->phone }}" class="btn btn-sm btn-outline-danger rounded-pill px-2 py-0" style="font-size: 0.72rem;">
+                                        <i class="bi bi-telephone-fill"></i> Hubungi
+                                    </a>
+                                </div>
+                            </div>
                             @endforeach
                         </div>
                     @else
-                        <div class="py-3 text-center text-muted small">
-                            <i class="bi bi-check-circle text-success fs-3 d-block mb-1"></i>
-                            Seluruh persediaan stok berada di atas batas aman.
+                        <div class="alert alert-success d-flex align-items-center gap-2 rounded-4 py-3 mb-0 small">
+                            <i class="bi bi-check-circle-fill fs-5"></i>
+                            <div>Semua toko mitra tertib dan tidak ada tagihan menunggak yang melewati jatuh tempo!</div>
                         </div>
                     @endif
                 </div>
+            </div>
+        </div>
 
-                <!-- Widget Piutang Overdue -->
-                <div class="card p-3 bg-white border border-light-subtle rounded-4 shadow-sm flex-grow-1">
-                    <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
-                        <h6 class="fw-bold text-dark mb-0">
-                            <i class="bi bi-clock-history text-danger me-1"></i> Tagihan Overdue
-                        </h6>
-                        <a href="{{ route('reports.receivables') }}" class="small text-decoration-none">Aging &rarr;</a>
+        <!-- WIDGET KUNJUNGAN LAPANGAN TERBARU -->
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-3 p-md-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-dark text-warning px-2 py-1 rounded-3"><i class="bi bi-clock-history"></i></span>
+                            <h5 class="fw-bold mb-0">Aktivitas Armada Lapangan Hari Ini</h5>
+                        </div>
+                        <a href="{{ route('maps.driver_tracking') }}" class="small text-decoration-none">Peta Jejak &rarr;</a>
                     </div>
 
-                    @if($overdueInvoicesList->count() > 0)
-                        <div class="d-flex flex-column gap-2">
-                            @foreach($overdueInvoicesList as $inv)
-                                <div class="p-2 rounded-3 bg-danger bg-opacity-10 border border-danger border-opacity-25 d-flex justify-content-between align-items-center">
-                                    <div class="overflow-hidden">
-                                        <a href="{{ route('finance.invoices.show', $inv) }}" class="fw-bold text-danger text-truncate small font-monospace d-block text-decoration-none">
-                                            {{ $inv->invoice_number }}
-                                        </a>
-                                        <small class="text-dark">{{ $inv->order->customer->name ?? 'Mitra B2B' }}</small>
-                                    </div>
-                                    <div class="text-end flex-shrink-0 ms-2">
-                                        <div class="fw-bold text-danger small">Rp {{ number_format($inv->remaining_amount, 0, ',', '.') }}</div>
-                                        <small class="text-muted" style="font-size: 0.68rem;">Tempo: {{ $inv->due_date->format('d/m/Y') }}</small>
-                                    </div>
+                    <div class="list-group list-group-flush">
+                        @forelse($recentVisits as $rv)
+                        <div class="list-group-item px-0 py-2 d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <strong class="text-dark small">{{ $rv->customer->business_name }}</strong>
+                                    <span class="badge {{ $rv->status_badge_class }}" style="font-size: 0.65rem;">
+                                        {{ $rv->status_label }}
+                                    </span>
                                 </div>
-                            @endforeach
+                                <small class="text-muted">
+                                    Sopir: {{ $rv->user->name }} &bull; Check-in: {{ $rv->check_in_at->format('H:i') }} WITA
+                                </small>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-success-subtle text-success small">
+                                    {{ $rv->summary_sold_qty }} pack laku
+                                </span>
+                                @if($rv->summary_restock_qty > 0)
+                                    <span class="badge bg-warning-subtle text-warning small d-block mt-1">
+                                        +{{ $rv->summary_restock_qty }} restock
+                                    </span>
+                                @endif
+                            </div>
                         </div>
-                    @else
-                        <div class="py-3 text-center text-muted small">
-                            <i class="bi bi-shield-check text-success fs-3 d-block mb-1"></i>
-                            Tidak ada faktur piutang yang menunggak tempo saat ini.
+                        @empty
+                        <div class="text-center py-4 text-muted small">
+                            Belum ada aktivitas kunjungan toko hari ini.
                         </div>
-                    @endif
+                        @endforelse
+                    </div>
                 </div>
             </div>
         </div>

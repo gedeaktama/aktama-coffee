@@ -7,6 +7,7 @@ use App\Http\Controllers\ConsignmentController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeliveryController;
+use App\Http\Controllers\DriverPortalController;
 use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\OrderController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\StoreController;
+use App\Http\Controllers\StoreMapController;
 use App\Http\Controllers\SupplierController;
 use Illuminate\Support\Facades\Route;
 
@@ -56,6 +58,23 @@ Route::middleware('auth')->group(function () {
     // Internal Dashboard for Staff (Owner, Admin, Sales, Warehouse, Finance)
     Route::middleware('role:owner,admin,sales,warehouse,finance')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    });
+
+    // PORTAL MOBILE DRIVER & SCANNER (Driver, Owner, Admin, Sales, Warehouse)
+    Route::middleware('role:owner,admin,sales,warehouse,driver')->prefix('driver')->group(function () {
+        Route::get('/', [DriverPortalController::class, 'index'])->name('driver.dashboard');
+        Route::get('/scan', [DriverPortalController::class, 'scan'])->name('driver.scan');
+        Route::post('/checkin', [DriverPortalController::class, 'processCheckIn'])->name('driver.checkin');
+        Route::get('/visit/{visit}/action', [DriverPortalController::class, 'visitAction'])->name('driver.visit.action');
+        Route::post('/visit/{visit}/complete', [DriverPortalController::class, 'completeVisit'])->name('driver.visit.complete');
+        Route::get('/visits/history', [DriverPortalController::class, 'visitsHistory'])->name('driver.visits.history');
+        Route::get('/store/{customer}/qr-print', [DriverPortalController::class, 'printStoreQr'])->name('driver.print_qr');
+    });
+
+    // PETA INTERAKTIF SEBARAN TOKO & JEJAK SOPIR (Semua Staf & Driver)
+    Route::middleware('role:owner,admin,sales,warehouse,finance,driver')->prefix('maps')->group(function () {
+        Route::get('/stores', [StoreMapController::class, 'index'])->name('maps.stores');
+        Route::get('/driver-tracking', [StoreMapController::class, 'driverTracking'])->name('maps.driver_tracking');
     });
 
     // MASTER DATA ROUTES

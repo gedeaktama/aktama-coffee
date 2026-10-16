@@ -28,7 +28,7 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'phone' => ['required', 'string', 'max:30'],
-            'customer_type' => ['required', 'string', 'in:retail,toko,kafe'],
+            'customer_type' => ['nullable', 'string', 'in:retail,toko,kafe,konsinyasi'],
             'business_name' => ['nullable', 'string', 'max:255'],
             'address' => ['nullable', 'string', 'max:500'],
             'password' => ['required', 'string', 'confirmed', Password::min(8)],
@@ -38,14 +38,12 @@ class RegisterController extends Controller
             'email.email' => 'Format email tidak valid.',
             'email.unique' => 'Email ini sudah terdaftar.',
             'phone.required' => 'Nomor WhatsApp / telepon wajib diisi untuk konfirmasi pengiriman.',
-            'customer_type.required' => 'Pilih kategori akun Anda (Konsumen Retail, Toko, atau Kafe).',
-            'customer_type.in' => 'Kategori akun yang dipilih tidak valid.',
             'password.required' => 'Password wajib diisi.',
             'password.confirmed' => 'Konfirmasi password tidak cocok.',
             'password.min' => 'Password minimal terdiri dari 8 karakter.',
         ]);
 
-        $customerType = $validated['customer_type'];
+        $customerType = $validated['customer_type'] ?? 'retail';
         $businessName = !empty($validated['business_name']) ? $validated['business_name'] : $validated['name'];
 
         $user = DB::transaction(function () use ($validated, $customerType, $businessName) {
@@ -96,6 +94,6 @@ class RegisterController extends Controller
             default => "Pendaftaran akun berhasil! Selamat berbelanja kopi nusantara di Kopi Distro.",
         };
 
-        return redirect()->route('store.catalog')->with('success', $welcomeMessage);
+        return redirect()->intended('/')->with('success', $welcomeMessage);
     }
 }

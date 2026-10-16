@@ -68,6 +68,7 @@
                     <button type="button" class="btn btn-sm btn-outline-success demo-btn" onclick="fillLogin('sales@kopi.com', 'password123')">Sales</button>
                     <button type="button" class="btn btn-sm btn-outline-warning text-dark demo-btn" onclick="fillLogin('warehouse@kopi.com', 'password123')">Warehouse</button>
                     <button type="button" class="btn btn-sm btn-outline-info text-dark demo-btn" onclick="fillLogin('finance@kopi.com', 'password123')">Finance</button>
+                    <button type="button" class="btn btn-sm btn-warning text-dark fw-bold demo-btn" onclick="fillLogin('driver@kopi.com', 'password123')">🛵 Driver / Sopir</button>
                     <button type="button" class="btn btn-sm btn-outline-secondary demo-btn" onclick="fillLogin('pelanggan@gmail.com', 'password123')">Customer</button>
                 </div>
             </div>

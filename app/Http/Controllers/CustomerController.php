@@ -54,13 +54,17 @@ class CustomerController extends Controller
 
         $validated = $request->validate([
             'code' => ['required', 'string', 'max:50', 'unique:customers,code'],
-            'customer_type' => ['required', 'in:kafe,toko,reseller,retail'],
+            'customer_type' => ['required', 'in:kafe,toko,reseller,retail,konsinyasi'],
+            'store_chain' => ['nullable', 'string', 'max:50'],
             'business_name' => ['required', 'string', 'max:255'],
             'pic_name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:50'],
             'email' => ['nullable', 'email', 'max:255'],
             'address' => ['nullable', 'string'],
             'shipping_address' => ['nullable', 'string'],
+            'latitude' => ['nullable', 'numeric'],
+            'longitude' => ['nullable', 'numeric'],
+            'min_stock_alert' => ['nullable', 'integer', 'min:0'],
             'sales_user_id' => ['nullable', 'exists:users,id'],
             'credit_limit' => ['nullable', 'numeric', 'min:0'],
             'payment_terms_days' => ['nullable', 'integer', 'min:0'],
@@ -76,6 +80,7 @@ class CustomerController extends Controller
         $validated['code'] = strtoupper(trim($validated['code']));
         $validated['credit_limit'] = $validated['credit_limit'] ?? 0;
         $validated['payment_terms_days'] = $validated['payment_terms_days'] ?? 0;
+        $validated['min_stock_alert'] = $validated['min_stock_alert'] ?? 5;
         $validated['is_active'] = true;
 
         // Sales constraint: sales users cannot self-approve credit limits > 0 without admin/owner
@@ -90,7 +95,8 @@ class CustomerController extends Controller
             $validated['sales_user_id'] = $user->id;
         }
 
-        Customer::create($validated);
+        $customer = Customer::create($validated);
+        $customer->ensureQrToken();
 
         return redirect()->route('customers.index')->with('success', 'Pelanggan baru berhasil didaftarkan.');
     }
@@ -112,13 +118,17 @@ class CustomerController extends Controller
         $user = Auth::user();
 
         $validated = $request->validate([
-            'customer_type' => ['required', 'in:kafe,toko,reseller,retail'],
+            'customer_type' => ['required', 'in:kafe,toko,reseller,retail,konsinyasi'],
+            'store_chain' => ['nullable', 'string', 'max:50'],
             'business_name' => ['required', 'string', 'max:255'],
             'pic_name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:50'],
             'email' => ['nullable', 'email', 'max:255'],
             'address' => ['nullable', 'string'],
             'shipping_address' => ['nullable', 'string'],
+            'latitude' => ['nullable', 'numeric'],
+            'longitude' => ['nullable', 'numeric'],
+            'min_stock_alert' => ['nullable', 'integer', 'min:0'],
             'sales_user_id' => ['nullable', 'exists:users,id'],
             'credit_limit' => ['nullable', 'numeric', 'min:0'],
             'payment_terms_days' => ['nullable', 'integer', 'min:0'],
@@ -134,6 +144,7 @@ class CustomerController extends Controller
         }
 
         $customer->update($validated);
+        $customer->ensureQrToken();
 
         return redirect()->route('customers.show', $customer)->with('success', "Data pelanggan {$customer->business_name} berhasil diperbarui.");
     }

@@ -12,6 +12,10 @@ class LoginController extends Controller
     public function showLoginForm()
     {
         if (Auth::check()) {
+            if (Auth::user()->isDriver()) {
+                return redirect()->route('driver.dashboard');
+            }
+
             return Auth::user()->canAccessDashboard()
                 ? redirect()->route('dashboard')
                 : redirect()->route('home');
@@ -47,6 +51,11 @@ class LoginController extends Controller
             }
 
             $request->session()->regenerate();
+
+            if ($user->isDriver()) {
+                return redirect()->intended(route('driver.dashboard'))
+                    ->with('success', 'Selamat bertugas, ' . $user->name . '! Silakan scan toko untuk memulai.');
+            }
 
             if ($user->canAccessDashboard()) {
                 return redirect()->intended(route('dashboard'))
